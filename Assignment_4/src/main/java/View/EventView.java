@@ -44,6 +44,44 @@ public class EventView {
 
   }
 
+  private static void processrecurringEvent(String command) {
+    Boolean autoDecline;
+    String regex = "create event --autoDecline (\\S+) from (\\S+) to (\\S+) repeats (\\S+) for (\\S+) times";
+
+    if (command.contains("autoDecline")) {
+      autoDecline = true;
+    }
+
+    Pattern pattern = Pattern.compile(regex);
+    Matcher matcher = pattern.matcher(command);
+
+    String eventName = matcher.group(1);
+    String startDateTime = matcher.group(2);
+    String endDateTime = matcher.group(3);
+    String repeats = matcher.group(4);
+    String times = matcher.group(5);
+    System.out.println("Creating event: " + eventName + " " + startDateTime + " " + endDateTime + " " + repeats + " " + times );
+
+  }
+
+  private static void processCreateEventWithStartDateOnly(String command) {
+    Boolean autoDecline;
+    String regex = "create event --autoDecline (\\S+) on (\\S+)";
+
+    if (command.contains("autoDecline")) {
+      autoDecline = true;
+    }
+
+    Pattern pattern = Pattern.compile(regex);
+    Matcher matcher = pattern.matcher(command);
+
+    String eventName = matcher.group(1);
+    String startDateTime = matcher.group(2);
+
+    System.out.println("Creating event: " + eventName + " " + startDateTime );
+
+  }
+
 
 
 }
