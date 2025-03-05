@@ -1,6 +1,7 @@
 package Model;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 /**
  * the class provides structure to store events.
@@ -12,14 +13,35 @@ public class EventModel {
   private LocalDateTime startDateTime;
   private LocalDateTime endDateTime;
   private String description;
-  private Boolean isPrivate;
+  private boolean isPrivate;
+  private boolean autoDecline;
+  private String location;
 
-  public EventModel(String eventName,LocalDateTime startDateTime, LocalDateTime endDateTime,String description,Boolean isPrivate) {
+  //create event --autodecline <eventName> from <dateStringTTimeString> to <dateStringTTimeString>
+  //create event <eventName> from <dateStringTtimeString> to <dateStringTtimeString> repeats <weekdays> for <N> times
+  //create event --autoDecline <eventName> from <dateStringTtimeString> to <dateStringTtimeString> repeats <weekdays> until <dateStringTtimeString>
+  //create event --autoDecline <eventName> on <dateStringTtimeString>
+  //create event <eventName> on <dateString> repeats <weekdays> for <N> times
+  //create event <eventName> on <dateString> repeats <weekdays> until <dateString>
+
+  public EventModel(String eventName,LocalDateTime startDateTime, LocalDateTime endDateTime, boolean autoDecline) {
     this.eventName = eventName;
     this.startDateTime = startDateTime;
     this.endDateTime = endDateTime;
-    this.description = description;
-    this.isPrivate = isPrivate;
+    this.description = "No Description";
+    this.isPrivate = false;
+    this.autoDecline = autoDecline;
+    this.location = "No Location";
+  }
+
+  //Constructor for no auto decline
+  public EventModel(String eventName,LocalDateTime startDateTime, LocalDateTime endDateTime) {
+    this(eventName, startDateTime, endDateTime, false);
+  }
+
+  //Constructor for all day events
+  public EventModel(String eventName,LocalDateTime startDateTime) {
+    this(eventName, startDateTime, startDateTime.with(LocalTime.of(23,59)),false);
   }
 
   public String getEventName() {
@@ -36,6 +58,14 @@ public class EventModel {
 
   public String getDescription() {
     return description;
+  }
+
+  public String getLocation() {
+    return location;
+  }
+
+  public boolean getAutoDecline() {
+    return autoDecline;
   }
 
   public Boolean getIsPrivate() {
@@ -62,4 +92,26 @@ public class EventModel {
     this.isPrivate = type;
   }
 
+  public boolean isAutoDecline() {
+    return autoDecline;
+  }
+
+  public void setAutoDecline(boolean autoDecline) {
+    this.autoDecline = autoDecline;
+  }
+
+  public void setLocation(String location) {
+    this.location = location;
+  }
+
+  @Override
+  public String toString() {
+    return "[\n" + "  eventName=" + eventName + ",\n" +
+            "  Start=" + startDateTime + ",\n" +
+            "  End=" + endDateTime + ",\n" +
+            "  description=" + description + ",\n" +
+            "  isPrivate=" + isPrivate + ",\n" +
+            "  autoDecline=" + autoDecline +
+            "\n]";
+  }
 }

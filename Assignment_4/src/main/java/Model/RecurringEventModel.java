@@ -1,6 +1,8 @@
 package Model;
 
+import java.time.DayOfWeek;
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * weekdays refers to day of the week the recurring event occurs
@@ -8,43 +10,41 @@ import java.time.LocalDateTime;
  * but its in the command section of assignment 4 question so.
  * The end of the recurring event can be indecated by recurringEndDateTime or numOfReoccurences
  */
-public class RecurringEventModel {
-  private LocalDateTime StartDateTime;
-  private LocalDateTime EndDateTime;
-  private Character weekday;
-  private LocalDateTime recurringEndDateTime;
-  private Integer numOfReoccurences;
+public class RecurringEventModel extends EventModel {
+  private List<DayOfWeek> recurringDays;
+  private int occurrences;
+  private LocalDateTime recurrenceEndDateTime;
 
-
-  public LocalDateTime getStartDateTime() {
-    return StartDateTime;
-  }
-  public void setStartDateTime(LocalDateTime startDateTime) {
-    StartDateTime = startDateTime;
-  }
-  public LocalDateTime getEndDateTime() {
-    return EndDateTime;
-  }
-  public void setEndDateTime(LocalDateTime endDateTime) {
-    EndDateTime = endDateTime;
-  }
-  public Character getWeekday() {
-    return weekday;
-  }
-  public void setWeekday(Character weekday) {
-    this.weekday = weekday;
-  }
-  public LocalDateTime getRecurringEndDateTime() {
-    return recurringEndDateTime;
-  }
-  public void setRecurringEndDateTime(LocalDateTime recurringEndDateTime) {
-    this.recurringEndDateTime = recurringEndDateTime;
-  }
-  public Integer getNumOfRecurences() {
-    return this.numOfReoccurences;
-  }
-  public void setNumOfRecurences(Integer numOfRecurences) {
-    this.numOfReoccurences = numOfRecurences;
+  public RecurringEventModel(String eventName,
+                             LocalDateTime startDateTime,
+                             LocalDateTime endDateTime,
+                             boolean autoDecline,
+                             List<DayOfWeek> recurringDays,
+                             int occurrences,
+                             LocalDateTime recurrenceEndDateTime) {
+    super(eventName, startDateTime, endDateTime, autoDecline);
+    this.recurringDays = recurringDays;
+    this.occurrences = occurrences;
+    this.recurrenceEndDateTime = recurrenceEndDateTime;
   }
 
+  public List<DayOfWeek> getRecurringDays() {
+    return recurringDays;
+  }
+
+  public int getOccurrences() {
+    return occurrences;
+  }
+
+  public LocalDateTime getRecurrenceEndDateTime() {
+    return recurrenceEndDateTime;
+  }
+
+  @Override
+  public String toString() {
+    return super.toString() + ",\n" +
+            "  Recurring days=" + recurringDays + ",\n" +
+            "  Occurrences=" + (occurrences == -1 ? "Until " + recurrenceEndDateTime : occurrences)
+            + "\n]";
+  }
 }
