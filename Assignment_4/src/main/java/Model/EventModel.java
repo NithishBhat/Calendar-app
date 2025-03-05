@@ -41,7 +41,7 @@ public class EventModel {
 
   //Constructor for all day events
   public EventModel(String eventName,LocalDateTime startDateTime) {
-    this(eventName, startDateTime, startDateTime.with(LocalTime.of(23,59)),false);
+    this(eventName, startDateTime,null ,false);
   }
 
   public String getEventName() {
@@ -53,7 +53,11 @@ public class EventModel {
   }
 
   public LocalDateTime getEndDateTime() {
-    return endDateTime;
+    if (endDateTime == null) {
+      return startDateTime.with(LocalTime.of(23,59));
+    } else {
+      return endDateTime;
+    }
   }
 
   public String getDescription() {
@@ -102,6 +106,18 @@ public class EventModel {
 
   public void setLocation(String location) {
     this.location = location;
+  }
+
+  public boolean isAllDayEvent() {
+    if (endDateTime == null) {
+      return true;
+    }
+    //check if day is the same
+    //check if start time is at 00:00
+    //check if end time is at 23:59
+    return startDateTime.toLocalDate().equals(endDateTime.toLocalDate()) &&
+            startDateTime.toLocalTime().equals(LocalTime.MIN) &&
+            endDateTime.toLocalTime().equals(LocalTime.of(23,59));
   }
 
   @Override

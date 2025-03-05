@@ -9,6 +9,7 @@ import java.util.List;
 
 import Model.EventCollectionModel;
 import Model.EventModel;
+import Model.ExportToCSV;
 
 import static org.junit.Assert.*;
 

@@ -1,0 +1,16 @@
+Subject,Start Date,Start Time,End Date,End Time,All Day Event,Description,Location,Private
+Presentation, 2025-05-01, 12:01, 2025-05-01, 23:59, true, No Description, No Location, false
+Conference, 2025-03-03, 10:00, 2025-03-03, 13:00, false, No Description, No Location, false
+Conference, 2025-03-04, 10:00, 2025-03-04, 13:00, false, No Description, No Location, false
+Conference, 2025-03-05, 10:00, 2025-03-05, 13:00, false, No Description, No Location, false
+Conference, 2025-03-10, 10:00, 2025-03-10, 13:00, false, No Description, No Location, false
+Conference, 2025-03-11, 10:00, 2025-03-11, 13:00, false, No Description, No Location, false
+Conference, 2025-03-12, 10:00, 2025-03-12, 13:00, false, No Description, No Location, false
+Conference, 2025-03-17, 10:00, 2025-03-17, 13:00, false, No Description, No Location, false
+Conference, 2025-03-18, 10:00, 2025-03-18, 13:00, false, No Description, No Location, false
+Conference, 2025-03-19, 10:00, 2025-03-19, 13:00, false, No Description, No Location, false
+Conference, 2025-03-24, 10:00, 2025-03-24, 13:00, false, No Description, No Location, false
+Conference, 2025-03-25, 10:00, 2025-03-25, 13:00, false, No Description, No Location, false
+Conference, 2025-03-26, 10:00, 2025-03-26, 13:00, false, No Description, No Location, false
+Conference, 2025-03-31, 10:00, 2025-03-31, 13:00, false, No Description, No Location, false
+Conference, 2025-04-01, 10:00, 2025-04-01, 13:00, false, No Description, No Location, false
