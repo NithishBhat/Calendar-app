@@ -125,7 +125,7 @@ public class EventCollectionModel {
     LocalDateTime date = event.getStartDateTime();
     int count = 0;
 
-    //iterate until occurrence (int), if there is a specfiied end date then iterate until that date
+    //iterate until occurrence (int), if there is a specfied end date then iterate until that date
     while((event.getOccurrences() == -1 || count < event.getOccurrences())
     && (event.getRecurrenceEndDateTime() == null || !date.isAfter(event.getRecurrenceEndDateTime()))) {
       //check if one of the specified days of the week

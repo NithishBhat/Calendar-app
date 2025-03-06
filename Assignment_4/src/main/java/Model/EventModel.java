@@ -24,6 +24,19 @@ public class EventModel {
   //create event <eventName> on <dateString> repeats <weekdays> for <N> times
   //create event <eventName> on <dateString> repeats <weekdays> until <dateString>
 
+  /// accounting for it its made... also better design .. can you adapt to this?
+  public EventModel(String eventName,LocalDateTime startDateTime, LocalDateTime endDateTime,
+                    String description, boolean isPrivate, boolean autoDecline, String location) {
+    this.eventName = eventName;
+    this.startDateTime = startDateTime;
+    //if enddatetime is null then samedate with last possible time of the day making it a all day event
+    this.endDateTime = endDateTime != null ? endDateTime : startDateTime.toLocalDate().atTime(LocalTime.of(23, 59));
+    this.description = description;
+    this.isPrivate = isPrivate;
+    this.autoDecline = autoDecline;
+    this.location = location;
+  }
+
   public EventModel(String eventName,LocalDateTime startDateTime, LocalDateTime endDateTime, boolean autoDecline) {
     this.eventName = eventName;
     this.startDateTime = startDateTime;
