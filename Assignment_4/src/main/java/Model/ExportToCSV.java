@@ -31,6 +31,9 @@ public class ExportToCSV {
 
                 String isPrivate = String.valueOf(event.getIsPrivate());
 
+                String description = removeRegex(event.getDescription());
+
+
                 //check for regex???
                 //check for commas, replace with another delimiter?
                 bw.write(event.getEventName());
@@ -45,7 +48,7 @@ public class ExportToCSV {
                 bw.write(", ");
                 bw.write(AllDayEvent);
                 bw.write(", ");
-                bw.write(event.getDescription());
+                bw.write(description);
                 bw.write(", ");
                 bw.write(event.getLocation());
                 bw.write(", ");
@@ -56,5 +59,17 @@ public class ExportToCSV {
         } catch (IOException e) {
             throw new RuntimeException("Error Writing to CSV File: " + e.getMessage());
         }
+    }
+
+    public static String removeRegex(String stringValue) {
+        if(stringValue.isEmpty()) {
+            return "";
+        }
+
+        stringValue = stringValue.replaceAll("\"", "\"\"")
+                .replaceAll("\n", " ")
+                .replaceAll("\t", " ")
+                .replaceAll("\r", " ");
+        return "\"" + stringValue + "\"";
     }
 }

@@ -45,7 +45,63 @@ public class ExportToCSVTest {
 
         try (BufferedReader br = new BufferedReader(new FileReader(filepath))) {
             String header = br.readLine();
-            assertEquals("Subject,Start Date,Start Time,End Date,End Time,All Day Event,Description,Location,Private", header);
+            assertEquals("Subject,Start Date,Start Time,End Date,End Time,All Day Event,Description,Location,Private",header);
+
+            String firstEvent = br.readLine();
+            assertNotNull(firstEvent);
+            assertTrue(firstEvent.contains("Presentation"));
+
+            String secondEvent = br.readLine();
+            assertNotNull(secondEvent);
+            assertTrue(secondEvent.contains("Conference"));
+
+        } catch (IOException e) {
+            fail("Error reading CSV file: " + e.getMessage());
+        }
+    }
+
+    @Test
+    public void testExportToCSVWithRegexAndCommaInDescription() {
+        EventCollectionModel eventCollectionModel = new EventCollectionModel();
+        LocalDateTime startDateTime = LocalDateTime.of(2025, 5, 1, 12, 1);
+        EventModel event1 = new EventModel("Presentation", startDateTime);
+        event1.setDescription("This is a description, with a comma.");
+
+        eventCollectionModel.addEvent(event1);
+
+        event1.setDescription("Changed description");
+
+        LocalDateTime startDateTime2 = LocalDateTime.of(2025, 3, 1, 10, 0);
+        LocalDateTime endDateTime2 = LocalDateTime.of(2025, 3, 1, 13, 0);
+
+        LocalDateTime RecurrenceEndDateTime = LocalDateTime.of(2025, 4, 2, 0, 0);
+
+        List<DayOfWeek> days = Arrays.asList(DayOfWeek.MONDAY, DayOfWeek.TUESDAY, DayOfWeek.WEDNESDAY);
+        RecurringEventModel recurringCalendarEvent = new RecurringEventModel(
+                "Conference",
+                startDateTime2,
+                endDateTime2,
+                true,
+                days,
+                -1,
+                RecurrenceEndDateTime);
+
+        eventCollectionModel.addRecurringEvent(recurringCalendarEvent);
+
+        for (EventModel event : eventCollectionModel.getEventList()) {
+            if (event.getEventName().equals("Conference")) {
+                event.setDescription("Updated description with escape sequences\nThis should still print on the same line.");
+            }
+        }
+
+        String fileName = "test.csv";
+        String filepath = Paths.get(System.getProperty("user.dir"), fileName).toString();
+
+        ExportToCSV.generateCSV(filepath, eventCollectionModel.getEventList());
+
+        try (BufferedReader br = new BufferedReader(new FileReader(filepath))) {
+            String header = br.readLine();
+            assertEquals("Subject,Start Date,Start Time,End Date,End Time,All Day Event,Description,Location,Private",header);
 
             String firstEvent = br.readLine();
             assertNotNull(firstEvent);
