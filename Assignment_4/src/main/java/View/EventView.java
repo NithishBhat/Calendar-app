@@ -16,8 +16,6 @@ public class EventView {
     scanner.close();
   }
 
-
-
 }
 
 

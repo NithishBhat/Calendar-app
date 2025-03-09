@@ -4,7 +4,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -15,135 +17,63 @@ import View.EventView;
 import java.time.DayOfWeek;
 public class EventController {
 
-
   private EventCollectionModel eventCollection;
   private EventView view;
-
-  //create event --autodecline <eventName> from <dateStringTTimeString> to <dateStringTTimeString>
-  //create event <eventName> from <dateStringTtimeString> to <dateStringTtimeString> repeats <weekdays> for <N> times
-  //create event --autoDecline <eventName> from <dateStringTtimeString> to <dateStringTtimeString> repeats <weekdays> until <dateStringTtimeString>
-  //create event --autoDecline <eventName> on <dateStringTtimeString>
-  //create event <eventName> on <dateString> repeats <weekdays> for <N> times
-  //create event <eventName> on <dateString> repeats <weekdays> until <dateString>
+  private CommandParser parser;
 
   public EventController() {
     eventCollection = new EventCollectionModel();
     view = new EventView();
+    parser = new CommandParser();
   }
-
-  //this.eventName = eventName;
-  //this.startDateTime = startDateTime;
-  //this.endDateTime = endDateTime;
-  //this.description = "No Description";
-  //this.isPrivate = false;
-  //this.autoDecline = autoDecline;
-  //this.location = "No Location";
 
   public void createEventFromStartToEnd(boolean autoDecline, String eventName, String start, String end) {
     LocalDateTime startTime = LocalDateTime.parse(start.trim());
     LocalDateTime endTime = LocalDateTime.parse(end.trim());
     EventModel event = new EventModel(eventName, startTime, endTime, null, false, autoDecline, null);
+
+    eventCollection.addEvent(event);
   }
 
   public void filterCommand(String command) {
 
-    ///  i am assuming that autodecline can be put anywhere
+    Matcher matcher = parser.parseCommand(command);
 
-    //create commands
-    // Define base patterns for reuse
-    String dateTimeString = "(\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2})";
-    String dateString = "(\\d{4}-\\d{2}-\\d{2})";
-    String weekDay="([MTWRFSU]{1,7})";// only weekday chars allowed, atleast 1 char is a must, order of chars doesn't matter
+    if (matcher != null) {
+      // Get the pattern that matched
+      String pattern = matcher.pattern().toString();
 
-// Create event patterns
-// create event --autodecline <eventName> from <dateStringTTimeString> to <dateStringTTimeString>
-    Pattern createEventPattern = Pattern.compile("\\s*create\\s+event(\\s+--autoDecline)?\\s+(.*?)\\s+from\\s+" + dateTimeString + "\\s+to\\s+" + dateTimeString + "\\s*$");
+      // Map the pattern string to the command
+      Map<String, Runnable> commandMap = new HashMap<>();
+      commandMap.put("createEventPattern", () -> processCreateEvent(matcher));
+      commandMap.put("createRecurringEventN", () -> processCreateRecurringEventN(matcher));
+      commandMap.put("createRecurringEventEndDate", () -> processCreateRecurringEventEndDate(matcher));
+      commandMap.put("createWholeDayEvent", () -> processCreateAllDayEvent(matcher));
+      commandMap.put("createRecurringWholeDayEventN", () -> processCreateAllDayRecurring(matcher));
+      commandMap.put("createRecurringWholeDayEventEnd", () -> processCreateRecurringWholeDayEventEnd(matcher));
+      commandMap.put("editEvent", () -> processEditEvent(matcher));
+      commandMap.put("editEvents", () -> processEditEvents(matcher));
+      commandMap.put("editEventsByName", () -> processEditEventsByName(matcher));
+      commandMap.put("printEventsOn", () -> processPrintEventsOn(matcher));
+      commandMap.put("printEventsBetween", () -> processPrintEventsBetween(matcher));
+      commandMap.put("export", () -> processExport(matcher));
+      commandMap.put("show", () -> processShowStatus(matcher));
 
-// create event <eventName> from <dateStringTtimeString> to <dateStringTtimeString> repeats <weekdays> for <N> times
-    Pattern createRecurringEventN = Pattern.compile("\\s*create\\s+event(\\s+--autoDecline)?\\s+(.*?)\\s+from\\s+" + dateTimeString + "\\s+to\\s+" + dateTimeString + "\\s+repeats\\s+"+weekDay+"\\s+for\\s+(\\d+)\\s+times\\s*$");
+      // go through the map and call method if there is a match
+      for (Map.Entry<String, Pattern> entry : parser.getPatterns().entrySet()) {
+        if (entry.getValue().matcher(command).matches()) {
+          commandMap.get(entry.getKey()).run(); // Execute command
+          return;
+        }
+      }
 
-// create event --autoDecline <eventName> from <dateStringTtimeString> to <dateStringTtimeString> repeats <weekdays> until <dateStringTtimeString>
-    Pattern createRecurringEventEndDate = Pattern.compile("\\s*create\\s+event(\\s+--autoDecline)?\\s+(.*?)\\s+from\\s+" + dateTimeString + "\\s+to\\s+" + dateTimeString + "\\s+repeats\\s+"+weekDay+"\\s+until\\s+" + dateTimeString + "\\s*$");
-
-// create event --autoDecline <eventName> on <dateStringTtimeString>
-    Pattern createWholeDayEvent = Pattern.compile("\\s*create\\s+event(\\s+--autoDecline)?\\s+(.*?)\\s+on\\s+" + dateTimeString + "\\s*$");
-
-// create event <eventName> on <dateString> repeats <weekdays> for <N> times
-    Pattern createRecurringWholeDayEventN = Pattern.compile("\\s*create\\s+event(\\s+--autoDecline)?\\s+(.*?)\\s+on\\s+" + dateString + "\\s+repeats\\s+"+weekDay+"\\s+for\\s+(\\d+)\\s+times\\s*$");
-
-// create event <eventName> on <dateString> repeats <weekdays> until <dateString>
-    Pattern createRecurringWholeDayEventEnd = Pattern.compile("\\s*create\\s+event(\\s+--autoDecline)?\\s+(.*?)\\s+on\\s+" + dateString + "\\s+repeats\\s+"+weekDay+"\\s+until\\s+" + dateString + "\\s*$");
-
-    // Edit event patterns
-// edit event <property> <eventName> from <dateStringTtimeString> to <dateStringTtimeString> with <NewPropertyValue>
-    Pattern editEvent = Pattern.compile("\\s*edit\\s+event\\s+(.*?)\\s+(.*?)\\s+from\\s+" + dateTimeString + "\\s+to\\s+" + dateTimeString + "\\s+with\\s+(.*?)\\s*$");
-
-// edit events <property> <eventName> from <dateStringTtimeString> with <NewPropertyValue>
-    Pattern editEvents = Pattern.compile("\\s*edit\\s+events\\s+(.*?)\\s+(.*?)\\s+from\\s+" + dateTimeString + "\\s+with\\s+(.*?)\\s*$");
-
-// edit events <property> <eventName> <NewPropertyValue>
-    Pattern editEventsByName = Pattern.compile("\\s*edit\\s+events\\s+(.*?)\\s+(.*?)\\s+(.*?)\\s*$");
-
-// Print and export patterns
-// print events on <dateString>
-    Pattern printEventsOn = Pattern.compile("\\s*print\\s+events\\s+on\\s+" + dateString + "\\s*$");
-
-// print events from <dateStringTtimeString> to <dateStringTtimeString>
-    Pattern printEventsBetween = Pattern.compile("\\s*print\\s+events\\s+from\\s+" + dateTimeString + "\\s+to\\s+" + dateTimeString + "\\s*$");
-
-// export cal fileName.csv
-    Pattern export = Pattern.compile("\\s*export\\s+cal\\s+([a-zA-Z0-9]+\\.csv)\\s*");
-
-// show status on <dateStringTtimeString>
-    Pattern show = Pattern.compile("\\s*show\\s+status\\s+on\\s+" + dateTimeString + "\\s*$");
-
-    Matcher matcher;
-
-    if ((matcher = createEventPattern.matcher(command)).matches()) {
-      processCreateEvent(matcher);
-    } else if ((matcher = createRecurringEventN.matcher(command)).matches()) {
-      processCreateRecurringEventN(matcher);
-    } else if ((matcher = createRecurringEventEndDate.matcher(command)).matches()) {
-      processCreateRecurringEventEndDate(matcher);
-    }else if ((matcher = createWholeDayEvent.matcher(command)).matches()) {
-      processCreateAllDayEvent(matcher);
-    }else if ((matcher = createRecurringWholeDayEventN.matcher(command)).matches()) {
-      processCreateAllDayRecurring(matcher);
-    }else if ((matcher=createRecurringWholeDayEventEnd.matcher(command)).matches()) {
-      processCreateRecurringWholeDayEventEnd(matcher);
-    } else if ((matcher=editEvent.matcher(command)).matches()) {
-     processEditEvent(matcher);
-    } else if ((matcher=editEvents.matcher(command)).matches()) {
-      processEditEvents(matcher);
-    }else if ((matcher=editEventsByName.matcher(command)).matches()) {
-      processEditEventsByName(matcher);
-    }else if ((matcher=printEventsOn.matcher(command)).matches()) {
-         processPrintEventsOn(matcher);
-          } else if ((matcher=printEventsBetween.matcher(command)).matches()) {
-            processPrintEventsBetween(matcher);
-         } else if ((matcher=export.matcher(command)).matches()) {
-           processExport(matcher);
-         } else if ((matcher=show.matcher(command)).matches()) {
-      processShowStatus(matcher);
+      // If no pattern was matched
+      System.out.println("No matching command for the pattern: " + pattern);
+    } else {
+      System.out.println("Invalid command format" + command);
     }
-  else
-  {
-    System.out.println("Invalid command format");
   }
-}
 
-
-
-
-  //create event --autodecline <eventName> from <dateStringTTimeString> to <dateStringTTimeString>
-  //create event <eventName> from <dateStringTtimeString> to <dateStringTtimeString> repeats <weekdays> for <N> times
-  //create event --autoDecline <eventName> from <dateStringTtimeString> to <dateStringTtimeString> repeats <weekdays> until <dateStringTtimeString>
-  //create event --autoDecline <eventName> on <dateStringTtimeString>
-  //create event <eventName> on <dateString> repeats <weekdays> for <N> times
-  //create event <eventName> on <dateString> repeats <weekdays> until <dateString>
-  //
-
-  // create event --autodecline <eventName> from <dateStringTTimeString> to <dateStringTTimeString>
 private void processCreateEvent(Matcher matcher) {
   Boolean autoDecline;
 
@@ -199,6 +129,7 @@ private void processCreateEvent(Matcher matcher) {
     List<Character> recurringWeekDay= StringToDayOfWeek(weekDay);
     LocalDateTime startDate = LocalDateTime.parse(startDateTime);
     LocalDateTime endDate = LocalDateTime.parse(endDateTime);
+
     LocalDateTime recurrernceEndDateTime =  LocalDateTime.parse(recurrernceEndDate);
 
     RecurringEventModel recurringEvent = new RecurringEventModel(eventName, startDate, endDate,null,
@@ -223,7 +154,7 @@ private void processCreateEvent(Matcher matcher) {
     LocalDateTime startDate = LocalDateTime.parse(startDateTime);
     EventModel event = new EventModel(eventName, startDate, null,null,false,autoDecline,null);
     eventCollection.addEvent(event);
-    System.out.println("create event all day");
+    System.out.println("created event all day");
   }
 
   //create event <eventName> on <dateString> repeats <weekdays> for <N> times
@@ -245,7 +176,7 @@ private void processCreateEvent(Matcher matcher) {
     RecurringEventModel recurringEvent = new RecurringEventModel(eventName, startDate, null,null,
             false,autoDecline,null,recurringWeekDay,numOfTimes,null);
     eventCollection.addRecurringEvent(recurringEvent);
-    System.out.println("create event recurring all day event");
+    System.out.println("created event recurring all day event");
   }
 
   //create event <eventName> on <dateString> repeats <weekdays> until <dateString>
@@ -268,7 +199,7 @@ private void processCreateEvent(Matcher matcher) {
     RecurringEventModel recurringEvent = new RecurringEventModel(eventName, startDateTime, null,null,
             false,autoDecline,null,recurringWeekDay,null,recurrernceEndDateTime);
     eventCollection.addRecurringEvent(recurringEvent);
-    System.out.println("create event recurring all day event till end date<String datetime>");
+    System.out.println("created event recurring all day event till end date<String datetime>");
   }
 
   //edit event <property> <eventName> from <dateStringTtimeString> to <dateStringTtimeString> with <NewPropertyValue>
@@ -376,6 +307,4 @@ private void processCreateEvent(Matcher matcher) {
     }
    return dayOfWeek;
   }
-
-
 }

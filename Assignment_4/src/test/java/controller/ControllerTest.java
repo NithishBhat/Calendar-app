@@ -18,7 +18,7 @@ public class ControllerTest {
   @Test
   public void processNormalCreation() {
     EventController eventController = new EventController();
-    eventController.filterCommand("create event --autoDecline hello world from 2025-10-10T10:00 to 2025-10-10T10:00");
+    eventController.filterCommand("create event hello world from 2025-10-10T10:00 to 2025-10-10T10:00");
   }
 
   @Test
