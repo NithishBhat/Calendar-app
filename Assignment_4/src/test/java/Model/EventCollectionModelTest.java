@@ -1,15 +1,11 @@
-import Model.RecurringEventModel;
+package Model;
+
 import org.junit.Test;
 
-import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import Model.EventCollectionModel;
-import Model.EventModel;
-import Model.ExportToCSV;
 
 import static org.junit.Assert.*;
 
@@ -133,12 +129,12 @@ public class EventCollectionModelTest {
   }
 
   @Test
-  public void testRecurringEvents() {
+  public void testRecurringEvents() {// GOES INTO INFINITE LOOP>?????
     EventCollectionModel eventCollectionModel = new EventCollectionModel();
     LocalDateTime startDateTime = LocalDateTime.of(2025, 3, 1, 10, 0);
     LocalDateTime endDateTime = LocalDateTime.of(2025, 3, 1, 15, 0);
 
-    List<DayOfWeek> days = Arrays.asList(DayOfWeek.MONDAY, DayOfWeek.TUESDAY, DayOfWeek.WEDNESDAY);
+    List<Character> days = Arrays.asList('M', 'T','W');// i changed it from date time to char list
     RecurringEventModel recurringCalendarEvent = new RecurringEventModel(
             "Conference",
             startDateTime,
@@ -163,14 +159,14 @@ public class EventCollectionModelTest {
 
     LocalDateTime RecurrenceEndDateTime = LocalDateTime.of(2025, 4, 2, 0, 0);
 
-    List<DayOfWeek> days = Arrays.asList(DayOfWeek.MONDAY, DayOfWeek.TUESDAY, DayOfWeek.WEDNESDAY);
+    List<Character> days = Arrays.asList('M','T','W');// i changed it from date time to char list
     RecurringEventModel recurringCalendarEvent = new RecurringEventModel(
             "Conference",
             startDateTime,
             endDateTime,
             true,
             days,
-            -1,
+            null,
             RecurrenceEndDateTime);
     eventCollectionModel.addRecurringEvent(recurringCalendarEvent);
 
@@ -192,14 +188,14 @@ public class EventCollectionModelTest {
 
     LocalDateTime RecurrenceEndDateTime = LocalDateTime.of(2025, 4, 2, 0, 0);
 
-    List<DayOfWeek> days = Arrays.asList(DayOfWeek.MONDAY, DayOfWeek.TUESDAY, DayOfWeek.WEDNESDAY);
+    List<Character> days = Arrays.asList('M','T','W');// i changed it from date time to char list
     RecurringEventModel recurringCalendarEvent = new RecurringEventModel(
             "Conference",
             startDateTime2,
             endDateTime2,
             true,
             days,
-            -1,
+            null,
             RecurrenceEndDateTime);
     eventCollectionModel.addRecurringEvent(recurringCalendarEvent);
 

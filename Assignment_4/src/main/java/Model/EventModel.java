@@ -5,7 +5,7 @@ import java.time.LocalTime;
 
 /**
  * the class provides structure to store events.
- * type is either private or public
+ * type is either private or public  DONT FORGET EST ESSSSSSSSSSSSSSTTTTTTTTTTTTTTT
  */
 public class EventModel {
 
@@ -24,7 +24,6 @@ public class EventModel {
   //create event <eventName> on <dateString> repeats <weekdays> for <N> times
   //create event <eventName> on <dateString> repeats <weekdays> until <dateString>
 
-  /// accounting for it its made... also better design .. can you adapt to this?
   public EventModel(String eventName,LocalDateTime startDateTime, LocalDateTime endDateTime,
                     String description, boolean isPrivate, boolean autoDecline, String location) {
     this.eventName = eventName;
@@ -40,11 +39,11 @@ public class EventModel {
   public EventModel(String eventName,LocalDateTime startDateTime, LocalDateTime endDateTime, boolean autoDecline) {
     this.eventName = eventName;
     this.startDateTime = startDateTime;
-    this.endDateTime = endDateTime;
-    this.description = "No Description";
+    this.endDateTime = endDateTime != null ? endDateTime : startDateTime.toLocalDate().atTime(LocalTime.of(23, 59));;
+    this.description = null;
     this.isPrivate = false;
     this.autoDecline = autoDecline;
-    this.location = "No Location";
+    this.location = null;
   }
 
   //Constructor for no auto decline
@@ -142,5 +141,15 @@ public class EventModel {
             "  isPrivate=" + isPrivate + ",\n" +
             "  autoDecline=" + autoDecline +
             "\n]";
+  }
+
+  public String bulletString() {
+    return "*" + "  eventName=" + eventName + "," +
+            "  Start=" + startDateTime + "," +
+            "  End=" + endDateTime + "," +
+            "  description=" + description + "," +
+            "  isPrivate=" + isPrivate + "," +
+            "  location=" + location + "," +
+            "  autoDecline=" + autoDecline ;
   }
 }

@@ -50,7 +50,7 @@ public class ExportToCSV {
                 bw.write(", ");
                 bw.write(description);
                 bw.write(", ");
-                bw.write(event.getLocation());
+                bw.write(event.getLocation()==null?"":event.getLocation());
                 bw.write(", ");
                 bw.write(isPrivate);
                 bw.newLine();
@@ -62,7 +62,7 @@ public class ExportToCSV {
     }
 
     public static String removeRegex(String stringValue) {
-        if(stringValue.isEmpty()) {
+        if(stringValue=="null") {
             return "";
         }
 

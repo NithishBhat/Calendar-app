@@ -1,8 +1,8 @@
+package Model;
+
 import org.junit.Test;
 
 import java.time.LocalDateTime;
-
-import Model.EventModel;
 
 import static org.junit.Assert.*;
 
@@ -40,8 +40,8 @@ public class EventModelTest {
     assertEquals("Conference", eventModel.getEventName());
     assertEquals(startDateTime, eventModel.getStartDateTime());
     assertEquals(LocalDateTime.of(2025, 3, 1, 23, 59), eventModel.getEndDateTime());
-    assertEquals("No Description", eventModel.getDescription());
-    assertEquals("No Location", eventModel.getLocation());
+    assertEquals(null, eventModel.getDescription());
+    assertEquals(null, eventModel.getLocation());
     assertFalse(eventModel.getIsPrivate());
     assertFalse(eventModel.getAutoDecline());
 

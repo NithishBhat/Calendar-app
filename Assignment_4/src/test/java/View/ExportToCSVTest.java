@@ -1,4 +1,4 @@
-package Model;
+package View;
 
 import org.junit.Test;
 
@@ -6,10 +6,14 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Paths;
-import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
+
+import Model.EventCollectionModel;
+import Model.EventModel;
+import Model.ExportToCSV;
+import Model.RecurringEventModel;
 
 import static org.junit.Assert.*;
 
@@ -27,14 +31,14 @@ public class ExportToCSVTest {
 
         LocalDateTime RecurrenceEndDateTime = LocalDateTime.of(2025, 4, 2, 0, 0);
 
-        List<DayOfWeek> days = Arrays.asList(DayOfWeek.MONDAY, DayOfWeek.TUESDAY, DayOfWeek.WEDNESDAY);
+        List<Character> days = Arrays.asList('M','T','W');
         RecurringEventModel recurringCalendarEvent = new RecurringEventModel(
                 "Conference",
                 startDateTime2,
                 endDateTime2,
                 true,
                 days,
-                -1,
+                null,
                 RecurrenceEndDateTime);
         eventCollectionModel.addRecurringEvent(recurringCalendarEvent);
 
@@ -76,14 +80,14 @@ public class ExportToCSVTest {
 
         LocalDateTime RecurrenceEndDateTime = LocalDateTime.of(2025, 4, 2, 0, 0);
 
-        List<DayOfWeek> days = Arrays.asList(DayOfWeek.MONDAY, DayOfWeek.TUESDAY, DayOfWeek.WEDNESDAY);
+        List<Character> days = Arrays.asList('M','T','W');
         RecurringEventModel recurringCalendarEvent = new RecurringEventModel(
                 "Conference",
                 startDateTime2,
                 endDateTime2,
                 true,
                 days,
-                -1,
+                null,
                 RecurrenceEndDateTime);
 
         eventCollectionModel.addRecurringEvent(recurringCalendarEvent);

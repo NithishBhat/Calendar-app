@@ -3,6 +3,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.ArrayList;
 
+
 public class EventCollectionModel {
   private List<EventModel> eventList;
 
@@ -102,6 +103,7 @@ public class EventCollectionModel {
     return false;
   }
 
+
   public void addRecurringEvent(RecurringEventModel event) {
     List<EventModel> recurringEvents = generateOccurrences(event);
 
@@ -123,13 +125,14 @@ public class EventCollectionModel {
   private List<EventModel> generateOccurrences(RecurringEventModel event) {
     List<EventModel> occurringEvents = new ArrayList<>();
     LocalDateTime date = event.getStartDateTime();
+
     int count = 0;
 
     //iterate until occurrence (int), if there is a specfied end date then iterate until that date
-    while((event.getOccurrences() == -1 || count < event.getOccurrences())
+    while((event.getOccurrences() == null || count < event.getOccurrences())
     && (event.getRecurrenceEndDateTime() == null || !date.isAfter(event.getRecurrenceEndDateTime()))) {
       //check if one of the specified days of the week
-      if (event.getRecurringDays().contains(date.getDayOfWeek())) {
+      if (event.getOccuranceDayofWeek().contains(date.getDayOfWeek())) {
         occurringEvents.add(new EventModel(
                 event.getEventName(),
                 date,
@@ -155,6 +158,18 @@ public class EventCollectionModel {
       sb.append("\n");
     }
     return sb.append("}\n").toString();
+  }
+
+  public String printAssortments(List<EventModel> events) {
+    StringBuilder sb = new StringBuilder("\n");
+    int count = 0;
+    for (EventModel event : events) {
+      sb.append(event.bulletString());
+      if (++count < events.size()) {
+        sb.append("\n"); //add comma before last child
+      }
+    }
+    return sb.append("\n").toString();
   }
 
 }
