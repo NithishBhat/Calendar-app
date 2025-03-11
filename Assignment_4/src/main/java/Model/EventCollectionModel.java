@@ -12,9 +12,10 @@ public class EventCollectionModel {
   }
 
   public boolean addEvent(EventModel event) {
-    if (event.isAutoDecline() && checkConflict(event.getStartDateTime(), event.getEndDateTime())) {
-      return false; //conflict, cannot add event
-    }
+    //if (event.isAutoDecline() && checkConflict(event.getStartDateTime(), event.getEndDateTime())) {
+    //  return false; //conflict, cannot add event
+    //}
+    // Nithish handles autodecline in the controller
     eventList.add(event);
     return true;
   }
@@ -93,12 +94,13 @@ public class EventCollectionModel {
     return filteredList;
   }
 
-  private boolean checkConflict(LocalDateTime eventStartDate, LocalDateTime eventEndDate) {
+  public boolean checkConflict(LocalDateTime eventStartDate, LocalDateTime eventEndDate) {
     for (EventModel event : eventList) {
       //if event overlaps, there is a conflict
       if (!event.getEndDateTime().isBefore(eventStartDate) && !event.getStartDateTime().isAfter(eventEndDate)) {
         return true;
       }
+
     }
     return false;
   }
@@ -110,19 +112,20 @@ public class EventCollectionModel {
     //conflict check
     for(EventModel e : recurringEvents){
       if(checkConflict(e.getStartDateTime(), e.getEndDateTime())) {
-        if(e.getAutoDecline()){
-          return;
+        //if(e.getAutoDecline()){
+          //return;}
+        // Nithish removed the conflict check . code needs revaluating
           //recurring event conflicts with exisiting event
           //should return error in the future
         }
+
       }
-    }
     for (EventModel e : recurringEvents) {
       addEvent(e);
     }
   }
 
-  private List<EventModel> generateOccurrences(RecurringEventModel event) {
+  public List<EventModel> generateOccurrences(RecurringEventModel event) {
     List<EventModel> occurringEvents = new ArrayList<>();
     LocalDateTime date = event.getStartDateTime();
 

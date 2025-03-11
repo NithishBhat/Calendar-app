@@ -82,13 +82,13 @@ private void processCreateEvent(Matcher matcher) {
   String eventName = matcher.group(2);
   String startDateTime = matcher.group(3);
   String endDateTime = matcher.group(4);
-  System.out.println("Creating event: " + eventName + " " + startDateTime + " " + endDateTime + "  autoDecline:" + autoDecline);
+
 
   LocalDateTime startDate = LocalDateTime.parse(startDateTime);
   LocalDateTime endDate = LocalDateTime.parse(endDateTime);
 
   EventModel event = new EventModel(eventName, startDate, endDate,null,false,autoDecline,null);
-  eventCollection.addEvent(event);
+  checkForCollision(event,autoDecline,startDate,endDate);
 }
 
   //create event <eventName> from <dateStringTtimeString> to <dateStringTtimeString> repeats <weekdays> for <N> times
@@ -109,8 +109,7 @@ private void processCreateEvent(Matcher matcher) {
     RecurringEventModel recurringEvent = new RecurringEventModel(eventName, startDate, endDate,null,
             false,autoDecline,null,recurringWeekDay,numOfTimes,null);
 
-    eventCollection.addRecurringEvent(recurringEvent);
-    System.out.println("recurring n times created");
+    checkForCollisionRecurringEvent(recurringEvent,autoDecline);
   }
 
   // create event --autoDecline <eventName> from <dateStringTtimeString> to <dateStringTtimeString> repeats <weekdays> until <dateStringTtimeString>
@@ -135,9 +134,7 @@ private void processCreateEvent(Matcher matcher) {
     RecurringEventModel recurringEvent = new RecurringEventModel(eventName, startDate, endDate,null,
             false,autoDecline,null,recurringWeekDay,null,recurrernceEndDateTime);
 
-    eventCollection.addRecurringEvent(recurringEvent);
-
-    System.out.println("recurring End date created");
+    checkForCollisionRecurringEvent(recurringEvent,autoDecline);
   }
 
   //create event --autoDecline <eventName> on <dateStringTtimeString>
@@ -153,8 +150,7 @@ private void processCreateEvent(Matcher matcher) {
 
     LocalDateTime startDate = LocalDateTime.parse(startDateTime);
     EventModel event = new EventModel(eventName, startDate, null,null,false,autoDecline,null);
-    eventCollection.addEvent(event);
-    System.out.println("created event all day");
+    checkForCollision(event,autoDecline,event.getEndDateTime(),event.getEndDateTime());
   }
 
   //create event <eventName> on <dateString> repeats <weekdays> for <N> times
@@ -175,8 +171,7 @@ private void processCreateEvent(Matcher matcher) {
 
     RecurringEventModel recurringEvent = new RecurringEventModel(eventName, startDate, null,null,
             false,autoDecline,null,recurringWeekDay,numOfTimes,null);
-    eventCollection.addRecurringEvent(recurringEvent);
-    System.out.println("created event recurring all day event");
+    checkForCollisionRecurringEvent(recurringEvent,autoDecline);
   }
 
   //create event <eventName> on <dateString> repeats <weekdays> until <dateString>
@@ -198,8 +193,7 @@ private void processCreateEvent(Matcher matcher) {
 
     RecurringEventModel recurringEvent = new RecurringEventModel(eventName, startDateTime, null,null,
             false,autoDecline,null,recurringWeekDay,null,recurrernceEndDateTime);
-    eventCollection.addRecurringEvent(recurringEvent);
-    System.out.println("created event recurring all day event till end date<String datetime>");
+    checkForCollisionRecurringEvent(recurringEvent,autoDecline);
   }
 
   //edit event <property> <eventName> from <dateStringTtimeString> to <dateStringTtimeString> with <NewPropertyValue>
@@ -213,10 +207,8 @@ private void processCreateEvent(Matcher matcher) {
 
     LocalDateTime startDateTime= LocalDateTime.parse(startDate);
     LocalDateTime endDateTime = LocalDateTime.parse(endDate);
-    System.out.println("edit event " + eventName + " startDate=" + startDate + " endDate=" + endDate);
-    //get events with same event name
-    //from that get events between start and end
-    //replace property with new property
+    editEvents(property,newProperty,eventName,startDateTime,endDateTime);
+
 
   }
 
@@ -229,7 +221,7 @@ private void processCreateEvent(Matcher matcher) {
     String newProperty = matcher.group(4);
 
     LocalDateTime startDateTime= LocalDateTime.parse(startDate);
-    System.out.println("edit event multiple events");
+    editEvents(property,newProperty,eventName,startDateTime,null);
   }
 
 
@@ -240,7 +232,7 @@ private void processCreateEvent(Matcher matcher) {
     String eventName = matcher.group(2);
     String newProperty = matcher.group(3);
 
-    System.out.println("edit event multiple events by NAME");
+    editEvents(property,newProperty,eventName,null,null);
   }
 
   // print events on <dateString>
@@ -250,7 +242,6 @@ private void processCreateEvent(Matcher matcher) {
     String startDate = matcher.group(1);
     LocalDateTime startDateTime = LocalDate.parse(startDate).atStartOfDay();
     LocalDateTime endDateTime =  startDateTime.toLocalDate().atTime(LocalTime.of(23, 59));
-    System.out.println("print eventSZZZZ on " + startDate);
 
     List<EventModel> printList= new ArrayList<>();
     printList=eventCollection.searchEventByTimeFrame(startDateTime,endDateTime);
@@ -267,7 +258,6 @@ private void processCreateEvent(Matcher matcher) {
     String endDate = matcher.group(2);
     LocalDateTime startDateTime = LocalDateTime.parse(startDate);
     LocalDateTime endDateTime = LocalDateTime.parse(endDate);
-    System.out.println("print events from " + startDateTime+"to "+endDateTime);
 
     List<EventModel> printList= new ArrayList<>();
     printList=eventCollection.searchEventByTimeFrame(startDateTime,endDateTime);
@@ -289,7 +279,7 @@ private void processCreateEvent(Matcher matcher) {
   private void processShowStatus(Matcher matcher) {
     String startDate = matcher.group(1);
     LocalDateTime startDateTime = LocalDateTime.parse(startDate);
-    System.out.println("show status from " + startDate+" BUSY OR NOT?????????????????");
+    System.out.println(true==eventCollection.checkConflict(startDateTime,startDateTime)?"Busy":"Available");
   }
 
 
@@ -306,5 +296,139 @@ private void processCreateEvent(Matcher matcher) {
       dayOfWeek.add(weekDay.charAt(i));
     }
    return dayOfWeek;
+  }
+
+
+  private void editEvents(String property,String newProperty,String eventName,LocalDateTime StartDateTime,LocalDateTime EndDateTime) {
+    if (property.contains("startDateTime")) {
+      setStartDateTime(LocalDateTime.parse(newProperty),eventName,StartDateTime,EndDateTime);
+    }
+    else if (property.contains("endDateTime")) {
+      setEndDateTime(LocalDateTime.parse(newProperty),eventName,StartDateTime,EndDateTime);
+    }
+    else if (property.contains("location")) {
+      setLocation(newProperty,eventName,StartDateTime,EndDateTime);
+    }
+    else if (property.contains("description")) {
+      setDescription(eventName,newProperty,StartDateTime,EndDateTime);
+    }
+    else if (newProperty.contains("private") && property.contains("privacyType")) {
+      setIsPrivate(eventName,true,StartDateTime,EndDateTime);
+    }
+    else if (property.contains("public") && property.contains("privacyType")) {
+      setIsPrivate(newProperty,false,StartDateTime,EndDateTime);
+    }
+    else if (property.contains("eventName")) {
+      setEventName(eventName,newProperty,StartDateTime,EndDateTime);
+    }
+
+  }
+
+
+  private Void setStartDateTime(LocalDateTime newProperty,String eventName,LocalDateTime startDateTime,LocalDateTime endDateTime) {
+    for (EventModel event : eventCollection.getEventList()) {
+      // if start and enddate is specified then we need to check if the event given is between the two dates
+      if (event.getEventName().equals(eventName) &&  checkEventBetweenDates(event,startDateTime,endDateTime)) {
+        event.setStartDateTime(newProperty);
+      }
+    }
+    return null;
+  }
+  private Void setEndDateTime(LocalDateTime newProperty,String eventName,LocalDateTime startDateTime,LocalDateTime endDateTime) {
+    for (EventModel event : eventCollection.getEventList()) {
+      if (event.getEventName().equals(eventName) &&  checkEventBetweenDates(event,startDateTime,endDateTime)) {
+        event.setEndDateTime(newProperty);
+      }
+    }
+    return null;
+  }
+
+  private Void setLocation(String location,String eventName,LocalDateTime startDateTime,LocalDateTime endDateTime) {
+    for (EventModel event : eventCollection.getEventList()) {
+      if (event.getEventName().equals(eventName)&&  checkEventBetweenDates(event,startDateTime,endDateTime)) {
+        event.setLocation(location);
+      }
+    }
+    return null;
+  }
+
+  private Void setEventName(String eventName,String newEventName,LocalDateTime startDateTime,LocalDateTime endDateTime) {
+    for (EventModel event : eventCollection.getEventList()) {
+      if (event.getEventName().equals(eventName) && checkEventBetweenDates(event,startDateTime,endDateTime)) {
+        event.setEventName(newEventName);
+      }
+    }
+    return null;
+  }
+
+  private Void setIsPrivate(String eventName,boolean isPrivate,LocalDateTime startDateTime,LocalDateTime endDateTime) {
+    for (EventModel event : eventCollection.getEventList()) {
+      if (event.getEventName().equals(eventName) && checkEventBetweenDates(event,startDateTime,endDateTime)) {
+        event.setIsPrivate(isPrivate);
+      }
+    }
+    return null;
+  }
+
+
+  private Void setDescription(String eventName,String description,LocalDateTime startDateTime,LocalDateTime endDateTime) {
+    for (EventModel event : eventCollection.getEventList()) {
+      if (event.getEventName().equals(eventName) && checkEventBetweenDates(event,startDateTime,endDateTime)) {
+        event.setDescription(description);
+      }
+    }
+    return null;
+  }
+
+  private boolean checkEventBetweenDates(EventModel event,LocalDateTime startDateTime, LocalDateTime endDateTime) {
+
+    if(startDateTime==null && endDateTime==null){
+      return true;
+    }
+    else if(startDateTime!=null && endDateTime==null){
+      return event.isAfterDateTime(startDateTime);
+    }
+    else{
+      return event.isEventBetweenDates(startDateTime,endDateTime);
+    }
+  }
+
+  private void checkForCollision(EventModel event,boolean autoDecline,LocalDateTime startDateTime,LocalDateTime endDateTime) {
+    if(autoDecline==true)
+    {
+      if (!eventCollection.checkConflict(startDateTime, endDateTime)) {
+        eventCollection.addEvent(event);
+        System.out.println("Event \""+event.getEventName()+"\" was created");
+      } else {
+        System.out.println("Event \""+event.getEventName()+"\" was not created due to conflict");
+      }
+    }
+    else{
+      eventCollection.addEvent(event);
+      System.out.println("Event \""+event.getEventName()+"\" was created");
+    }
+  }
+
+  private void checkForCollisionRecurringEvent(RecurringEventModel recurringEvent,boolean autoDecline) {
+    boolean conflictDetected = false;
+    if(autoDecline==true)
+    {
+      List<EventModel> recurringEventsList=eventCollection.generateOccurrences(recurringEvent);
+      for (EventModel event : recurringEventsList) {
+        if (eventCollection.checkConflict(event.getStartDateTime(),event.getEndDateTime())) {
+          System.out.println("Conflict detected, your recurring event \""+recurringEvent.getEventName()+"\" was not created");
+          conflictDetected = true;
+          break;
+        }
+      }
+      if (!conflictDetected) {
+        eventCollection.addRecurringEvent(recurringEvent);
+        System.out.println("Event \""+recurringEvent.getEventName()+"\" was created");
+      }
+    }
+    else{
+      eventCollection.addRecurringEvent(recurringEvent);
+      System.out.println("Event \""+recurringEvent.getEventName()+"\" was created");
+    }
   }
 }

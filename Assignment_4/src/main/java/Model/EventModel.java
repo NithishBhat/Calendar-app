@@ -132,6 +132,20 @@ public class EventModel {
             endDateTime.toLocalTime().equals(LocalTime.of(23,59));
   }
 
+  public boolean isEventBetweenDates(LocalDateTime eventStartDateTime, LocalDateTime eventEndDateTime) {
+    if (!this.getStartDateTime().isBefore(eventStartDateTime) && !this.getEndDateTime().isAfter(eventEndDateTime)) {
+      return true;
+    }
+    return false;
+  }
+
+  public boolean isAfterDateTime(LocalDateTime eventStartDateTime) {
+    if (this.getStartDateTime().isAfter(eventStartDateTime) ) {
+      return true;
+    }
+    return false;
+  }
+
   @Override
   public String toString() {
     return "[\n" + "  eventName=" + eventName + ",\n" +
