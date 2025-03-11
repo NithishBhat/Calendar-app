@@ -167,8 +167,8 @@ public class ControllerTest {
   @Test
   public void processEditEventsProperty() {
     EventController eventController = new EventController();
-    eventController.filterCommand("create event hello world from 2025-10-10T12:00 to 2025-10-10T13:00");
-    eventController.filterCommand("edit events eventName hello world from 2025-10-10T10:00 with \"money printer goes BRRRRRRRRRRRRRRRRR\"");
+    eventController.filterCommand("create event \"hello world\" from 2025-10-10T12:00 to 2025-10-10T13:00");
+    eventController.filterCommand("edit events eventName \"hello world\" from 2025-10-10T10:00 with \"money printer goes BRRRRRRRRRRRRRRRRR\"");
     eventController.filterCommand("print events on 2025-10-10");
   }
 
