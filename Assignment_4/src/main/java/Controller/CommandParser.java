@@ -45,14 +45,13 @@ public class CommandParser {
 
         // Edit event patterns
         patterns.put("editEvent",
-                Pattern.compile("\\s*edit\\s+event\\s+(.*?)\\s+(.*?)\\s+from\\s+"
-                        + dateTimeString + "\\s+to\\s+"
-                        + dateTimeString + "\\s+with\\s+(.*?)\\s*$"));
+                Pattern.compile("\\s*edit\\s+event\\s+(\\S+)\\s+(.*?)\\s+from\\s+" + dateTimeString + "\\s+to\\s+" + dateTimeString + "\\s+with\\s+\"(.*?)\"\\s*$"));
+
         patterns.put("editEvents",
-                Pattern.compile("\\s*edit\\s+events\\s+(.*?)\\s+(.*?)\\s+from\\s+"
-                        + dateTimeString + "\\s+with\\s+(.*?)\\s*$"));
+                Pattern.compile("\\s*edit\\s+events\\s+(\\S+)\\s+(.*?)\\s+from\\s+" + dateTimeString + "\\s+with\\s+\"(.*?)\"\\s*$"));
+
         patterns.put("editEventsByName",
-                Pattern.compile("\\s*edit\\s+events\\s+(.*?)\\s+(.*?)\\s+(.*?)\\s*$"));
+                Pattern.compile("\\s*edit\\s+events\\s+(\\S+)\\s+(.+?)\\s+\"(.*?)\"\\s*$"));
 
         // Print and export patterns
         patterns.put("printEventsOn",
