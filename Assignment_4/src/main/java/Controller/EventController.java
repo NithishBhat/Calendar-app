@@ -53,11 +53,8 @@ public class EventController {
           return;
         }
       }
-
-      // If no pattern was matched
-      System.out.println("No matching command for the pattern: " + pattern);
     } else {
-      System.out.println("Invalid command format" + command);
+      System.out.println("Invalid command format: " + command);
     }
   }
 
