@@ -183,7 +183,7 @@ public class ControllerTest {
   }
 
 
-  // print events on <dateString>
+  // print events on <dateString>x
   //Pattern printEventsOn = Pattern.compile("print\\sevents\\son\\s" + dateString + "$");
   @Test
   public void processPrintEventsOn() {
