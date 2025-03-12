@@ -13,9 +13,10 @@ public class EventView {
 
   public void runInteractiveMode() {
     Scanner scanner = new Scanner(System.in);
-    System.out.print("Enter Command: ");
+    
 
     while (true) {
+      System.out.print("Enter Command: ");
       String command = scanner.nextLine();
       if (command.equals("exit")) {
         System.out.println("Goodbye!");
