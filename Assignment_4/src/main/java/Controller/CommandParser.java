@@ -26,38 +26,47 @@ public class CommandParser {
         // Create event patterns
         patterns.put("createEventPattern",
                 Pattern.compile("\\s*create\\s+event(\\s+--autoDecline)?\\s+\"(.*?)\"\\s+from\\s+"
-                        + dateTimeString + "\\s+to\\s+"
-                        + dateTimeString + "\\s*"
-                        + dateTimeString + "\\s+to\\s+" + dateTimeString  + ".*?" + optionalParamsPattern + "\\s*$",Pattern.CASE_INSENSITIVE));
+                        + dateTimeString
+                        + "\\s+to\\s+"
+                        + dateTimeString
+                        + ".*?"
+                        + optionalParamsPattern
+                        + "\\s*$"
+                        ,Pattern.CASE_INSENSITIVE));
         patterns.put("createRecurringEventN",
                 Pattern.compile("\\s*create\\s+event(\\s+--autoDecline)?\\s+\"(.*?)\"\\s+from\\s+"
-                        + dateTimeString + "\\s+to\\s+"
-                        + dateTimeString + "\\s+repeats\\s+"
-                        + weekDay + "\\s+for\\s+(\\d+)\\s+times\\s*"
-                        + weekDay + "\\s+for\\s+(\\d+)\\s+times\\s" + ".*?"
-                        + optionalParamsPattern + "\\s*$",Pattern.CASE_INSENSITIVE));
+                        + dateTimeString
+                        + "\\s+to\\s+"
+                        + dateTimeString
+                        + "\\s+repeats\\s+"
+                        + weekDay
+                        + "\\s+for\\s+(\\d+)\\s+times\\s"
+                        + ".*?"
+                        + optionalParamsPattern
+                        + "\\s*$",Pattern.CASE_INSENSITIVE));
         patterns.put("createRecurringEventEndDate",
                 Pattern.compile("\\s*create\\s+event(\\s+--autoDecline)?\\s+\"(.*?)\"\\s+from\\s+"
                         + dateTimeString + "\\s+to\\s+"
                         + dateTimeString + "\\s+repeats\\s+"
                         + weekDay+"\\s+until\\s+"
                         + dateTimeString + "\\s*"
-                        + dateTimeString + "\\s" + ".*?" + optionalParamsPattern + "\\s*$",Pattern.CASE_INSENSITIVE));
+                        + ".*?" + optionalParamsPattern + "\\s*$",Pattern.CASE_INSENSITIVE));
         patterns.put("createWholeDayEvent",
                 Pattern.compile("\\s*create\\s+event(\\s+--autoDecline)?\\s+\"(.*?)\"\\s+on\\s+"
-                        + dateTimeString + "\\s*"
-                        + dateTimeString + "\\s" + ".*?" + optionalParamsPattern + "\\s*$",Pattern.CASE_INSENSITIVE));
+                        + dateTimeString
+                        + "\\s*" + ".*?"
+                        + optionalParamsPattern
+                        + "\\s*$",Pattern.CASE_INSENSITIVE));
         patterns.put("createRecurringWholeDayEventN",
                 Pattern.compile("\\s*create\\s+event(\\s+--autoDecline)?\\s+\"(.*?)\"\\s+on\\s+"
                         + dateString + "\\s+repeats\\s+"
                         + weekDay + "\\s+for\\s+(\\d+)\\s+times\\s*"
-                        + weekDay + "\\s+for\\s+(\\d+)\\s+times\\s" + ".*?" + optionalParamsPattern + "\\s*$",Pattern.CASE_INSENSITIVE));
+                        + ".*?" + optionalParamsPattern + "\\s*$",Pattern.CASE_INSENSITIVE));
         patterns.put("createRecurringWholeDayEventEnd",
                 Pattern.compile("\\s*create\\s+event(\\s+--autoDecline)?\\s+\"(.*?)\"\\s+on\\s+"
                         + dateString + "\\s+repeats\\s+"
                         + weekDay + "\\s+until\\s+"
-                        + dateString + "\\s*"
-                        + dateString + "\\s" + ".*?" + optionalParamsPattern + "\\s*$",Pattern.CASE_INSENSITIVE));
+                        + dateString + "\\s*" + ".*?" + optionalParamsPattern + "\\s*$",Pattern.CASE_INSENSITIVE));
 
         // Edit event patterns
         patterns.put("editEvent",

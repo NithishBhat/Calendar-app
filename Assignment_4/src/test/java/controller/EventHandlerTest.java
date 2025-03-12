@@ -14,7 +14,7 @@ public class EventHandlerTest {
 
         EventController eventController = new EventController();
         eventController.filterCommand("create event \"hello world\" from 2025-12-10T10:00 to 2025-12-10T10:00");
-        eventController.filterCommand("create event \"hello world\" from 2025-10-10T10:00 to 2025-10-10T10:00 description:\"test\" location:\"MA\" privacy:\"true\" ");
+        eventController.filterCommand("create event \"hello world\" from 2025-10-10T10:00 to 2025-10-10T10:00 \"description:\"test\"\" ");
         eventController.filterCommand("create event \"hello world\" from 2025-10-10T10:00 to 2025-10-10T10:00 privacy:\"true\"  description:\"test\" location:\"MA\"  ");
         eventController.filterCommand("print events on 2025-10-10");
     }

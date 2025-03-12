@@ -39,7 +39,7 @@ public class EventHandler {
 
         String description = matcher.group(5);
         String location = matcher.group(6);
-        Boolean privacy = matcher.group(7) != null ? Boolean.parseBoolean(matcher.group(7)) : false;
+        boolean privacy = matcher.group(7) != null ? Boolean.parseBoolean(matcher.group(7)) : false;
 
 
         LocalDateTime startDate = LocalDateTime.parse(startDateTime);
