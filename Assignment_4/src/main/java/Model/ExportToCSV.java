@@ -31,7 +31,8 @@ public class ExportToCSV {
 
                 String isPrivate = String.valueOf(event.getIsPrivate());
 
-                String description = removeRegex(event.getDescription());
+                String description = removeRegex(event.getDescription()==null?"No Description":event.getDescription());
+                String location = removeRegex(event.getLocation()==null?"No Location":event.getLocation());
 
 
                 //check for regex???
@@ -50,11 +51,12 @@ public class ExportToCSV {
                 bw.write(", ");
                 bw.write(description);
                 bw.write(", ");
-                bw.write(event.getLocation()==null?"":event.getLocation());
+                bw.write(location);
                 bw.write(", ");
                 bw.write(isPrivate);
                 bw.newLine();
             }
+            System.out.println("CSV generated");
             bw.close();
         } catch (IOException e) {
             throw new RuntimeException("Error Writing to CSV File: " + e.getMessage());
