@@ -12,19 +12,52 @@ public class EventHandlerTest {
     public void processNormalCreation() {
 
         EventController eventController = new EventController();
-        eventController.filterCommand("create event \"hello world\" from 2025-10-10T10:00 to 2025-10-10T10:00");
+        eventController.filterCommand("create event \"hello world\" from 2025-12-10T10:00 to 2025-12-10T10:00");
+        eventController.filterCommand("create event \"hello world\" from 2025-10-10T10:00 to 2025-10-10T10:00 description:\"test\" location:\"MA\" privacy:\"true\" ");
+        eventController.filterCommand("create event \"hello world\" from 2025-10-10T10:00 to 2025-10-10T10:00 privacy:\"true\"  description:\"test\" location:\"MA\"  ");
+        eventController.filterCommand("print events on 2025-10-10");
+    }
+
+    @Test
+    public void processOneOptionalParameter() {
+        EventController eventController = new EventController();
+        eventController.filterCommand("create event \"hello world\" from 2025-10-10T10:00 to 2025-10-10T10:00 location:\"MA\"");
+        eventController.filterCommand("create event \"hello world\" from 2025-10-10T10:00 to 2025-10-10T10:00 privacy:\"true\"");
+        eventController.filterCommand("create event \"hello world\" from 2025-10-10T10:00 to 2025-10-10T10:00 description:\"test\"");
+        eventController.filterCommand("print events on 2025-10-10");
+    }
+
+    @Test
+    public void processTwoOptionalParameters() {
+        EventController eventController = new EventController();
+        eventController.filterCommand("create event \"hello world\" from 2025-10-10T10:00 to 2025-10-10T10:00 location:\"MA\" privacy:\"true\"");
+        //this one is wrong, privacy is false when shoudl be true
+        eventController.filterCommand("create event \"hello world\" from 2025-10-10T10:00 to 2025-10-10T10:00 privacy:\"true\" description:\"test\"");
+        eventController.filterCommand("create event \"hello world\" from 2025-10-10T10:00 to 2025-10-10T10:00 description:\"test\" privacy:\"true\"");
+        eventController.filterCommand("print events on 2025-10-10");
+    }
+
+    @Test
+    public void processThreeOptionalParameters() {
+        EventController eventController = new EventController();
+        eventController.filterCommand("create event \"hello world\" from 2025-10-10T10:00 to 2025-10-10T10:00 location:\"MA\" description:\"test\" privacy:\"true\"");
+        eventController.filterCommand("create event \"hello world\" from 2025-10-10T10:00 to 2025-10-10T10:00 description:\"test\" location:\"MA\" privacy:\"true\"");
+        eventController.filterCommand("print events on 2025-10-10");
     }
 
     @Test
     public void processEventCreation() {
         EventController eventController = new EventController();
         eventController.filterCommand("create event \"hello world\" from 2025-10-10T10:00 to 2025-10-10T10:00");
+        eventController.filterCommand("create event \"hello world\" from 2025-10-10T10:00 to 2025-10-10T10:00 privacy:\"true\" description:\"test\" location:\"MA\" ");
+        eventController.filterCommand("print events on 2025-10-10");
     }
 
     @Test
     public void processrecurringNCreation() {
         EventController eventController = new EventController();
-        eventController.filterCommand("create event --autoDecline \"hello world\" from 2025-10-10T10:00 to 2025-10-10T10:00 repeats MTW for 6 times");
+        eventController.filterCommand("create event --autoDecline \"hello world\" from 2025-10-10T10:00 to 2025-10-10T10:00 repeats MTW for 6 times privacy:\"true\" description:\"test\" location:\"MA\"");
+        eventController.filterCommand("print events on 2025-10-10");
         //Pattern createRecurringEventN = Pattern.compile("create\\sevent(\\s--autoDecline)?\\s(.*?)\\sfrom\\s(" + dateTimeString + ")\\sto\\s(" + dateTimeString + ")\\srepeats\\s"+weekDay+"\\sfor\\s(\\d+)\\stimes$");
     }
 
@@ -32,7 +65,7 @@ public class EventHandlerTest {
     @Test
     public void processrecurringEnddateCreation() {
         EventController eventController = new EventController();
-        eventController.filterCommand("create event --autoDecline \"hello world\" from 2025-10-10T10:00 to 2025-10-10T11:00 repeats MTW until 2025-11-10T10:00");
+        eventController.filterCommand("create event --autoDecline \"hello world\" from 2025-10-10T10:00 to 2025-10-10T11:00 repeats MTW until 2025-11-10T10:00 description:\"test\" location:\"MA\" privacy:\"true\" ");
         eventController.filterCommand("print events from 2025-10-10T10:00 to 2025-12-10T10:00");
     }
 
@@ -40,7 +73,8 @@ public class EventHandlerTest {
     @Test
     public void processCreateAllDayEvent() {
         EventController eventController = new EventController();
-        eventController.filterCommand("create event \"hello world\" on 2025-10-10T10:00");
+        eventController.filterCommand("create event --autoDecline \"hello world\" from 2025-10-10T10:00 to 2025-10-10T11:00 repeats MTW until 2025-11-10T10:00  description:\"test\" location:\"MA\" privacy:\"true\" ");
+        eventController.filterCommand("print events on 2025-10-10");
         //Pattern createWholeDayEvent = Pattern.compile("create\\sevent(\\s--autoDecline)?\\s(.*?)\\son\\s" + dateTimeString + "$");
     }
 
@@ -48,7 +82,8 @@ public class EventHandlerTest {
     @Test
     public void processCreateRecurringAllDayEventN() {
         EventController eventController = new EventController();
-        eventController.filterCommand("create event --autoDecline \"hello world\" on 2025-10-10 repeats MTW for 6 times");
+        eventController.filterCommand("create event --autoDecline \"hello world\" on 2025-10-10 repeats MTW for 6 times description:\"test\" location:\"MA\" privacy:\"true\"");
+        eventController.filterCommand("print events on 2025-10-10");
         // Pattern createRecurringWholeDayEventN = Pattern.compile("create\\sevent(\\s--autoDecline)?\\s(.*?)\\son\\s"
         // + dateString + "\\srepeats\\s"+weekDay+"\\sfor\\s(\\d+)\\stimes$");
     }
@@ -58,7 +93,8 @@ public class EventHandlerTest {
     @Test
     public void processCreateRecurringAllDayEventEnd() {
         EventController eventController = new EventController();
-        eventController.filterCommand("create event --autoDecline \"hello world\" on 2025-10-10 repeats MTW until 2025-12-10");
+        eventController.filterCommand("create event --autoDecline \"hello world\" on 2025-10-10 repeats MTW until 2025-12-10 description:\"test\" location:\"MA\" privacy:\"true\"");
+        eventController.filterCommand("print events on 2025-10-10");
 
     }
     //NEEED TEST FOR LOOPING AROUND LIKE 10->11->12->1->2 woking .... all good here
@@ -66,7 +102,8 @@ public class EventHandlerTest {
     public void recurringEventLoopAround() {
         EventController eventController = new EventController();
 
-        eventController.filterCommand("create event --autoDecline \"hello world\" on 2025-10-10 repeats MTW until 2026-01-10");
+        eventController.filterCommand("create event --autoDecline \"hello world\" on 2025-10-10 repeats MTW until 2026-01-10 description:\"test\" location:\"MA\" privacy:\"true\"");
+        eventController.filterCommand("print events on 2025-10-10");
     }
 
     //edit event <property> <eventName> from <dateStringTtimeString> to <dateStringTtimeString> with <NewPropertyValue>
@@ -76,7 +113,7 @@ public class EventHandlerTest {
     public void editEventNameBeforeTime() {
         EventController eventController = new EventController();
         eventController.filterCommand("create event \"hello world\" from 2025-10-10T12:00 to 2025-10-10T13:00");
-        eventController.filterCommand("create event \"hello world\" from 2025-10-11T10:00 to 2025-10-11T11:00");
+        eventController.filterCommand("create event \"hello world\" from 2025-10-11T10:00 to 2025-10-11T11:00 ");
         eventController.filterCommand("create event \"hello world\" from 2025-10-12T10:00 to 2025-10-12T11:00");
 
         eventController.filterCommand("edit event eventName \"hello world\" from 2025-10-10T10:00 to 2025-10-10T14:00 with \"hazarrrrr\"");

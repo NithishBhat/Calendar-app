@@ -37,11 +37,15 @@ public class EventHandler {
         String startDateTime = matcher.group(3);
         String endDateTime = matcher.group(4);
 
+        String description = matcher.group(5);
+        String location = matcher.group(6);
+        Boolean privacy = matcher.group(7) != null ? Boolean.parseBoolean(matcher.group(7)) : false;
+
 
         LocalDateTime startDate = LocalDateTime.parse(startDateTime);
         LocalDateTime endDate = LocalDateTime.parse(endDateTime);
 
-        EventModel event = new EventModel(eventName, startDate, endDate,null,false,autoDecline,null);
+        EventModel event = new EventModel(eventName, startDate, endDate,description,privacy,autoDecline,location);
         checkForCollision(event,autoDecline,startDate,endDate);
     }
 
@@ -57,11 +61,15 @@ public class EventHandler {
         String weekDay = matcher.group(5);
         Integer numOfTimes = Integer.valueOf(matcher.group(6));
 
+        String description = matcher.group(7);
+        String location = matcher.group(8);
+        Boolean privacy = matcher.group(9) != null ? Boolean.parseBoolean(matcher.group(9)) : false;
+
         LocalDateTime startDate = LocalDateTime.parse(startDateTime);
         LocalDateTime endDate = LocalDateTime.parse(endDateTime);
         List<Character> recurringWeekDay= StringToDayOfWeek(weekDay);
-        RecurringEventModel recurringEvent = new RecurringEventModel(eventName, startDate, endDate,null,
-                false,autoDecline,null,recurringWeekDay,numOfTimes,null);
+        RecurringEventModel recurringEvent = new RecurringEventModel(eventName, startDate, endDate,description,
+                privacy,autoDecline,location,recurringWeekDay,numOfTimes,null);
 
         checkForCollisionRecurringEvent(recurringEvent,autoDecline);
     }
@@ -79,14 +87,20 @@ public class EventHandler {
         String weekDay = matcher.group(5);
         String recurrernceEndDate = matcher.group(6);
 
+        String description = matcher.group(7);
+        String location = matcher.group(8);
+        Boolean privacy = matcher.group(9) != null ? Boolean.parseBoolean(matcher.group(9)) : false;
+
         List<Character> recurringWeekDay= StringToDayOfWeek(weekDay);
         LocalDateTime startDate = LocalDateTime.parse(startDateTime);
         LocalDateTime endDate = LocalDateTime.parse(endDateTime);
 
+        
+
         LocalDateTime recurrernceEndDateTime =  LocalDateTime.parse(recurrernceEndDate);
 
-        RecurringEventModel recurringEvent = new RecurringEventModel(eventName, startDate, endDate,null,
-                false,autoDecline,null,recurringWeekDay,null,recurrernceEndDateTime);
+        RecurringEventModel recurringEvent = new RecurringEventModel(eventName, startDate, endDate,description,
+                privacy,autoDecline,location,recurringWeekDay,null,recurrernceEndDateTime);
 
         checkForCollisionRecurringEvent(recurringEvent,autoDecline);
     }
@@ -100,10 +114,12 @@ public class EventHandler {
         String eventName = matcher.group(2);
         String startDateTime = matcher.group(3);
 
-
+        String description = matcher.group(4);
+        String location = matcher.group(5);
+        Boolean privacy = matcher.group(6) != null ? Boolean.parseBoolean(matcher.group(6)) : false;
 
         LocalDateTime startDate = LocalDateTime.parse(startDateTime);
-        EventModel event = new EventModel(eventName, startDate, null,null,false,autoDecline,null);
+        EventModel event = new EventModel(eventName, startDate, null,description,privacy,autoDecline,location);
         checkForCollision(event,autoDecline,event.getEndDateTime(),event.getEndDateTime());
     }
 
@@ -119,12 +135,16 @@ public class EventHandler {
         String weekDay = matcher.group(4);
         Integer numOfTimes = Integer.valueOf(matcher.group(5));
 
+        String description = matcher.group(6);
+        String location = matcher.group(7);
+        Boolean privacy = matcher.group(8) != null ? Boolean.parseBoolean(matcher.group(8)) : false;
+
         LocalDateTime startDate = LocalDate.parse(startDateTime).atStartOfDay();
         List<Character> recurringWeekDay= StringToDayOfWeek(weekDay);
 
 
-        RecurringEventModel recurringEvent = new RecurringEventModel(eventName, startDate, null,null,
-                false,autoDecline,null,recurringWeekDay,numOfTimes,null);
+        RecurringEventModel recurringEvent = new RecurringEventModel(eventName, startDate, null,description,
+                privacy,autoDecline,location,recurringWeekDay,numOfTimes,null);
         checkForCollisionRecurringEvent(recurringEvent,autoDecline);
     }
 
@@ -140,13 +160,17 @@ public class EventHandler {
         String weekDay = matcher.group(4);
         String recurrernceEndDate = matcher.group(5);
 
+        String description = matcher.group(6);
+        String location = matcher.group(7);
+        Boolean privacy = matcher.group(8) != null ? Boolean.parseBoolean(matcher.group(8)) : false;
+
         List<Character> recurringWeekDay= StringToDayOfWeek(weekDay);
         LocalDateTime startDateTime = LocalDate.parse(startDate).atStartOfDay();
         LocalDateTime recurrernceEndDateTime =  LocalDate.parse(recurrernceEndDate).atStartOfDay();
 
 
-        RecurringEventModel recurringEvent = new RecurringEventModel(eventName, startDateTime, null,null,
-                false,autoDecline,null,recurringWeekDay,null,recurrernceEndDateTime);
+        RecurringEventModel recurringEvent = new RecurringEventModel(eventName, startDateTime, null,description,
+                privacy,autoDecline,location,recurringWeekDay,null,recurrernceEndDateTime);
         checkForCollisionRecurringEvent(recurringEvent,autoDecline);
     }
 
