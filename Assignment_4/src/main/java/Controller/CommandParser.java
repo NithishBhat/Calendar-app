@@ -53,7 +53,7 @@ public class CommandParser {
                 Pattern.compile("\\s*create\\s+event(\\s+--autoDecline)?\\s+\"(.*?)\"\\s+on\\s+"
                         + dateString + "\\s+repeats\\s+"
                         + weekDay + "\\s+for\\s+(\\d+)\\s+times\\s*"
-                        + ".*?" + optionalParamsPattern + "\\s*$",Pattern.CASE_INSENSITIVE));
+                        + optionalParamsPattern + "\\s*$",Pattern.CASE_INSENSITIVE));
         patterns.put("createRecurringWholeDayEventEnd",
                 Pattern.compile("\\s*create\\s+event(\\s+--autoDecline)?\\s+\"(.*?)\"\\s+on\\s+"
                         + dateString + "\\s+repeats\\s+"

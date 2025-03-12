@@ -160,12 +160,12 @@ public class EventHandlerTest {
     public void processCreateAllDayEvent() {
         EventController eventController = new EventController();
         eventController.filterCommand("create event --autoDecline \"hello world\" from 2025-10-10T10:00 to 2025-10-10T11:00 repeats MTW until 2025-11-10T10:00  description:\"test\" location:\"MA\" privacy:\"true\" ");
-        assertEquals(1, eventController.getEventCollection().getEventList().size());
+        assertEquals(13, eventController.getEventCollection().getEventList().size());
         EventModel eventOne = eventController.getEventCollection().getEventList().get(0);
 
         assertEquals("hello world",eventOne.getEventName());
-        assertEquals("2025-10-10T10:00",eventOne.getStartDateTime().toString());
-        assertEquals("2025-10-10T11:00",eventOne.getEndDateTime().toString());
+        assertEquals("2025-10-13T10:00",eventOne.getStartDateTime().toString());
+        assertEquals("2025-10-13T11:00",eventOne.getEndDateTime().toString());
         assertEquals("test",eventOne.getDescription());
         assertEquals("MA",eventOne.getLocation());
         assertEquals(true,eventOne.getIsPrivate());
@@ -176,9 +176,16 @@ public class EventHandlerTest {
     public void processCreateRecurringAllDayEventN() {
         EventController eventController = new EventController();
         eventController.filterCommand("create event --autoDecline \"hello world\" on 2025-10-10 repeats MTW for 6 times description:\"test\" location:\"MA\" privacy:\"true\"");
-        eventController.filterCommand("print events on 2025-10-10");
-        // Pattern createRecurringWholeDayEventN = Pattern.compile("create\\sevent(\\s--autoDecline)?\\s(.*?)\\son\\s"
-        // + dateString + "\\srepeats\\s"+weekDay+"\\sfor\\s(\\d+)\\stimes$");
+        assertEquals(6, eventController.getEventCollection().getEventList().size());
+        EventModel eventOne = eventController.getEventCollection().getEventList().get(0);
+
+        assertEquals("hello world",eventOne.getEventName());
+        assertEquals("2025-10-13T00:00",eventOne.getStartDateTime().toString());
+        assertEquals("2025-10-13T23:59",eventOne.getEndDateTime().toString());
+        assertEquals("test",eventOne.getDescription());
+        assertEquals("MA",eventOne.getLocation());
+        assertEquals(true,eventOne.getIsPrivate());
+
     }
 
     //create event <eventName> on <dateString> repeats <weekdays> until <dateString>
