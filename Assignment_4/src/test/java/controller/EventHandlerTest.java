@@ -1,6 +1,7 @@
 package controller;
 
 import Controller.EventController;
+import Model.EventCollectionModel;
 import View.EventView;
 import org.junit.Before;
 import org.junit.Test;
@@ -13,6 +14,27 @@ public class EventHandlerTest {
 
         EventController eventController = new EventController();
         eventController.filterCommand("create event \"hello world\" from 2025-10-10T10:00 to 2025-10-10T10:00");
+    }
+
+    @Test
+    public void InvalidCreateTypeA() {
+
+        EventController eventController = new EventController();
+        eventController.filterCommand("createe event \"hello world\" from 2025-10-10T10:00 to 2025-10-10T10:00");
+    }
+
+    @Test
+    public void InvalidCreateTypeB() {
+
+        EventController eventController = new EventController();
+        eventController.filterCommand(" ");
+    }
+
+    @Test
+    public void InvalidCreateTypeC() {
+
+        EventController eventController = new EventController();
+        eventController.filterCommand(" create event \"hello world\" frm 2025-10-10T10:00 to 2025-10-10T10:00");
     }
 
     @Test
@@ -258,8 +280,10 @@ public class EventHandlerTest {
     @Test
     public void collisionalldayevents() {
         EventController eventController = new EventController();
+        EventCollectionModel eventCollectionModel = new EventCollectionModel();
         eventController.filterCommand("create event \"hello world\" on 2025-10-10T10:00");
         eventController.filterCommand("create  event --autoDecline \"hello world\" from 2025-10-10T10:00 to 2025-10-10T11:00");
         eventController.filterCommand("print events from 2025-10-10T10:00 to 2025-10-12T10:00");
+
     }
 }

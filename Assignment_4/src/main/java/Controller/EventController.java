@@ -21,6 +21,9 @@ public class EventController {
     parser = new CommandParser();
     eventHandler = new EventHandler(eventCollection);
   }
+  public EventCollectionModel getEventCollection(){
+    return eventCollection;
+  }
 
   public void filterCommand(String command) {
 
@@ -53,9 +56,9 @@ public class EventController {
           return;
         }
       }
-    } else {
-      System.out.println("Invalid command format: " + command);
-    }
+    } //else {
+     // System.out.println("Invalid command format: " + command);
+    //} // Nithish removed it, invalid commands are handeled in command parser
   }
 
   public void headlessMode(String filename) {
