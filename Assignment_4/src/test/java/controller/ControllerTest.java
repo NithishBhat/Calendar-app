@@ -18,19 +18,19 @@ public class ControllerTest {
   @Test
   public void processNormalCreation() {
     EventController eventController = new EventController();
-    eventController.filterCommand("create event hello world from 2025-10-10T10:00 to 2025-10-10T10:00");
+    eventController.filterCommand("create event \"hello world\" from 2025-10-10T10:00 to 2025-10-10T10:00");
   }
 
   @Test
   public void processEventCreation() {
     EventController eventController = new EventController();
-    eventController.filterCommand("create event hello world from 2025-10-10T10:00 to 2025-10-10T10:00");
+    eventController.filterCommand("create event \"hello world\" from 2025-10-10T10:00 to 2025-10-10T10:00");
   }
 
   @Test
   public void processrecurringNCreation() {
     EventController eventController = new EventController();
-    eventController.filterCommand("create event --autoDecline hello world from 2025-10-10T10:00 to 2025-10-10T10:00 repeats MTW for 6 times");
+    eventController.filterCommand("create event --autoDecline \"hello world\" from 2025-10-10T10:00 to 2025-10-10T10:00 repeats MTW for 6 times");
     //Pattern createRecurringEventN = Pattern.compile("create\\sevent(\\s--autoDecline)?\\s(.*?)\\sfrom\\s(" + dateTimeString + ")\\sto\\s(" + dateTimeString + ")\\srepeats\\s"+weekDay+"\\sfor\\s(\\d+)\\stimes$");
   }
 
@@ -38,7 +38,7 @@ public class ControllerTest {
   @Test
   public void processrecurringEnddateCreation() {
     EventController eventController = new EventController();
-    eventController.filterCommand("create event --autoDecline hello world from 2025-10-10T10:00 to 2025-10-10T11:00 repeats MTW until 2025-11-10T10:00");
+    eventController.filterCommand("create event --autoDecline \"hello world\" from 2025-10-10T10:00 to 2025-10-10T11:00 repeats MTW until 2025-11-10T10:00");
     eventController.filterCommand("print events from 2025-10-10T10:00 to 2025-12-10T10:00");
   }
 
@@ -46,7 +46,7 @@ public class ControllerTest {
   @Test
   public void processCreateAllDayEvent() {
     EventController eventController = new EventController();
-    eventController.filterCommand("create event hello world on 2025-10-10T10:00");
+    eventController.filterCommand("create event \"hello world\" on 2025-10-10T10:00");
     //Pattern createWholeDayEvent = Pattern.compile("create\\sevent(\\s--autoDecline)?\\s(.*?)\\son\\s" + dateTimeString + "$");
   }
 
@@ -54,7 +54,7 @@ public class ControllerTest {
   @Test
   public void processCreateRecurringAllDayEventN() {
     EventController eventController = new EventController();
-    eventController.filterCommand("create event --autoDecline hello world on 2025-10-10 repeats MTW for 6 times");
+    eventController.filterCommand("create event --autoDecline \"hello world\" on 2025-10-10 repeats MTW for 6 times");
     // Pattern createRecurringWholeDayEventN = Pattern.compile("create\\sevent(\\s--autoDecline)?\\s(.*?)\\son\\s"
     // + dateString + "\\srepeats\\s"+weekDay+"\\sfor\\s(\\d+)\\stimes$");
   }
@@ -64,7 +64,7 @@ public class ControllerTest {
   @Test
   public void processCreateRecurringAllDayEventEnd() {
     EventController eventController = new EventController();
-    eventController.filterCommand("create event --autoDecline hello world on 2025-10-10 repeats MTW until 2025-12-10");
+    eventController.filterCommand("create event --autoDecline \"hello world\" on 2025-10-10 repeats MTW until 2025-12-10");
 
   }
   //NEEED TEST FOR LOOPING AROUND LIKE 10->11->12->1->2 woking .... all good here
@@ -72,7 +72,7 @@ public class ControllerTest {
   public void recurringEventLoopAround() {
     EventController eventController = new EventController();
 
-    eventController.filterCommand("create event --autoDecline hello world on 2025-10-10 repeats MTW until 2026-01-10");
+    eventController.filterCommand("create event --autoDecline \"hello world\" on 2025-10-10 repeats MTW until 2026-01-10");
   }
 
   //edit event <property> <eventName> from <dateStringTtimeString> to <dateStringTtimeString> with <NewPropertyValue>
@@ -81,32 +81,32 @@ public class ControllerTest {
   @Test
   public void editEventNameBeforeTime() {
     EventController eventController = new EventController();
-    eventController.filterCommand("create event hello world from 2025-10-10T12:00 to 2025-10-10T13:00");
-    eventController.filterCommand("create event hello world from 2025-10-11T10:00 to 2025-10-11T11:00");
-    eventController.filterCommand("create event hello world from 2025-10-12T10:00 to 2025-10-12T11:00");
+    eventController.filterCommand("create event \"hello world\" from 2025-10-10T12:00 to 2025-10-10T13:00");
+    eventController.filterCommand("create event \"hello world\" from 2025-10-11T10:00 to 2025-10-11T11:00");
+    eventController.filterCommand("create event \"hello world\" from 2025-10-12T10:00 to 2025-10-12T11:00");
 
-    eventController.filterCommand("edit event eventName hello world from 2025-10-10T10:00 to 2025-10-10T14:00 with \"hazarrrrr\"");
+    eventController.filterCommand("edit event eventName \"hello world\" from 2025-10-10T10:00 to 2025-10-10T14:00 with \"hazarrrrr\"");
     eventController.filterCommand("print events from 2025-10-10T10:00 to 2025-11-10T10:00");
   }
 
   @Test
   public void editEventNameinTime() {
     EventController eventController = new EventController();
-    eventController.filterCommand("create event hello world from 2025-10-10T12:00 to 2025-10-10T13:00");
-    eventController.filterCommand("create event hello world from 2025-10-11T10:00 to 2025-10-11T11:00");
-    eventController.filterCommand("create event hello world from 2025-10-12T10:00 to 2025-10-12T11:00");
+    eventController.filterCommand("create event \"hello world\" from 2025-10-10T12:00 to 2025-10-10T13:00");
+    eventController.filterCommand("create event \"hello world\" from 2025-10-11T10:00 to 2025-10-11T11:00");
+    eventController.filterCommand("create event \"hello world\" from 2025-10-12T10:00 to 2025-10-12T11:00");
 
-    eventController.filterCommand("edit event eventName hello world from 2025-10-10T10:00 to 2025-10-11T12:00 with \"hazarrrrr\"");
+    eventController.filterCommand("edit event eventName \"hello world\" from 2025-10-10T10:00 to 2025-10-11T12:00 with \"hazarrrrr\"");
     eventController.filterCommand("print events from 2025-10-10T10:00 to 2025-11-10T10:00");
   }
   @Test
   public void editEventDateTime() {
     EventController eventController = new EventController();
-    eventController.filterCommand("create event hello world from 2025-10-10T12:00 to 2025-10-10T13:00");
-    eventController.filterCommand("create event hello world from 2025-10-11T10:00 to 2025-10-11T11:00");
-    eventController.filterCommand("create event hello world from 2025-10-12T10:00 to 2025-10-12T11:00");
+    eventController.filterCommand("create event \"hello world\" from 2025-10-10T12:00 to 2025-10-10T13:00");
+    eventController.filterCommand("create event \"hello world\" from 2025-10-11T10:00 to 2025-10-11T11:00");
+    eventController.filterCommand("create event \"hello world\" from 2025-10-12T10:00 to 2025-10-12T11:00");
 
-    eventController.filterCommand("edit event startDateTime hello world from 2025-10-10T10:00 to 2025-10-13T10:00 with \"2025-10-19T10:00\"");
+    eventController.filterCommand("edit event startDateTime \"hello world\" from 2025-10-10T10:00 to 2025-10-13T10:00 with \"2025-10-19T10:00\"");
     eventController.filterCommand("print events from 2025-10-10T10:00 to 2025-11-10T10:00");
 
 
@@ -115,11 +115,11 @@ public class ControllerTest {
   @Test
   public void editEndDateTime() {
     EventController eventController = new EventController();
-    eventController.filterCommand("create event hello world from 2025-10-10T12:00 to 2025-10-10T13:00");
-    eventController.filterCommand("create event hello world from 2025-10-11T10:00 to 2025-10-11T11:00");
-    eventController.filterCommand("create event hello world from 2025-10-12T10:00 to 2025-10-12T11:00");
+    eventController.filterCommand("create event \"hello world\" from 2025-10-10T12:00 to 2025-10-10T13:00");
+    eventController.filterCommand("create event \"hello world\" from 2025-10-11T10:00 to 2025-10-11T11:00");
+    eventController.filterCommand("create event \"hello world\" from 2025-10-12T10:00 to 2025-10-12T11:00");
 
-    eventController.filterCommand("edit event endDateTime hello world from 2025-10-10T10:00 to 2025-10-13T10:00 with \"2025-10-19T10:00\"");
+    eventController.filterCommand("edit event endDateTime \"hello world\" from 2025-10-10T10:00 to 2025-10-13T10:00 with \"2025-10-19T10:00\"");
     eventController.filterCommand("print events from 2025-10-10T10:00 to 2025-11-10T10:00");
 
   }
@@ -127,11 +127,11 @@ public class ControllerTest {
   @Test
   public void editlocation() {
     EventController eventController = new EventController();
-    eventController.filterCommand("create event hello world from 2025-10-10T12:00 to 2025-10-10T13:00");
-    eventController.filterCommand("create event hello world from 2025-10-11T10:00 to 2025-10-11T11:00");
-    eventController.filterCommand("create event hello world from 2025-10-12T10:00 to 2025-10-12T11:00");
+    eventController.filterCommand("create event \"hello world\" from 2025-10-10T12:00 to 2025-10-10T13:00");
+    eventController.filterCommand("create event \"hello world\" from 2025-10-11T10:00 to 2025-10-11T11:00");
+    eventController.filterCommand("create event \"hello world\" from 2025-10-12T10:00 to 2025-10-12T11:00");
 
-    eventController.filterCommand("edit event location hello world from 2025-10-10T10:00 to 2025-10-13T10:00 with \"USAAAAAAAA\"");
+    eventController.filterCommand("edit event location \"hello world\" from 2025-10-10T10:00 to 2025-10-13T10:00 with \"USAAAAAAAA\"");
     eventController.filterCommand("print events from 2025-10-10T10:00 to 2025-11-10T10:00");
 
   }
@@ -139,11 +139,11 @@ public class ControllerTest {
   @Test
   public void editPrivacy() {
     EventController eventController = new EventController();
-    eventController.filterCommand("create event hello world from 2025-10-10T12:00 to 2025-10-10T13:00");
-    eventController.filterCommand("create event hello world from 2025-10-11T10:00 to 2025-10-11T11:00");
-    eventController.filterCommand("create event hello world from 2025-10-12T10:00 to 2025-10-12T11:00");
+    eventController.filterCommand("create event \"hello world\" from 2025-10-10T12:00 to 2025-10-10T13:00");
+    eventController.filterCommand("create event \"hello world\" from 2025-10-11T10:00 to 2025-10-11T11:00");
+    eventController.filterCommand("create event \"hello world\" from 2025-10-12T10:00 to 2025-10-12T11:00");
 
-    eventController.filterCommand("edit event privacyType hello world from 2025-10-10T10:00 to 2025-10-13T10:00 with \"private\"");
+    eventController.filterCommand("edit event privacyType \"hello world\" from 2025-10-10T10:00 to 2025-10-13T10:00 with \"private\"");
     eventController.filterCommand("print events from 2025-10-10T10:00 to 2025-11-10T10:00");
 
   }
@@ -151,11 +151,11 @@ public class ControllerTest {
   @Test
   public void editDescription() {
     EventController eventController = new EventController();
-    eventController.filterCommand("create event hello world from 2025-10-10T12:00 to 2025-10-10T13:00");
-    eventController.filterCommand("create event hello world from 2025-10-11T10:00 to 2025-10-11T11:00");
-    eventController.filterCommand("create event hello world from 2025-10-12T10:00 to 2025-10-12T11:00");
+    eventController.filterCommand("create event \"hello world\" from 2025-10-10T12:00 to 2025-10-10T13:00");
+    eventController.filterCommand("create event \"hello world\" from 2025-10-11T10:00 to 2025-10-11T11:00");
+    eventController.filterCommand("create event \"hello world\" from 2025-10-12T10:00 to 2025-10-12T11:00");
 
-    eventController.filterCommand("edit event description hello world from 2025-10-10T10:00 to 2025-10-13T10:00 with \"hello friends\"");
+    eventController.filterCommand("edit event description \"hello world\" from 2025-10-10T10:00 to 2025-10-13T10:00 with \"hello friends\"");
     eventController.filterCommand("print events from 2025-10-10T10:00 to 2025-11-10T10:00");
 
   }
@@ -177,20 +177,20 @@ public class ControllerTest {
   @Test
   public void processEditEventsByName() {
     EventController eventController = new EventController();
-    eventController.filterCommand("create event hello world from 2025-10-10T12:00 to 2025-10-10T13:00");
-    eventController.filterCommand("edit events location hello world \"MA Boston\"");
+    eventController.filterCommand("create event \"hello world\" from 2025-10-10T12:00 to 2025-10-10T13:00");
+    eventController.filterCommand("edit events location \"hello world\" \"MA Boston\"");
     eventController.filterCommand("print events on 2025-10-10");
   }
 
 
-  // print events on <dateString>x
+  // print events on <dateString>
   //Pattern printEventsOn = Pattern.compile("print\\sevents\\son\\s" + dateString + "$");
   @Test
   public void processPrintEventsOn() {
     EventController eventController = new EventController();
-    eventController.filterCommand("create event hello world from 2025-10-10T12:00 to 2025-10-10T13:00");
-    eventController.filterCommand("create event hello world from 2025-10-11T10:00 to 2025-11-10T11:00");
-    eventController.filterCommand("create event hello world from 2025-10-12T10:00 to 2025-12-10T11:00");
+    eventController.filterCommand("create event \"hello world\" from 2025-10-10T12:00 to 2025-10-10T13:00");
+    eventController.filterCommand("create event \"hello world\" from 2025-10-11T10:00 to 2025-11-10T11:00");
+    eventController.filterCommand("create event \"hello world\" from 2025-10-12T10:00 to 2025-12-10T11:00");
     eventController.filterCommand("print events on 2025-10-10");
   }
   // print events from <dateStringTtimeString> to <dateStringTtimeString>
@@ -198,10 +198,10 @@ public class ControllerTest {
   @Test
   public void processprintEventsBetween() {
     EventController eventController = new EventController();
-    eventController.filterCommand("create event hello world from 2025-10-10T10:00 to 2025-10-10T11:00");
-    eventController.filterCommand("create event hello world from 2025-10-10T11:00 to 2025-10-10T12:00");
-    eventController.filterCommand("create event hello world from 2025-10-11T10:00 to 2025-10-11T11:00");
-    eventController.filterCommand("create event hello world from 2025-10-12T10:00 to 2025-10-12T11:00");
+    eventController.filterCommand("create event \"hello world\" from 2025-10-10T10:00 to 2025-10-10T11:00");
+    eventController.filterCommand("create event \"hello world\" from 2025-10-10T11:00 to 2025-10-10T12:00");
+    eventController.filterCommand("create event \"hello world\" from 2025-10-11T10:00 to 2025-10-11T11:00");
+    eventController.filterCommand("create event \"hello world\" from 2025-10-12T10:00 to 2025-10-12T11:00");
     eventController.filterCommand("print events from 2025-10-10T10:00 to 2025-11-10T10:00");
 
   }
@@ -223,21 +223,21 @@ public class ControllerTest {
   @Test
   public void ShowStatusBusy() {
     EventController eventController = new EventController();
-    eventController.filterCommand("create event hello world from 2025-10-10T10:00 to 2025-10-10T11:00");
+    eventController.filterCommand("create event \"hello world\" from 2025-10-10T10:00 to 2025-10-10T11:00");
     eventController.filterCommand("show status on 2025-10-10T10:30");
   }
 
   @Test
   public void EventCollision() {
     EventController eventController = new EventController();
-    eventController.filterCommand("create event hello world from 2025-10-10T10:00 to 2025-10-10T11:00");
-    eventController.filterCommand("create  event --autoDecline hello world from 2025-10-10T10:00 to 2025-10-10T11:00");
+    eventController.filterCommand("create event \"hello world\" from 2025-10-10T10:00 to 2025-10-10T11:00");
+    eventController.filterCommand("create  event --autoDecline \"hello world\" from 2025-10-10T10:00 to 2025-10-10T11:00");
   }
   @Test
   public void recurringEventCollision() {
     EventController eventController = new EventController();
     eventController.filterCommand("create  event  hello world from 2025-10-10T10:00 to 2025-10-10T11:00");
-    eventController.filterCommand("create event --autoDecline hello world1 from 2025-10-10T10:00 to 2025-10-10T11:00 repeats MTW for 10 times");
+    eventController.filterCommand("create event --autoDecline \"hello world1\" from 2025-10-10T10:00 to 2025-10-10T11:00 repeats MTW for 10 times");
     eventController.filterCommand("print events from 2025-10-10T10:00 to 2025-12-10T10:00");
 
   }
@@ -245,8 +245,8 @@ public class ControllerTest {
   @Test
   public void collisionWithoutAutoDecline() {
     EventController eventController = new EventController();
-    eventController.filterCommand("create  event  hello world from 2025-10-10T10:00 to 2025-10-10T11:00");
-    eventController.filterCommand("create event   hello world from 2025-10-10T10:00 to 2025-12-10T10:00 repeats MTW for 2 times  ");
+    eventController.filterCommand("create  event  \"hello world\" from 2025-10-10T10:00 to 2025-10-10T11:00");
+    eventController.filterCommand("create event   \"hello world\" from 2025-10-10T10:00 to 2025-12-10T10:00 repeats MTW for 2 times  ");
     eventController.filterCommand("print events from 2025-10-10T10:00 to 2025-12-10T10:00");
   }
 
@@ -255,16 +255,16 @@ public class ControllerTest {
   @Test
   public void collisionrecurringWithEnd() {
     EventController eventController = new EventController();
-    eventController.filterCommand("create  event  hello world from 2025-10-10T10:00 to 2025-10-10T11:00");
-    eventController.filterCommand("create event   hello world from 2025-10-01T10:00 to 2025-10-01T11:00 repeats MTW  until 2025-10-21T10:00 ");
+    eventController.filterCommand("create  event  \"hello world\" from 2025-10-10T10:00 to 2025-10-10T11:00");
+    eventController.filterCommand("create event   \"hello world\" from 2025-10-01T10:00 to 2025-10-01T11:00 repeats MTW  until 2025-10-21T10:00 ");
     eventController.filterCommand("print events from 2025-10-10T10:00 to 2025-12-10T10:00");
   }
 
   @Test
   public void collisionalldayevents() {
     EventController eventController = new EventController();
-    eventController.filterCommand("create event hello world on 2025-10-10T10:00");
-    eventController.filterCommand("create  event --autoDecline  hello world from 2025-10-10T10:00 to 2025-10-10T11:00");
+    eventController.filterCommand("create event \"hello world\" on 2025-10-10T10:00");
+    eventController.filterCommand("create  event --autoDecline  \"hello world\" from 2025-10-10T10:00 to 2025-10-10T11:00");
     eventController.filterCommand("print events from 2025-10-10T10:00 to 2025-10-12T10:00");
   }
 
