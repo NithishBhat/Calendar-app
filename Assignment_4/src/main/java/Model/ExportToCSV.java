@@ -56,6 +56,7 @@ public class ExportToCSV {
                 bw.write(isPrivate);
                 bw.newLine();
             }
+            System.out.println("CSV generated");
             bw.close();
         } catch (IOException e) {
             throw new RuntimeException("Error Writing to CSV File: " + e.getMessage());

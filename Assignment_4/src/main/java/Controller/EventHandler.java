@@ -2,6 +2,7 @@ package Controller;
 
 import Model.EventCollectionModel;
 import Model.EventModel;
+import Model.ExportToCSV;
 import Model.RecurringEventModel;
 
 import java.time.LocalDate;
@@ -220,7 +221,13 @@ public class EventHandler {
     //Pattern export = Pattern.compile("export\\scal\\s([a-zA-Z0-9]+\\.csv)");
     void processExport(Matcher matcher) {
         String fileName = matcher.group(1);
-        System.out.println("export to " + fileName);
+        System.out.println("exporting to " + fileName + "...");
+        List<EventModel> eventList = eventCollection.getEventList();
+        try {
+            ExportToCSV.generateCSV(fileName,eventList);
+        } catch (Exception e) {
+            System.out.println("Could not complete Export: " + e.getMessage());
+        }
     }
 
 
