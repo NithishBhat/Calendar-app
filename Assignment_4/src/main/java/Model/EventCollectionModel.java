@@ -140,7 +140,10 @@ public class EventCollectionModel {
                 event.getEventName(),
                 date,
                 event.getEndDateTime().with(date.toLocalDate()),
-                event.getAutoDecline()
+                event.getDescription(),
+                event.getIsPrivate(),
+                event.getAutoDecline(),
+                event.getLocation()
         ));
         count++;
       }

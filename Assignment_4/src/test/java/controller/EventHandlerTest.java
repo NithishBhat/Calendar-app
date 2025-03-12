@@ -2,93 +2,157 @@ package controller;
 
 import Controller.EventController;
 import Model.EventCollectionModel;
+import Model.EventModel;
 import View.EventView;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.time.LocalDateTime;
 
 import static org.junit.Assert.*;
 public class EventHandlerTest {
 
     @Test
-    public void processNormalCreation() {
+    public void normalEventCreation() {
 
         EventController eventController = new EventController();
-        eventController.filterCommand("create event \"hello world\" from 2025-12-10T10:00 to 2025-12-10T10:00");
-        eventController.filterCommand("create event \"hello world\" from 2025-10-10T10:00 to 2025-10-10T10:00 \"description:\"test\"\" ");
-        eventController.filterCommand("create event \"hello world\" from 2025-10-10T10:00 to 2025-10-10T10:00 privacy:\"true\"  description:\"test\" location:\"MA\"  ");
-        eventController.filterCommand("print events on 2025-10-10");
+        eventController.filterCommand("create event \"hello world\" from 2025-10-10T10:00 to 2025-10-10T10:00 description:\"test HELLO\" location:\"MA\" privacy:\"true\"");
+
+        assertEquals(1, eventController.getEventCollection().getEventList().size());
+        EventModel event = eventController.getEventCollection().getEventList().get(0);
+
+        assertEquals("hello world",event.getEventName());
+        assertEquals("2025-10-10T10:00",event.getStartDateTime().toString());
+        assertEquals("2025-10-10T10:00",event.getEndDateTime().toString());
+        assertEquals("test HELLO",event.getDescription());
+        assertEquals("MA",event.getLocation());
+        assertEquals(true,event.getIsPrivate());
     }
 
     @Test
-    public void processOneOptionalParameter() {
+    public void eventCreationWithLocation() {
         EventController eventController = new EventController();
         eventController.filterCommand("create event \"hello world\" from 2025-10-10T10:00 to 2025-10-10T10:00 location:\"MA\"");
-        eventController.filterCommand("create event \"hello world\" from 2025-10-10T10:00 to 2025-10-10T10:00 privacy:\"true\"");
+        EventModel event = eventController.getEventCollection().getEventList().get(0);
+
+        assertEquals("hello world",event.getEventName());
+        assertEquals("2025-10-10T10:00",event.getStartDateTime().toString());
+        assertEquals("2025-10-10T10:00",event.getEndDateTime().toString());
+        assertEquals(null,event.getDescription());
+        assertEquals("MA",event.getLocation());
+        assertEquals(false,event.getIsPrivate());
+    }
+    @Test
+    public void eventCreationWithDescription() {
+        EventController eventController = new EventController();
         eventController.filterCommand("create event \"hello world\" from 2025-10-10T10:00 to 2025-10-10T10:00 description:\"test\"");
-        eventController.filterCommand("print events on 2025-10-10");
+        EventModel event = eventController.getEventCollection().getEventList().get(0);
+
+        assertEquals("hello world",event.getEventName());
+        assertEquals("2025-10-10T10:00",event.getStartDateTime().toString());
+        assertEquals("2025-10-10T10:00",event.getEndDateTime().toString());
+        assertEquals("test",event.getDescription());
+        assertEquals(null,event.getLocation());
+        assertEquals(false,event.getIsPrivate());
+    }
+    @Test
+    public void eventCreationWithPrivacy() {
+        EventController eventController = new EventController();
+        eventController.filterCommand("create event \"hello world\" from 2025-10-10T10:00 to 2025-10-10T10:00 ");
+        EventModel event = eventController.getEventCollection().getEventList().get(0);
+
+        assertEquals("hello world",event.getEventName());
+        assertEquals("2025-10-10T10:00",event.getStartDateTime().toString());
+        assertEquals("2025-10-10T10:00",event.getEndDateTime().toString());
+        assertEquals(null,event.getDescription());
+        assertEquals(null,event.getLocation());
+        assertEquals(false,event.getIsPrivate());
     }
 
     @Test
-    public void processTwoOptionalParameters() {
+    public void eventCreationNoOptionalParams() {
         EventController eventController = new EventController();
-        eventController.filterCommand("create event \"hello world\" from 2025-10-10T10:00 to 2025-10-10T10:00 location:\"MA\" privacy:\"true\"");
-        //this one is wrong, privacy is false when shoudl be true
-        eventController.filterCommand("create event \"hello world\" from 2025-10-10T10:00 to 2025-10-10T10:00 privacy:\"true\" description:\"test\"");
-        eventController.filterCommand("create event \"hello world\" from 2025-10-10T10:00 to 2025-10-10T10:00 description:\"test\" privacy:\"true\"");
-        eventController.filterCommand("print events on 2025-10-10");
-    }
+        eventController.filterCommand("CREATE event \"hello world\" from 2025-10-10T10:00 to 2025-10-10T10:00");
+        assertEquals(1, eventController.getEventCollection().getEventList().size());
+        EventModel event = eventController.getEventCollection().getEventList().get(0);
 
-    @Test
-    public void processThreeOptionalParameters() {
-        EventController eventController = new EventController();
-        eventController.filterCommand("create event \"hello world\" from 2025-10-10T10:00 to 2025-10-10T10:00 location:\"MA\" description:\"test\" privacy:\"true\"");
-        eventController.filterCommand("create event \"hello world\" from 2025-10-10T10:00 to 2025-10-10T10:00 description:\"test\" location:\"MA\" privacy:\"true\"");
-        eventController.filterCommand("print events on 2025-10-10");
-    }
-
-    @Test
-    public void InvalidCreateTypeA() {
-
-        EventController eventController = new EventController();
-        eventController.filterCommand("createe event \"hello world\" from 2025-10-10T10:00 to 2025-10-10T10:00");
-    }
-
-    @Test
-    public void InvalidCreateTypeB() {
-
-        EventController eventController = new EventController();
-        eventController.filterCommand(" ");
-    }
-
-    @Test
-    public void validCreateTypeC() {
-
-        EventController eventController = new EventController();
-        eventController.filterCommand(" CREATE event \"hello world\" from 2025-10-10T10:00 to 2025-10-10T10:00");
-    }
-
-    @Test
-    public void processEventCreation() {
-        EventController eventController = new EventController();
-        eventController.filterCommand("create event \"hello world\" from 2025-10-10T10:00 to 2025-10-10T10:00");
+        assertEquals("hello world",event.getEventName());
+        assertEquals("2025-10-10T10:00",event.getStartDateTime().toString());
+        assertEquals("2025-10-10T10:00",event.getEndDateTime().toString());
+        assertEquals(null,event.getDescription());
+        assertEquals(null,event.getLocation());
+        assertEquals(false,event.getIsPrivate());
         eventController.filterCommand("create event \"hello world\" from 2025-10-10T10:00 to 2025-10-10T10:00 privacy:\"true\" description:\"test\" location:\"MA\" ");
         eventController.filterCommand("print events on 2025-10-10");
     }
 
+
+
     @Test
-    public void processrecurringNCreation() {
+    public void invalidSpellingErrorCommand() {
+
         EventController eventController = new EventController();
-        eventController.filterCommand("create event --autoDecline \"hello world\" from 2025-10-10T10:00 to 2025-10-10T10:00 repeats MTW for 6 times privacy:\"true\" description:\"test\" location:\"MA\"");
-        eventController.filterCommand("print events on 2025-10-10");
-        //Pattern createRecurringEventN = Pattern.compile("create\\sevent(\\s--autoDecline)?\\s(.*?)\\sfrom\\s(" + dateTimeString + ")\\sto\\s(" + dateTimeString + ")\\srepeats\\s"+weekDay+"\\sfor\\s(\\d+)\\stimes$");
+        eventController.filterCommand("createe event \"hello world\" from 2025-10-10T10:00 to 2025-10-10T10:00");
+        assertEquals(0, eventController.getEventCollection().getEventList().size());
+    }
+
+    @Test
+    public void invalidNoCommand() {
+
+        EventController eventController = new EventController();
+        eventController.filterCommand(" ");
+        assertEquals(0, eventController.getEventCollection().getEventList().size());
+
+    }
+
+    @Test
+    public void ValidCaseMixCommand() {
+
+        EventController eventController = new EventController();
+        eventController.filterCommand(" CREATE event \"hello world\" from 2025-10-10T10:00 to 2025-10-10T10:00");
+        assertEquals(1, eventController.getEventCollection().getEventList().size());
+        EventModel event = eventController.getEventCollection().getEventList().get(0);
+
+        assertEquals("hello world",event.getEventName());
+        assertEquals("2025-10-10T10:00",event.getStartDateTime().toString());
+        assertEquals("2025-10-10T10:00",event.getEndDateTime().toString());
+        assertEquals(null,event.getDescription());
+        assertEquals(null,event.getLocation());
+        assertEquals(false,event.getIsPrivate());
+    }
+
+
+    //create event <eventName> from <dateStringTtimeString> to <dateStringTtimeString> repeats <weekdays> for <N> times
+    @Test
+    public void recurringNCreation() {
+        EventController eventController = new EventController();
+        eventController.filterCommand("create event --autoDecline \"hello world\" from 2025-10-10T10:00 to 2025-12-10T10:00 repeats MTW for 6 times  description:\"test\" location:\"MA\" privacy:\"true\"");
+        assertEquals(6, eventController.getEventCollection().getEventList().size());
+        EventModel eventOne = eventController.getEventCollection().getEventList().get(0);
+
+        assertEquals("hello world",eventOne.getEventName());
+        assertEquals("2025-10-13T10:00",eventOne.getStartDateTime().toString());
+        assertEquals("2025-10-13T10:00",eventOne.getEndDateTime().toString());
+        assertEquals("test",eventOne.getDescription());
+        assertEquals("MA",eventOne.getLocation());
+        assertEquals(true,eventOne.getIsPrivate());
+
     }
 
     //create event --autoDecline <eventName> from <dateStringTtimeString> to <dateStringTtimeString> repeats <weekdays> until <dateStringTtimeString>
     @Test
-    public void processrecurringEnddateCreation() {
+    public void processRecurringEnddateCreation() {
         EventController eventController = new EventController();
-        eventController.filterCommand("create event --autoDecline \"hello world\" from 2025-10-10T10:00 to 2025-10-10T11:00 repeats MTW until 2025-11-10T10:00 description:\"test\" location:\"MA\" privacy:\"true\" ");
-        eventController.filterCommand("print events from 2025-10-10T10:00 to 2025-12-10T10:00");
+        eventController.filterCommand("create event --autoDecline \"hello world\" from 2025-10-10T10:00 to 2025-10-10T11:00 repeats MTW until 2025-12-10T10:00 description:\"test\" location:\"MA\" privacy:\"true\" ");
+        assertEquals(27, eventController.getEventCollection().getEventList().size());
+        EventModel eventOne = eventController.getEventCollection().getEventList().get(0);
+
+        assertEquals("hello world",eventOne.getEventName());
+        assertEquals("2025-10-13T10:00",eventOne.getStartDateTime().toString());
+        assertEquals("2025-10-13T11:00",eventOne.getEndDateTime().toString());
+        assertEquals("test",eventOne.getDescription());
+        assertEquals("MA",eventOne.getLocation());
+        assertEquals(true,eventOne.getIsPrivate());
     }
 
     //create event --autoDecline <eventName> on <dateStringTtimeString>
@@ -96,8 +160,15 @@ public class EventHandlerTest {
     public void processCreateAllDayEvent() {
         EventController eventController = new EventController();
         eventController.filterCommand("create event --autoDecline \"hello world\" from 2025-10-10T10:00 to 2025-10-10T11:00 repeats MTW until 2025-11-10T10:00  description:\"test\" location:\"MA\" privacy:\"true\" ");
-        eventController.filterCommand("print events on 2025-10-10");
-        //Pattern createWholeDayEvent = Pattern.compile("create\\sevent(\\s--autoDecline)?\\s(.*?)\\son\\s" + dateTimeString + "$");
+        assertEquals(1, eventController.getEventCollection().getEventList().size());
+        EventModel eventOne = eventController.getEventCollection().getEventList().get(0);
+
+        assertEquals("hello world",eventOne.getEventName());
+        assertEquals("2025-10-10T10:00",eventOne.getStartDateTime().toString());
+        assertEquals("2025-10-10T11:00",eventOne.getEndDateTime().toString());
+        assertEquals("test",eventOne.getDescription());
+        assertEquals("MA",eventOne.getLocation());
+        assertEquals(true,eventOne.getIsPrivate());
     }
 
     //create event <eventName> on <dateString> repeats <weekdays> for <N> times

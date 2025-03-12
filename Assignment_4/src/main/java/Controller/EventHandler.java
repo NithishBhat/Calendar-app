@@ -44,6 +44,11 @@ public class EventHandler {
 
         LocalDateTime startDate = LocalDateTime.parse(startDateTime);
         LocalDateTime endDate = LocalDateTime.parse(endDateTime);
+        if(isEndBeforeStart(startDate, endDate)) {
+            System.out.println("End DateTime: " + endDate+" is before Start DateTime: " + startDate);
+            System.out.println("Hence Event was not created");
+            return;
+        }
 
         EventModel event = new EventModel(eventName, startDate, endDate,description,privacy,autoDecline,location);
         checkForCollision(event,autoDecline,startDate,endDate);
@@ -67,6 +72,11 @@ public class EventHandler {
 
         LocalDateTime startDate = LocalDateTime.parse(startDateTime);
         LocalDateTime endDate = LocalDateTime.parse(endDateTime);
+        if(isEndBeforeStart(startDate, endDate)) {
+            System.out.println("End Date: " + endDate+" is before Start Date: " + startDate);
+            System.out.println("Event was not created");
+            return;
+        }
         List<Character> recurringWeekDay= StringToDayOfWeek(weekDay);
         RecurringEventModel recurringEvent = new RecurringEventModel(eventName, startDate, endDate,description,
                 privacy,autoDecline,location,recurringWeekDay,numOfTimes,null);
@@ -95,7 +105,12 @@ public class EventHandler {
         LocalDateTime startDate = LocalDateTime.parse(startDateTime);
         LocalDateTime endDate = LocalDateTime.parse(endDateTime);
 
-        
+
+        if(isEndBeforeStart(startDate, endDate)) {
+            System.out.println("End Date: " + endDate+" is before Start Date: " + startDate);
+            System.out.println("Event was not created");
+            return;
+        }
 
         LocalDateTime recurrernceEndDateTime =  LocalDateTime.parse(recurrernceEndDate);
 
@@ -185,6 +200,11 @@ public class EventHandler {
 
         LocalDateTime startDateTime= LocalDateTime.parse(startDate);
         LocalDateTime endDateTime = LocalDateTime.parse(endDate);
+        if(isEndBeforeStart(startDateTime, endDateTime)) {
+            System.out.println("End Date: " + endDate + " is before Start Date: " + startDate);
+            System.out.println("Event was not created");
+            return;
+        }
         editEvents(property,newProperty,eventName,startDateTime,endDateTime);
     }
 
@@ -234,6 +254,12 @@ public class EventHandler {
         String endDate = matcher.group(2);
         LocalDateTime startDateTime = LocalDateTime.parse(startDate);
         LocalDateTime endDateTime = LocalDateTime.parse(endDate);
+
+        if(isEndBeforeStart(startDateTime, endDateTime)) {
+            System.out.println("End Date: " + endDate + " is before Start Date: " + startDate);
+            System.out.println("Event was not created");
+            return;
+        }
 
         List<EventModel> printList= new ArrayList<>();
         printList=eventCollection.searchEventByTimeFrame(startDateTime,endDateTime);
@@ -412,5 +438,12 @@ public class EventHandler {
             eventCollection.addRecurringEvent(recurringEvent);
             System.out.println("Event \""+recurringEvent.getEventName()+"\" was created");
         }
+    }
+
+    public boolean isEndBeforeStart(LocalDateTime startDateTime, LocalDateTime endDateTime) {
+        if (endDateTime.isBefore(startDateTime)) {
+            return true;
+        }
+        return false;
     }
 }
