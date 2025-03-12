@@ -18,56 +18,62 @@ public class CommandParser {
         patterns.put("createEventPattern",
                 Pattern.compile("\\s*create\\s+event(\\s+--autoDecline)?\\s+\"(.*?)\"\\s+from\\s+"
                         + dateTimeString + "\\s+to\\s+"
-                        + dateTimeString + "\\s*$"));
+                        + dateTimeString + "\\s*$",Pattern.CASE_INSENSITIVE));
         patterns.put("createRecurringEventN",
                 Pattern.compile("\\s*create\\s+event(\\s+--autoDecline)?\\s+\"(.*?)\"\\s+from\\s+"
                         + dateTimeString + "\\s+to\\s+"
                         + dateTimeString + "\\s+repeats\\s+"
-                        + weekDay + "\\s+for\\s+(\\d+)\\s+times\\s*$"));
+                        + weekDay + "\\s+for\\s+(\\d+)\\s+times\\s*$",Pattern.CASE_INSENSITIVE));
         patterns.put("createRecurringEventEndDate",
                 Pattern.compile("\\s*create\\s+event(\\s+--autoDecline)?\\s+\"(.*?)\"\\s+from\\s+"
                         + dateTimeString + "\\s+to\\s+"
                         + dateTimeString + "\\s+repeats\\s+"
                         + weekDay+"\\s+until\\s+"
-                        + dateTimeString + "\\s*$"));
+                        + dateTimeString + "\\s*$",Pattern.CASE_INSENSITIVE));
         patterns.put("createWholeDayEvent",
                 Pattern.compile("\\s*create\\s+event(\\s+--autoDecline)?\\s+\"(.*?)\"\\s+on\\s+"
-                        + dateTimeString + "\\s*$"));
+                        + dateTimeString + "\\s*$",Pattern.CASE_INSENSITIVE));
         patterns.put("createRecurringWholeDayEventN",
                 Pattern.compile("\\s*create\\s+event(\\s+--autoDecline)?\\s+\"(.*?)\"\\s+on\\s+"
                         + dateString + "\\s+repeats\\s+"
-                        + weekDay + "\\s+for\\s+(\\d+)\\s+times\\s*$"));
+                        + weekDay + "\\s+for\\s+(\\d+)\\s+times\\s*$",Pattern.CASE_INSENSITIVE));
         patterns.put("createRecurringWholeDayEventEnd",
                 Pattern.compile("\\s*create\\s+event(\\s+--autoDecline)?\\s+\"(.*?)\"\\s+on\\s+"
                         + dateString + "\\s+repeats\\s+"
                         + weekDay + "\\s+until\\s+"
-                        + dateString + "\\s*$"));
+                        + dateString + "\\s*$",Pattern.CASE_INSENSITIVE));
 
         // Edit event patterns
         patterns.put("editEvent",
-                Pattern.compile("\\s*edit\\s+event\\s+(\\S+)\\s+\"(.*?)\"\\s+from\\s+" + dateTimeString + "\\s+to\\s+" + dateTimeString + "\\s+with\\s+\"(.*?)\"\\s*$"));
+                Pattern.compile("\\s*edit\\s+event\\s+(\\S+)\\s+\"(.*?)\"\\s+from\\s+"
+                        + dateTimeString +
+                        "\\s+to\\s+" + dateTimeString +
+                        "\\s+with\\s+\"(.*?)\"\\s*$",Pattern.CASE_INSENSITIVE));
 
         patterns.put("editEvents",
-                Pattern.compile("\\s*edit\\s+events\\s+(\\S+)\\s+\"(.*?)\"\\s+from\\s+" + dateTimeString + "\\s+with\\s+\"(.*?)\"\\s*$"));
+                Pattern.compile("\\s*edit\\s+events\\s+(\\S+)\\s+\"(.*?)\"\\s+from\\s+"
+                        + dateTimeString + "\\s+with\\s+\"(.*?)\"\\s*$",Pattern.CASE_INSENSITIVE));
 
         patterns.put("editEventsByName",
-                Pattern.compile("\\s*edit\\s+events\\s+(\\S+)\\s+\"(.+?)\"\\s+\"(.*?)\"\\s*$"));
+                Pattern.compile("\\s*edit\\s+events\\s+(\\S+)\\s+\"(.+?)\"\\s+\"(.*?)\"\\s*$"
+                        ,Pattern.CASE_INSENSITIVE));
 
         // Print and export patterns
         patterns.put("printEventsOn",
                 Pattern.compile("\\s*print\\s+events\\s+on\\s+"
-                        + dateString + "\\s*$"));
+                        + dateString + "\\s*$",Pattern.CASE_INSENSITIVE));
         patterns.put("printEventsBetween",
                 Pattern.compile("\\s*print\\s+events\\s+from\\s+"
                         + dateTimeString + "\\s+to\\s+"
-                        + dateTimeString + "\\s*$"));
+                        + dateTimeString + "\\s*$",Pattern.CASE_INSENSITIVE));
         patterns.put("export",
-                Pattern.compile("\\s*export\\s+cal\\s+([a-zA-Z0-9]+\\.csv)\\s*"));
+                Pattern.compile("\\s*export\\s+cal\\s+([a-zA-Z0-9]+\\.csv)\\s*"
+                        ,Pattern.CASE_INSENSITIVE));
 
         // show status on <dateStringTtimeString>
         patterns.put("show",
                 Pattern.compile("\\s*show\\s+status\\s+on\\s+"
-                        + dateTimeString + "\\s*$"));
+                        + dateTimeString + "\\s*$",Pattern.CASE_INSENSITIVE));
     }
 
     public Matcher parseCommand(String input) {
@@ -77,7 +83,7 @@ public class CommandParser {
                 return matcher;
             }
         }
-        
+
         String diagnosticMessage = getDiagnosticMessage(input);
         System.out.println("Invalid command: " + diagnosticMessage);
         return null;
@@ -112,14 +118,14 @@ public class CommandParser {
         if (!input.contains("event"))
             return "Missing 'event' keyword in create command";
         if (input.contains("from") && !input.contains("to"))
-            return "Missing 'to' keyword in time range specification";
+            return "Missing 'to' keyword in time range Command";
         if (!input.contains("from") && !input.contains("on"))
-            return "Missing 'from' or 'on' in event specification";
+            return "Missing 'from' or 'on' in event Command";
         if (!input.contains("\""))
             return "Missing event name in quotes";
         if (input.contains("repeats")) {
             if (!input.contains("for") && !input.contains("until"))
-                return "Missing 'for' or 'until' in recurring event specification";
+                return "Missing 'for' or 'until' in recurring event Command";
             if (!input.matches(".*repeats\\s+[MTWRFSU]+\\s+.*"))
                 return "Invalid weekday format after 'repeats'. Use M (Monday), T (Tuesday), W (Wednesday), etc.";
         }
@@ -171,8 +177,8 @@ public class CommandParser {
             return "Invalid property. Valid properties are: startDateTime, endDateTime, location, description, privacyType, eventName";
 
         return "Invalid edit command format. Examples:\n" +
-                "  edit event eventName \"Meeting\" from 2023-03-15T14:00 to 2023-03-15T15:00 with \"New Meeting\"\n" +
-                "  edit events location \"Meeting\" from 2023-03-15T14:00 with \"Conference Room\"\n" +
+                "  edit event eventName \"Meeeeeeeting 1\" from 2023-03-15T14:00 to 2023-03-15T15:00 with \"New Meeting\"\n" +
+                "  edit events location \"Meeting 2\" from 2023-03-15T14:00 with \"Conference Room\"\n" +
                 "  edit events description \"Meeting\" \"Weekly status update\"";
     }
 

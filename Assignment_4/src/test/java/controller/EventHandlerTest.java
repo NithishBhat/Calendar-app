@@ -31,10 +31,10 @@ public class EventHandlerTest {
     }
 
     @Test
-    public void InvalidCreateTypeC() {
+    public void validCreateTypeC() {
 
         EventController eventController = new EventController();
-        eventController.filterCommand(" create event \"hello world\" frm 2025-10-10T10:00 to 2025-10-10T10:00");
+        eventController.filterCommand(" CREATE event \"hello world\" from 2025-10-10T10:00 to 2025-10-10T10:00");
     }
 
     @Test
