@@ -1,0 +1,3 @@
+create event hello world from 2025-10-10T10:00 to 2025-10-10T11:00
+export cal test.csv
+exit
