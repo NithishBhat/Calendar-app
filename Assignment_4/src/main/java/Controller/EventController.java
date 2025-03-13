@@ -108,8 +108,11 @@ public class EventController {
     if (!file.exists()) {
       try {
         if (file.createNewFile()) {
-          System.out.println("File " + filename +
-                  " did not exist. A new file has been created at " + file.getAbsolutePath());
+          System.out.println("File " + filename
+                  + " did not exist. A new file has been created at: \n"
+                  + file.getAbsolutePath()
+                  + "\nPlease input commands to this file.");
+          return;
         }
       } catch (IOException e) {
         System.out.println("Error creating file: " + file.getAbsolutePath());
