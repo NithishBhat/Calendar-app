@@ -1,3 +1,0 @@
-create event "hello world" from 2025-10-10T10:00 to 2025-10-10T10:00 description:"test HELLO" location:"MA" privacy:"true"
-export cal test.csv
-exit
