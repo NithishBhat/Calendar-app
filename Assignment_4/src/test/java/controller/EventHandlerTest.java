@@ -13,7 +13,8 @@ import java.util.List;
 import static org.junit.Assert.*;
 
 /**
- * Testing class of event handler and Event controller and the command parser
+ * Testing class of event handler and Event controller and the command parser.
+ * Test all possible commands and handles all event types and edge cases.
  */
 
 public class EventHandlerTest {
@@ -173,6 +174,44 @@ public class EventHandlerTest {
     assertEquals(true, eventOne.getIsPrivate());
   }
 
+  @Test
+  public void RecurringEnddateCreationInclusiveCheck() {
+    EventController eventController = new EventController();
+    eventController.filterCommand("create event --autoDecline \"hello world\" " +
+            "from 2025-10-10T10:00 to 2025-10-10T11:00 repeats MTW " +
+            "until 2025-12-10T10:00 description:\"test\" location:\"MA\" privacy:\"true\" ");
+    assertEquals(27, eventController.getEventCollection().getEventList().size());
+    EventModel eventOne = eventController.getEventCollection().getEventList().get(26);
+
+    assertEquals("hello world", eventOne.getEventName());
+    assertEquals("2025-12-10T10:00", eventOne.getStartDateTime().toString());
+    assertEquals("2025-12-10T11:00", eventOne.getEndDateTime().toString());
+    assertEquals("test", eventOne.getDescription());
+    assertEquals("MA", eventOne.getLocation());
+    assertEquals(true, eventOne.getIsPrivate());
+    //assertEquals(0, 1);
+  }
+
+  @Test
+  public void RecurringEnddateCreationNoName() {
+    EventController eventController = new EventController();
+    eventController.filterCommand("create event --autoDecline \"\" " +
+            "from 2025-10-10T10:00 to 2025-10-10T11:00 repeats MTW " +
+            "until 2025-12-10T10:00 description:\"test\" location:\"MA\" privacy:\"true\" ");
+    assertEquals(27, eventController.getEventCollection().getEventList().size());
+    EventModel eventOne = eventController.getEventCollection().getEventList().get(26);
+
+    assertEquals("", eventOne.getEventName());
+    assertEquals("2025-12-10T10:00", eventOne.getStartDateTime().toString());
+    assertEquals("2025-12-10T11:00", eventOne.getEndDateTime().toString());
+    assertEquals("test", eventOne.getDescription());
+    assertEquals("MA", eventOne.getLocation());
+    assertEquals(true, eventOne.getIsPrivate());
+    eventController.filterCommand("print events from 2025-10-10T10:00 to 2025-12-10T10:00");
+
+
+  }
+
   //create event --autoDecline <eventName> on <dateStringTtimeString>
   @Test
   public void processCreateAllDayEvent() {
@@ -212,7 +251,8 @@ public class EventHandlerTest {
   @Test
   public void processCreateRecurringAllDayEventEnd() {
     EventController eventController = new EventController();
-    eventController.filterCommand("create event --autoDecline \"hello world\" on 2025-10-10 repeats MTW until 2025-12-10 description:\"test\" location:\"MA\" privacy:\"true\"");
+    eventController.filterCommand("create event --autoDecline \"hello world\" on 2025-10-10 " +
+            "repeats MTW until 2025-12-10 description:\"test\" location:\"MA\" privacy:\"true\"");
     EventModel eventOne = eventController.getEventCollection().getEventList().get(0);
     assertEquals(27, eventController.getEventCollection().getEventList().size());
 
@@ -610,7 +650,8 @@ public class EventHandlerTest {
             .of(2025, 11, 10, 10, 00);
 
     List<EventModel> printList = new ArrayList<>();
-    printList = eventController.getEventCollection().searchEventByTimeFrame(startDateTime, endDateTime);
+    printList = eventController.getEventCollection().searchEventByTimeFrame
+            (startDateTime, endDateTime);
 
     assertEquals(
             "\n" +

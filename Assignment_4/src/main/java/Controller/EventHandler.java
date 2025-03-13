@@ -267,7 +267,8 @@ public class EventHandler {
 
   /**
    * Processes the editing of a property for all events with the specified name from a start date.
-   * Format: edit events <property> <eventName> from <dateStringTtimeString> with <NewPropertyValue>
+   * Format: edit events <property> <eventName> from
+   * <dateStringTtimeString> with <NewPropertyValue>
    *
    * @param matcher The regex matcher containing event details.
    */

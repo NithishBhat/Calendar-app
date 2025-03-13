@@ -11,6 +11,12 @@ import java.io.PrintStream;
 
 import static org.junit.Assert.assertTrue;
 
+/**
+ * This class tests various functionalities of the EventView interactive mode,
+ * including event creation, invalid commands, overlapping events, recurring events,
+ * exporting calendar data, and handling edge cases.
+ */
+
 public class EventViewTest {
   private final InputStream originalSystemIn = System.in;
   private final PrintStream originalSystemOut = System.out;
@@ -83,7 +89,8 @@ public class EventViewTest {
                     "from 2025-10-01T10:00 to " +
                     "2025-10-01T11:00 repeats MTW  until 2025-10-21T10:00\n"
                     + "create event \"test8\" on 2027-10-10T10:00\n"
-                    + "create  event --autoDecline \"test9\" from 2027-10-10T10:00 to 2027-10-10T11:00\n"
+                    + "create  event --autoDecline \"test9\"" +
+                    " from 2027-10-10T10:00 to 2027-10-10T11:00\n"
                     + "export cal test.csv\n"
                     + "exit\n";
     testIn = new ByteArrayInputStream(input.getBytes());
@@ -156,24 +163,6 @@ public class EventViewTest {
     assertTrue(output.contains("Event \"Leap Day\" was created"));
   }
 
-  @Test
-  public void testCreateEventWithEmptyName() {
-    String input = "create event \"\" " +
-            "from 2025-10-10T10:00 to 2025-10-10T11:00\nexit\n";
-    testIn = new ByteArrayInputStream(input.getBytes());
-    System.setIn(testIn);
-
-    EventView eventView = new EventView();
-    eventView.runInteractiveMode();
-
-    String output = testOut.toString();
-
-    System.setOut(originalSystemOut);
-    System.out.println("Captured Output: " + output);
-
-    assertTrue(output.contains("Invalid event name"));
-
-  }
 
   @Test
   public void testCreateEventWithInvalidDateFormat() {

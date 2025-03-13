@@ -29,7 +29,8 @@ public class ExportToCSV {
         FileWriter fw = new FileWriter(file);
         BufferedWriter bw = new BufferedWriter(fw);
 
-        bw.write(String.join(",", "Subject", "Start Date", "Start Time", "End Date", "End Time", "All Day Event", "Description", "Location", "Private"));
+        bw.write(String.join(",", "Subject", "Start Date", "Start Time",
+                "End Date", "End Time", "All Day Event", "Description", "Location", "Private"));
         bw.newLine();
 
         for (EventModel event : events) {
@@ -43,8 +44,10 @@ public class ExportToCSV {
 
           String isPrivate = String.valueOf(event.getIsPrivate());
 
-          String description = removeRegex(event.getDescription() == null ? "No Description" : event.getDescription());
-          String location = removeRegex(event.getLocation() == null ? "No Location" : event.getLocation());
+          String description = removeRegex(event.getDescription() ==
+                  null ? "No Description" : event.getDescription());
+          String location = removeRegex(event.getLocation() ==
+                  null ? "No Location" : event.getLocation());
 
 
           //check for regex???
@@ -79,7 +82,8 @@ public class ExportToCSV {
   }
 
   /**
-   * Cleans the string by removing unwanted characters like quotes, newlines, tabs, and carriage returns.
+   * Cleans the string by removing unwanted characters like
+   * quotes, newlines, tabs, and carriage returns.
    * It also ensures that quotes within the string are escaped properly for CSV formatting.
    *
    * @param stringValue The string to be cleaned and formatted.

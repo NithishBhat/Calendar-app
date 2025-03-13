@@ -87,10 +87,12 @@ public class EventCollectionModel {
    * @param eventEndDate   The end date of the new event.
    * @return A list of events that overlap with the specified time frame.
    */
-  public List<EventModel> collisionSearch(LocalDateTime eventStartDate, LocalDateTime eventEndDate) {
+  public List<EventModel> collisionSearch(LocalDateTime eventStartDate,
+                                          LocalDateTime eventEndDate) {
     List<EventModel> filteredList = new ArrayList<>();
     for (EventModel event : eventList) {
-      LocalDateTime eventEnd = event.getEndDateTime() == null ? event.getStartDateTime() : event.getEndDateTime();
+      LocalDateTime eventEnd = event.getEndDateTime() ==
+              null ? event.getStartDateTime() : event.getEndDateTime();
 
       if (!eventEnd.isBefore(eventStartDate) && !event.getStartDateTime().isAfter(eventEndDate)) {
         filteredList.add(event);
@@ -106,10 +108,12 @@ public class EventCollectionModel {
    * @param eventEndDateTime   Lower bound of time frame
    * @return List of Events
    */
-  public List<EventModel> searchEventByTimeFrame(LocalDateTime eventStartDateTime, LocalDateTime eventEndDateTime) {
+  public List<EventModel> searchEventByTimeFrame(LocalDateTime eventStartDateTime,
+                                                 LocalDateTime eventEndDateTime) {
     List<EventModel> filteredList = new ArrayList<>();
     for (EventModel event : eventList) {
-      if (!event.getStartDateTime().isBefore(eventStartDateTime) && !event.getEndDateTime().isAfter(eventEndDateTime)) {
+      if (!event.getStartDateTime().isBefore(eventStartDateTime) &&
+              !event.getEndDateTime().isAfter(eventEndDateTime)) {
         filteredList.add(event);
       }
     }
@@ -126,7 +130,8 @@ public class EventCollectionModel {
   public boolean checkConflict(LocalDateTime eventStartDate, LocalDateTime eventEndDate) {
     for (EventModel event : eventList) {
       //if event overlaps, there is a conflict
-      if (!event.getEndDateTime().isBefore(eventStartDate) && !event.getStartDateTime().isAfter(eventEndDate)) {
+      if (!event.getEndDateTime().isBefore(eventStartDate) &&
+              !event.getStartDateTime().isAfter(eventEndDate)) {
         return true;
       }
 
@@ -161,10 +166,14 @@ public class EventCollectionModel {
     int count = 0;
 
     //iterate until occurrence (int), if there is a specfied end date then iterate until that date
-    while ((event.getOccurrences() == null || count < event.getOccurrences()) && (event.getRecurrenceEndDateTime() == null || !date.isAfter(event.getRecurrenceEndDateTime()))) {
+    while ((event.getOccurrences() == null || count < event.getOccurrences()) &&
+            (event.getRecurrenceEndDateTime() == null ||
+                    !date.isAfter(event.getRecurrenceEndDateTime()))) {
       //check if one of the specified days of the week
       if (event.getOccuranceDayofWeek().contains(date.getDayOfWeek())) {
-        occurringEvents.add(new EventModel(event.getEventName(), date, event.getEndDateTime().with(date.toLocalDate()), event.getDescription(), event.getIsPrivate(), event.getAutoDecline(), event.getLocation()));
+        occurringEvents.add(new EventModel(event.getEventName(), date,
+                event.getEndDateTime().with(date.toLocalDate()), event.getDescription(),
+                event.getIsPrivate(), event.getAutoDecline(), event.getLocation()));
         count++;
       }
       date = date.plusDays(1);
