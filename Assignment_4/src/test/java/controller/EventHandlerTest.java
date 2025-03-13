@@ -194,7 +194,15 @@ public class EventHandlerTest {
     public void processCreateRecurringAllDayEventEnd() {
         EventController eventController = new EventController();
         eventController.filterCommand("create event --autoDecline \"hello world\" on 2025-10-10 repeats MTW until 2025-12-10 description:\"test\" location:\"MA\" privacy:\"true\"");
-        eventController.filterCommand("print events on 2025-10-10");
+        EventModel eventOne = eventController.getEventCollection().getEventList().get(0);
+        assertEquals(27, eventController.getEventCollection().getEventList().size());
+
+        assertEquals("hello world",eventOne.getEventName());
+        assertEquals("2025-10-13T00:00",eventOne.getStartDateTime().toString());
+        assertEquals("2025-10-13T23:59",eventOne.getEndDateTime().toString());
+        assertEquals("test",eventOne.getDescription());
+        assertEquals("MA",eventOne.getLocation());
+        assertEquals(true,eventOne.getIsPrivate());
 
     }
     //NEEED TEST FOR LOOPING AROUND LIKE 10->11->12->1->2 woking .... all good here
@@ -203,7 +211,15 @@ public class EventHandlerTest {
         EventController eventController = new EventController();
 
         eventController.filterCommand("create event --autoDecline \"hello world\" on 2025-10-10 repeats MTW until 2026-01-10 description:\"test\" location:\"MA\" privacy:\"true\"");
-        eventController.filterCommand("print events on 2025-10-10");
+        assertEquals(39, eventController.getEventCollection().getEventList().size());
+        EventModel eventOne = eventController.getEventCollection().getEventList().get(38);
+
+        assertEquals("hello world",eventOne.getEventName());
+        assertEquals("2026-01-07T00:00",eventOne.getStartDateTime().toString());
+        assertEquals("2026-01-07T23:59",eventOne.getEndDateTime().toString());
+        assertEquals("test",eventOne.getDescription());
+        assertEquals("MA",eventOne.getLocation());
+        assertEquals(true,eventOne.getIsPrivate());
     }
 
     //edit event <property> <eventName> from <dateStringTtimeString> to <dateStringTtimeString> with <NewPropertyValue>
@@ -213,12 +229,21 @@ public class EventHandlerTest {
     public void editEventNameBeforeTime() {
         EventController eventController = new EventController();
         eventController.filterCommand("create event \"hello world\" from 2025-10-10T12:00 to 2025-10-10T13:00");
-        eventController.filterCommand("create event \"hello world\" from 2025-10-11T10:00 to 2025-10-11T11:00 ");
+        eventController.filterCommand("create event \"hello world\" from 2025-10-11T10:00 to 2025-10-11T11:00");
         eventController.filterCommand("create event \"hello world\" from 2025-10-12T10:00 to 2025-10-12T11:00");
 
         eventController.filterCommand("edit event eventName \"hello world\" from 2025-10-10T10:00 to 2025-10-10T14:00 with \"hazarrrrr\"");
-        eventController.filterCommand("print events from 2025-10-10T10:00 to 2025-11-10T10:00");
+        EventModel eventOne = eventController.getEventCollection().getEventList().get(0);
+        assertEquals(3, eventController.getEventCollection().getEventList().size());
+
+        assertEquals("hazarrrrr",eventOne.getEventName());
+        assertEquals("2025-10-10T12:00",eventOne.getStartDateTime().toString());
+        assertEquals("2025-10-10T13:00",eventOne.getEndDateTime().toString());
+        assertEquals(null,eventOne.getDescription());
+        assertEquals(null,eventOne.getLocation());
+        assertEquals(false,eventOne.getIsPrivate());
     }
+
 
     @Test
     public void editEventNameinTime() {
@@ -229,6 +254,24 @@ public class EventHandlerTest {
 
         eventController.filterCommand("edit event eventName \"hello world\" from 2025-10-10T10:00 to 2025-10-11T12:00 with \"hazarrrrr\"");
         eventController.filterCommand("print events from 2025-10-10T10:00 to 2025-11-10T10:00");
+        EventModel eventOne = eventController.getEventCollection().getEventList().get(0);
+        EventModel eventTwo = eventController.getEventCollection().getEventList().get(1);
+        assertEquals(3, eventController.getEventCollection().getEventList().size());
+
+        assertEquals("hazarrrrr",eventOne.getEventName());
+        assertEquals("2025-10-10T12:00",eventOne.getStartDateTime().toString());
+        assertEquals("2025-10-10T13:00",eventOne.getEndDateTime().toString());
+        assertEquals(null,eventOne.getDescription());
+        assertEquals(null,eventOne.getLocation());
+        assertEquals(false,eventOne.getIsPrivate());
+
+        assertEquals("hazarrrrr",eventTwo.getEventName());
+        assertEquals("2025-10-11T10:00",eventTwo.getStartDateTime().toString());
+        assertEquals("2025-10-11T11:00",eventTwo.getEndDateTime().toString());
+        assertEquals(null,eventTwo.getDescription());
+        assertEquals(null,eventTwo.getLocation());
+        assertEquals(false,eventTwo.getIsPrivate());
+
     }
     @Test
     public void editEventDateTime() {
@@ -239,6 +282,33 @@ public class EventHandlerTest {
 
         eventController.filterCommand("edit event startDateTime \"hello world\" from 2025-10-10T10:00 to 2025-10-13T10:00 with \"2025-10-19T10:00\"");
         eventController.filterCommand("print events from 2025-10-10T10:00 to 2025-11-10T10:00");
+
+        assertEquals(3, eventController.getEventCollection().getEventList().size());
+        EventModel eventOne = eventController.getEventCollection().getEventList().get(0);
+        EventModel eventTwo = eventController.getEventCollection().getEventList().get(1);
+        EventModel eventThree = eventController.getEventCollection().getEventList().get(2);
+
+        assertEquals("hello world",eventOne.getEventName());
+        assertEquals("2025-10-19T10:00",eventOne.getStartDateTime().toString());
+        assertEquals("2025-10-10T13:00",eventOne.getEndDateTime().toString());
+        assertEquals(null,eventOne.getDescription());
+        assertEquals(null,eventOne.getLocation());
+        assertEquals(false,eventOne.getIsPrivate());
+
+
+        assertEquals("hello world",eventOne.getEventName());
+        assertEquals("2025-10-19T10:00",eventOne.getStartDateTime().toString());
+        assertEquals("2025-10-10T13:00",eventOne.getEndDateTime().toString());
+        assertEquals(null,eventOne.getDescription());
+        assertEquals(null,eventOne.getLocation());
+        assertEquals(false,eventOne.getIsPrivate());
+
+        assertEquals("hello world",eventOne.getEventName());
+        assertEquals("2025-10-19T10:00",eventOne.getStartDateTime().toString());
+        assertEquals("2025-10-10T13:00",eventOne.getEndDateTime().toString());
+        assertEquals(null,eventOne.getDescription());
+        assertEquals(null,eventOne.getLocation());
+        assertEquals(false,eventOne.getIsPrivate());
 
 
     }
@@ -251,7 +321,32 @@ public class EventHandlerTest {
         eventController.filterCommand("create event \"hello world\" from 2025-10-12T10:00 to 2025-10-12T11:00");
 
         eventController.filterCommand("edit event endDateTime \"hello world\" from 2025-10-10T10:00 to 2025-10-13T10:00 with \"2025-10-19T10:00\"");
-        eventController.filterCommand("print events from 2025-10-10T10:00 to 2025-11-10T10:00");
+        assertEquals(3, eventController.getEventCollection().getEventList().size());
+        EventModel eventOne = eventController.getEventCollection().getEventList().get(0);
+        EventModel eventTwo = eventController.getEventCollection().getEventList().get(1);
+        EventModel eventThree = eventController.getEventCollection().getEventList().get(2);
+
+        assertEquals("hello world",eventOne.getEventName());
+        assertEquals("2025-10-10T12:00",eventOne.getStartDateTime().toString());
+        assertEquals("2025-10-19T10:00",eventOne.getEndDateTime().toString());
+        assertEquals(null,eventOne.getDescription());
+        assertEquals(null,eventOne.getLocation());
+        assertEquals(false,eventOne.getIsPrivate());
+
+
+        assertEquals("hello world",eventTwo.getEventName());
+        assertEquals("2025-10-11T10:00",eventTwo.getStartDateTime().toString());
+        assertEquals("2025-10-19T10:00",eventTwo.getEndDateTime().toString());
+        assertEquals(null,eventTwo.getDescription());
+        assertEquals(null,eventTwo.getLocation());
+        assertEquals(false,eventTwo.getIsPrivate());
+
+        assertEquals("hello world",eventThree.getEventName());
+        assertEquals("2025-10-12T10:00",eventThree.getStartDateTime().toString());
+        assertEquals("2025-10-19T10:00",eventThree.getEndDateTime().toString());
+        assertEquals(null,eventThree.getDescription());
+        assertEquals(null,eventThree.getLocation());
+        assertEquals(false,eventThree.getIsPrivate());
 
     }
 
@@ -262,8 +357,26 @@ public class EventHandlerTest {
         eventController.filterCommand("create event \"hello world\" from 2025-10-11T10:00 to 2025-10-11T11:00");
         eventController.filterCommand("create event \"hello world\" from 2025-10-12T10:00 to 2025-10-12T11:00");
 
+        EventModel eventOne = eventController.getEventCollection().getEventList().get(0);
+        assertEquals(3, eventController.getEventCollection().getEventList().size());
+
+        assertEquals("hello world",eventOne.getEventName());
+        assertEquals("2025-10-10T12:00",eventOne.getStartDateTime().toString());
+        assertEquals("2025-10-10T13:00",eventOne.getEndDateTime().toString());
+        assertEquals(null,eventOne.getDescription());
+        assertEquals(null,eventOne.getLocation());
+        assertEquals(false,eventOne.getIsPrivate());
+
         eventController.filterCommand("edit event location \"hello world\" from 2025-10-10T10:00 to 2025-10-13T10:00 with \"USAAAAAAAA\"");
         eventController.filterCommand("print events from 2025-10-10T10:00 to 2025-11-10T10:00");
+
+
+        assertEquals("hello world",eventOne.getEventName());
+        assertEquals("2025-10-10T12:00",eventOne.getStartDateTime().toString());
+        assertEquals("2025-10-10T13:00",eventOne.getEndDateTime().toString());
+        assertEquals(null,eventOne.getDescription());
+        assertEquals("USAAAAAAAA",eventOne.getLocation());
+        assertEquals(false,eventOne.getIsPrivate());
 
     }
 
@@ -274,8 +387,25 @@ public class EventHandlerTest {
         eventController.filterCommand("create event \"hello world\" from 2025-10-11T10:00 to 2025-10-11T11:00");
         eventController.filterCommand("create event \"hello world\" from 2025-10-12T10:00 to 2025-10-12T11:00");
 
+        EventModel eventOne = eventController.getEventCollection().getEventList().get(0);
+        assertEquals(3, eventController.getEventCollection().getEventList().size());
+
+        assertEquals("hello world",eventOne.getEventName());
+        assertEquals("2025-10-10T12:00",eventOne.getStartDateTime().toString());
+        assertEquals("2025-10-10T13:00",eventOne.getEndDateTime().toString());
+        assertEquals(null,eventOne.getDescription());
+        assertEquals(null,eventOne.getLocation());
+        assertEquals(false,eventOne.getIsPrivate());
+
         eventController.filterCommand("edit event privacyType \"hello world\" from 2025-10-10T10:00 to 2025-10-13T10:00 with \"private\"");
         eventController.filterCommand("print events from 2025-10-10T10:00 to 2025-11-10T10:00");
+
+        assertEquals("hello world",eventOne.getEventName());
+        assertEquals("2025-10-10T12:00",eventOne.getStartDateTime().toString());
+        assertEquals("2025-10-10T13:00",eventOne.getEndDateTime().toString());
+        assertEquals(null,eventOne.getDescription());
+        assertEquals(null,eventOne.getLocation());
+        assertEquals(true,eventOne.getIsPrivate());
 
     }
 
@@ -286,8 +416,26 @@ public class EventHandlerTest {
         eventController.filterCommand("create event \"hello world\" from 2025-10-11T10:00 to 2025-10-11T11:00");
         eventController.filterCommand("create event \"hello world\" from 2025-10-12T10:00 to 2025-10-12T11:00");
 
+        EventModel eventOne = eventController.getEventCollection().getEventList().get(0);
+        assertEquals(3, eventController.getEventCollection().getEventList().size());
+
+        assertEquals("hello world",eventOne.getEventName());
+        assertEquals("2025-10-10T12:00",eventOne.getStartDateTime().toString());
+        assertEquals("2025-10-10T13:00",eventOne.getEndDateTime().toString());
+        assertEquals(null,eventOne.getDescription());
+        assertEquals(null,eventOne.getLocation());
+        assertEquals(false,eventOne.getIsPrivate());
+
+
         eventController.filterCommand("edit event description \"hello world\" from 2025-10-10T10:00 to 2025-10-13T10:00 with \"hello friends\"");
         eventController.filterCommand("print events from 2025-10-10T10:00 to 2025-11-10T10:00");
+
+        assertEquals("hello world",eventOne.getEventName());
+        assertEquals("2025-10-10T12:00",eventOne.getStartDateTime().toString());
+        assertEquals("2025-10-10T13:00",eventOne.getEndDateTime().toString());
+        assertEquals("hello friends",eventOne.getDescription());
+        assertEquals(null,eventOne.getLocation());
+        assertEquals(false,eventOne.getIsPrivate());
 
     }
 
@@ -299,8 +447,42 @@ public class EventHandlerTest {
     public void processEditEventsProperty() {
         EventController eventController = new EventController();
         eventController.filterCommand("create event \"hello world\" from 2025-10-10T12:00 to 2025-10-10T13:00");
+        eventController.filterCommand("create event \"hello world\" from 2025-10-11T12:00 to 2025-10-11T13:00");
+        EventModel eventOne = eventController.getEventCollection().getEventList().get(0);
+        EventModel eventTwo = eventController.getEventCollection().getEventList().get(1);
+        assertEquals(2, eventController.getEventCollection().getEventList().size());
+
+        assertEquals("hello world",eventOne.getEventName());
+        assertEquals("2025-10-10T12:00",eventOne.getStartDateTime().toString());
+        assertEquals("2025-10-10T13:00",eventOne.getEndDateTime().toString());
+        assertEquals(null,eventOne.getDescription());
+        assertEquals(null,eventOne.getLocation());
+        assertEquals(false,eventOne.getIsPrivate());
+
+        assertEquals("hello world",eventTwo.getEventName());
+        assertEquals("2025-10-11T12:00",eventTwo.getStartDateTime().toString());
+        assertEquals("2025-10-11T13:00",eventTwo.getEndDateTime().toString());
+        assertEquals(null,eventTwo.getDescription());
+        assertEquals(null,eventTwo.getLocation());
+        assertEquals(false,eventTwo.getIsPrivate());
+
         eventController.filterCommand("edit events eventName \"hello world\" from 2025-10-10T10:00 with \"money printer goes BRRRRRRRRRRRRRRRRR\"");
         eventController.filterCommand("print events on 2025-10-10");
+
+        assertEquals("money printer goes BRRRRRRRRRRRRRRRRR",eventOne.getEventName());
+        assertEquals("2025-10-10T12:00",eventOne.getStartDateTime().toString());
+        assertEquals("2025-10-10T13:00",eventOne.getEndDateTime().toString());
+        assertEquals(null,eventOne.getDescription());
+        assertEquals(null,eventOne.getLocation());
+        assertEquals(false,eventOne.getIsPrivate());
+
+        assertEquals("money printer goes BRRRRRRRRRRRRRRRRR",eventTwo.getEventName());
+        assertEquals("2025-10-11T12:00",eventTwo.getStartDateTime().toString());
+        assertEquals("2025-10-11T13:00",eventTwo.getEndDateTime().toString());
+        assertEquals(null,eventTwo.getDescription());
+        assertEquals(null,eventTwo.getLocation());
+        assertEquals(false,eventTwo.getIsPrivate());
+
     }
 
     // edit events <property> <eventName> <NewPropertyValue>
@@ -309,7 +491,22 @@ public class EventHandlerTest {
     public void processEditEventsByName() {
         EventController eventController = new EventController();
         eventController.filterCommand("create event \"hello world\" from 2025-10-10T12:00 to 2025-10-10T13:00");
+        EventModel eventOne = eventController.getEventCollection().getEventList().get(0);
+        assertEquals(1, eventController.getEventCollection().getEventList().size());
+
+        assertEquals("hello world",eventOne.getEventName());
+        assertEquals("2025-10-10T12:00",eventOne.getStartDateTime().toString());
+        assertEquals("2025-10-10T13:00",eventOne.getEndDateTime().toString());
+        assertEquals(null,eventOne.getDescription());
+        assertEquals(null,eventOne.getLocation());
+        assertEquals(false,eventOne.getIsPrivate());
         eventController.filterCommand("edit events location \"hello world\" \"MA Boston\"");
+        assertEquals("hello world",eventOne.getEventName());
+        assertEquals("2025-10-10T12:00",eventOne.getStartDateTime().toString());
+        assertEquals("2025-10-10T13:00",eventOne.getEndDateTime().toString());
+        assertEquals(null,eventOne.getDescription());
+        assertEquals("MA Boston",eventOne.getLocation());
+        assertEquals(false,eventOne.getIsPrivate());
         eventController.filterCommand("print events on 2025-10-10");
     }
 
@@ -323,6 +520,12 @@ public class EventHandlerTest {
         eventController.filterCommand("create event \"hello world\" from 2025-10-11T10:00 to 2025-11-10T11:00");
         eventController.filterCommand("create event \"hello world\" from 2025-10-12T10:00 to 2025-12-10T11:00");
         eventController.filterCommand("print events on 2025-10-10");
+        EventModel eventOne = eventController.getEventCollection().getEventList().get(0);
+        assertEquals("*  eventName=hello world,  Start=2025-10-10T12:00,  " +
+                "End=2025-10-10T13:00,  description=null,  isPrivate=false,  location=null, " +
+                " autoDecline=false", eventOne.bulletString());
+
+        eventController.filterCommand("print events on 2025-10-10");
     }
     // print events from <dateStringTtimeString> to <dateStringTtimeString>
     //Pattern printEventsBetween = Pattern.compile("print\\sevents\\sfrom\\s" + dateTimeString + "\\sto\\s" + dateTimeString + "$");
@@ -333,7 +536,12 @@ public class EventHandlerTest {
         eventController.filterCommand("create event \"hello world\" from 2025-10-10T11:00 to 2025-10-10T12:00");
         eventController.filterCommand("create event \"hello world\" from 2025-10-11T10:00 to 2025-10-11T11:00");
         eventController.filterCommand("create event \"hello world\" from 2025-10-12T10:00 to 2025-10-12T11:00");
-        eventController.filterCommand("print events from 2025-10-10T10:00 to 2025-11-10T10:00");
+        eventController.filterCommand("print events from 2025-10-11T10:00 to 2025-11-10T10:00");
+        EventModel eventOne = eventController.getEventCollection().getEventList().get(2);
+        EventModel eventTwo = eventController.getEventCollection().getEventList().get(3);
+        assertEquals("*  eventName=hello world,  Start=2025-10-10T12:00,  " +
+                "End=2025-10-10T13:00,  description=null,  isPrivate=false,  location=null, " +
+                " autoDecline=false", eventOne.bulletString());
 
     }
     // export cal fileName.csv
