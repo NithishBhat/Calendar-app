@@ -1,16 +1,28 @@
 package View;
+
 import Controller.EventController;
 
 import java.util.Scanner;
-import java.util.regex.*;
+
+/**
+ * The EventView class that handles the user interface for the event management system.
+ * Implements the View component in the MVC architecture.
+ */
 public class EventView {
 
   private EventController eventController;
 
+  /**
+   * Constructor that initializes a new EventController.
+   */
   public EventView() {
     this.eventController = new EventController();
   }
 
+  /**
+   * Runs the application in interactive mode, accepting user commands continuously
+   * until the user enters "exit".
+   */
   public void runInteractiveMode() {
     Scanner scanner = new Scanner(System.in);
     while (true) {
@@ -30,12 +42,23 @@ public class EventView {
     scanner.close();
   }
 
+  /**
+   * Runs the application in headless mode, processing commands from a specified file.
+   *
+   * @param filename the path to the file containing commands to process
+   */
   public void runHeadlessMode(String filename) {
     eventController.headlessMode(filename);
   }
 
+  /**
+   * Main method for running the application. Processes command-line arguments to determine the
+   * operating mode.
+   *
+   * @param args command-line arguments in the format: --mode [interactive|headless filename]
+   */
   public static void main(String[] args) {
-    if (args.length < 2 || !args[0].equalsIgnoreCase("--mode")){
+    if (args.length < 2 || !args[0].equalsIgnoreCase("--mode")) {
       System.out.println("Usage: java EventView --mode [interactive|headless filename]");
       return;
     }
@@ -43,12 +66,12 @@ public class EventView {
 
     if (args[1].equalsIgnoreCase("interactive")) {
       eventView.runInteractiveMode();
-    } else if (args[1].equalsIgnoreCase("headless") && args.length == 3) {
+    }
+    else if (args[1].equalsIgnoreCase("headless") && args.length == 3) {
       eventView.runHeadlessMode(args[2]);
-    } else {
+    }
+    else {
       System.out.println("Usage: java EventView --mode [interactive|headless filename]");
     }
   }
 }
-
-
