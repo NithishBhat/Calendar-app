@@ -73,6 +73,8 @@ public class ExportToCSV {
       } catch (IOException e) {
         throw new RuntimeException("Error Writing to CSV File: " + e.getMessage());
       }
+    } else {
+      System.out.println("No Events in Calendar.");
     }
   }
 
