@@ -22,7 +22,6 @@ public class ExportToCSV {
    * @param filepath The path where the CSV file will be saved.
    * @param events   The list of EventModel objects to be exported to CSV.
    */
-
   public static void generateCSV(String filepath, List<EventModel> events) {
     try {
       File file = new File(filepath);
