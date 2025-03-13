@@ -156,7 +156,6 @@ public class EventHandlerTest {
 
   }
 
-  //create event --autoDecline <eventName> from <dateStringTtimeString> to <dateStringTtimeString> repeats <weekdays> until <dateStringTtimeString>
   @Test
   public void processRecurringEnddateCreation() {
     EventController eventController = new EventController();
@@ -593,24 +592,34 @@ public class EventHandlerTest {
   @Test
   public void processprintEventsBetween() {
     EventController eventController = new EventController();
-    eventController.filterCommand("create event \"hello world\" from 2025-10-10T10:00 to 2025-10-10T11:00");
-    eventController.filterCommand("create event \"hello world\" from 2025-10-10T11:00 to 2025-10-10T12:00");
-    eventController.filterCommand("create event \"hello world\" from 2025-10-11T10:00 to 2025-10-11T11:00");
-    eventController.filterCommand("create event \"hello world\" from 2025-10-12T10:00 to 2025-10-12T11:00");
+    eventController.filterCommand("create event \"hello world\" " +
+            "from 2025-10-10T10:00 to 2025-10-10T11:00");
+    eventController.filterCommand("create event \"hello world\" " +
+            "from 2025-10-10T11:00 to 2025-10-10T12:00");
+    eventController.filterCommand("create event \"hello world\" " +
+            "from 2025-10-11T10:00 to 2025-10-11T11:00");
+    eventController.filterCommand("create event \"hello world\" " +
+            "from 2025-10-12T10:00 to 2025-10-12T11:00");
     eventController.filterCommand("print events from 2025-10-11T10:00 to 2025-11-10T10:00");
     EventModel eventOne = eventController.getEventCollection().getEventList().get(2);
     EventModel eventTwo = eventController.getEventCollection().getEventList().get(3);
 
-    LocalDateTime startDateTime = LocalDateTime.of(2025, 10, 11, 10, 00);
-    LocalDateTime endDateTime = LocalDateTime.of(2025, 11, 10, 10, 00);
+    LocalDateTime startDateTime = LocalDateTime
+            .of(2025, 10, 11, 10, 00);
+    LocalDateTime endDateTime = LocalDateTime
+            .of(2025, 11, 10, 10, 00);
 
     List<EventModel> printList = new ArrayList<>();
     printList = eventController.getEventCollection().searchEventByTimeFrame(startDateTime, endDateTime);
 
     assertEquals(
             "\n" +
-                    "*  eventName=hello world,  Start=2025-10-11T10:00,  End=2025-10-11T11:00,  description=null,  isPrivate=false,  location=null,  autoDecline=false\n" +
-                    "*  eventName=hello world,  Start=2025-10-12T10:00,  End=2025-10-12T11:00,  description=null,  isPrivate=false,  location=null,  autoDecline=false\n"
+                    "*  eventName=hello world,  " +
+                    "Start=2025-10-11T10:00,  End=2025-10-11T11:00,  " +
+                    "description=null,  isPrivate=false,  location=null,  autoDecline=false\n" +
+                    "*  eventName=hello world,  " +
+                    "Start=2025-10-12T10:00,  End=2025-10-12T11:00,  " +
+                    "description=null,  isPrivate=false,  location=null,  autoDecline=false\n"
             , eventController.getEventCollection().printAssortments(printList));
   }
 
@@ -618,18 +627,21 @@ public class EventHandlerTest {
   public void ShowStatusAvailable() {
     EventController eventController = new EventController();
     eventController.filterCommand("show status on 2025-01-10T10:00");
-    LocalDateTime startDateTime = LocalDateTime.of(2025, 01, 10, 10, 00);
-    assertEquals("Available", eventController.getEventCollection().checkStatus(startDateTime, startDateTime));
+    LocalDateTime startDateTime = LocalDateTime
+            .of(2025, 01, 10, 10, 00);
+    assertEquals("Available", eventController
+            .getEventCollection().checkStatus(startDateTime, startDateTime));
   }
 
   @Test
   public void ShowStatusBusy() {
     EventController eventController = new EventController();
-    eventController.filterCommand("create event \"hello world\" from 2025-10-10T10:00 to 2025-10-10T11:00");
+    eventController.filterCommand("create event \"hello world\" " +
+            "from 2025-10-10T10:00 to 2025-10-10T11:00");
     eventController.filterCommand("show status on 2025-10-10T10:30");
-    LocalDateTime startDateTime = LocalDateTime.of(2025, 10, 10, 10, 00);
-    assertEquals("Busy", eventController.getEventCollection().checkStatus(startDateTime, startDateTime));
+    LocalDateTime startDateTime = LocalDateTime
+            .of(2025, 10, 10, 10, 00);
+    assertEquals("Busy", eventController.getEventCollection()
+            .checkStatus(startDateTime, startDateTime));
   }
-
-
 }
