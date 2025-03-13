@@ -9,70 +9,85 @@ import java.time.LocalTime;
 import java.util.List;
 import java.util.Objects;
 
+
+/**
+ * ExportToCSV is responsible for generating a CSV file from a list of EventModel objects.
+ * It formats the data in a way that can be easily opened and read in spreadsheet programs.
+ */
 public class ExportToCSV {
 
-    public static void generateCSV(String filepath, List<EventModel> events) {
-        try{
-            File file = new File(filepath);
-            FileWriter fw = new FileWriter(file);
-            BufferedWriter bw = new BufferedWriter(fw);
+  /**
+   * Generates a CSV file from the list of events.
+   *
+   * @param filepath The path where the CSV file will be saved.
+   * @param events   The list of EventModel objects to be exported to CSV.
+   */
 
-            bw.write(String.join(",", "Subject", "Start Date", "Start Time", "End Date",
-                    "End Time", "All Day Event", "Description", "Location", "Private"));
-            bw.newLine();
+  public static void generateCSV(String filepath, List<EventModel> events) {
+    try {
+      File file = new File(filepath);
+      FileWriter fw = new FileWriter(file);
+      BufferedWriter bw = new BufferedWriter(fw);
 
-            for (EventModel event : events) {
-                LocalDate startDate = event.getStartDateTime().toLocalDate();
-                LocalDate endDate = event.getEndDateTime().toLocalDate();
+      bw.write(String.join(",", "Subject", "Start Date", "Start Time", "End Date", "End Time", "All Day Event", "Description", "Location", "Private"));
+      bw.newLine();
 
-                LocalTime startTime = event.getStartDateTime().toLocalTime();
-                LocalTime endTime = event.getEndDateTime().toLocalTime();
+      for (EventModel event : events) {
+        LocalDate startDate = event.getStartDateTime().toLocalDate();
+        LocalDate endDate = event.getEndDateTime().toLocalDate();
 
-                String AllDayEvent = String.valueOf(event.isAllDayEvent());
+        LocalTime startTime = event.getStartDateTime().toLocalTime();
+        LocalTime endTime = event.getEndDateTime().toLocalTime();
 
-                String isPrivate = String.valueOf(event.getIsPrivate());
+        String AllDayEvent = String.valueOf(event.isAllDayEvent());
 
-                String description = removeRegex(event.getDescription()==null?"No Description":event.getDescription());
-                String location = removeRegex(event.getLocation()==null?"No Location":event.getLocation());
+        String isPrivate = String.valueOf(event.getIsPrivate());
+
+        String description = removeRegex(event.getDescription() == null ? "No Description" : event.getDescription());
+        String location = removeRegex(event.getLocation() == null ? "No Location" : event.getLocation());
 
 
-                //check for regex???
-                //check for commas, replace with another delimiter?
-                bw.write(event.getEventName());
-                bw.write(", ");
-                bw.write(startDate.toString());
-                bw.write(", ");
-                bw.write(startTime.toString());
-                bw.write(", ");
-                bw.write(endDate.toString());
-                bw.write(", ");
-                bw.write(endTime.toString());
-                bw.write(", ");
-                bw.write(AllDayEvent);
-                bw.write(", ");
-                bw.write(description);
-                bw.write(", ");
-                bw.write(location);
-                bw.write(", ");
-                bw.write(isPrivate);
-                bw.newLine();
-            }
-            System.out.println("CSV generated");
-            bw.close();
-        } catch (IOException e) {
-            throw new RuntimeException("Error Writing to CSV File: " + e.getMessage());
-        }
+        //check for regex???
+        //check for commas, replace with another delimiter?
+        bw.write(event.getEventName());
+        bw.write(", ");
+        bw.write(startDate.toString());
+        bw.write(", ");
+        bw.write(startTime.toString());
+        bw.write(", ");
+        bw.write(endDate.toString());
+        bw.write(", ");
+        bw.write(endTime.toString());
+        bw.write(", ");
+        bw.write(AllDayEvent);
+        bw.write(", ");
+        bw.write(description);
+        bw.write(", ");
+        bw.write(location);
+        bw.write(", ");
+        bw.write(isPrivate);
+        bw.newLine();
+      }
+      System.out.println("CSV generated");
+      bw.close();
+    } catch (IOException e) {
+      throw new RuntimeException("Error Writing to CSV File: " + e.getMessage());
+    }
+  }
+
+  /**
+   * Cleans the string by removing unwanted characters like quotes, newlines, tabs, and carriage returns.
+   * It also ensures that quotes within the string are escaped properly for CSV formatting.
+   *
+   * @param stringValue The string to be cleaned and formatted.
+   * @return The cleaned and properly formatted string.
+   */
+  public static String removeRegex(String stringValue) {
+    if (Objects.equals(stringValue, "null")) {
+      return "";
     }
 
-    public static String removeRegex(String stringValue) {
-        if(Objects.equals(stringValue, "null")) {
-            return "";
-        }
-
-        stringValue = stringValue.replaceAll("\"", "\"\"")
-                .replaceAll("\n", " ")
-                .replaceAll("\t", " ")
-                .replaceAll("\r", " ");
-        return "\"" + stringValue + "\"";
-    }
+    stringValue = stringValue.replaceAll("\"", "\"\"").replaceAll("\n", " ").replaceAll("\t", " ").replaceAll("\r", " ");
+    return "\"" + stringValue + "\"";
+  }
 }
