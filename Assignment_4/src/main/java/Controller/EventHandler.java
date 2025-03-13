@@ -6,6 +6,7 @@ import Model.ExportToCSV;
 import Model.RecurringEventModel;
 
 import java.io.File;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -268,14 +269,27 @@ public class EventHandler {
     //Pattern export = Pattern.compile("export\\scal\\s([a-zA-Z0-9]+\\.csv)");
     void processExport(Matcher matcher) {
         String fileName = matcher.group(1);
-        String dirPath = "src/res";
 
-        String filePath = dirPath + File.separator + fileName;
-        System.out.println("Exporting to " + filePath + "...");
+        System.out.println("Exporting to " + fileName + "...");
+        File exportFile = new File(fileName);
+
+        if (!exportFile.exists()) {
+            try {
+                if (exportFile.createNewFile()) {
+                    System.out.println("File "
+                            + fileName
+                            + " did not exist. A new file has been created at "
+                            + exportFile.getAbsolutePath());
+                }
+            } catch (IOException e) {
+                System.out.println("Error creating file: " + exportFile.getAbsolutePath());
+                return;
+            }
+        }
 
         List<EventModel> eventList = eventCollection.getEventList();
         try {
-            ExportToCSV.generateCSV(filePath,eventList);
+            ExportToCSV.generateCSV(fileName,eventList);
         } catch (Exception e) {
             System.out.println("Could not complete Export: " + e.getMessage());
         }

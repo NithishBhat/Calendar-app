@@ -1,6 +1,7 @@
 package Controller;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
@@ -61,10 +62,25 @@ public class EventController {
   }
 
   public void headlessMode(String filename) {
-    try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
+    File file = new File(filename);  // Force correct path
+
+    // Ensure the file exists
+    if (!file.exists()) {
+      try {
+        if (file.createNewFile()) {
+          System.out.println("File " + filename + " did not exist. A new file has been created at " + file.getAbsolutePath());
+        }
+      } catch (IOException e) {
+        System.out.println("Error creating file: " + file.getAbsolutePath());
+        return;
+      }
+    }
+
+    // Use 'file' to explicitly read from 'src/res/'
+    try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
       String command;
       while ((command = reader.readLine()) != null) {
-        if (command.isEmpty()){
+        if (command.isEmpty()) {
           continue;
         }
         if (command.equals("exit")) {
@@ -79,8 +95,8 @@ public class EventController {
         }
       }
       System.out.println("Error: please type 'exit' as last command");
-    } catch (IOException e){
-      System.out.println("Unable to open file " + filename);
+    } catch (IOException e) {
+      System.out.println("Unable to open file: " + file.getAbsolutePath());
     }
   }
 }
