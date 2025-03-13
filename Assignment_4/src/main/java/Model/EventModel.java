@@ -291,7 +291,6 @@ public class EventModel {
     return false;
   }
 
-
   /**
    * returns a bulletted single line of string that can be used to print the list of events
    *
