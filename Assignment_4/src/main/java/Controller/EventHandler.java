@@ -5,6 +5,7 @@ import Model.EventModel;
 import Model.ExportToCSV;
 import Model.RecurringEventModel;
 
+import java.io.File;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -220,7 +221,6 @@ public class EventHandler {
         editEvents(property,newProperty,eventName,startDateTime,null);
     }
 
-
     // edit events <property> <eventName> <NewPropertyValue>
     //Pattern editEventsByName = Pattern.compile("edit\\sevents\\s(.*?)\\s(.*?)\\s(.*?)$");
     void processEditEventsByName(Matcher matcher) {
@@ -242,10 +242,7 @@ public class EventHandler {
         List<EventModel> printList= new ArrayList<>();
         printList=eventCollection.searchEventByTimeFrame(startDateTime,endDateTime);
         System.out.println(eventCollection.printAssortments(printList));
-
     }
-
-
 
     // print events from <dateStringTtimeString> to <dateStringTtimeString>
     //Pattern printEventsBetween = Pattern.compile("print\\sevents\\sfrom\\s" + dateTimeString + "\\sto\\s" + dateTimeString + "$");
@@ -271,10 +268,14 @@ public class EventHandler {
     //Pattern export = Pattern.compile("export\\scal\\s([a-zA-Z0-9]+\\.csv)");
     void processExport(Matcher matcher) {
         String fileName = matcher.group(1);
-        System.out.println("exporting to " + fileName + "...");
+        String dirPath = "src/res";
+
+        String filePath = dirPath + File.separator + fileName;
+        System.out.println("Exporting to " + filePath + "...");
+
         List<EventModel> eventList = eventCollection.getEventList();
         try {
-            ExportToCSV.generateCSV(fileName,eventList);
+            ExportToCSV.generateCSV(filePath,eventList);
         } catch (Exception e) {
             System.out.println("Could not complete Export: " + e.getMessage());
         }
@@ -289,8 +290,6 @@ public class EventHandler {
         LocalDateTime startDateTime = LocalDateTime.parse(startDate);
         System.out.println(true==eventCollection.checkConflict(startDateTime,startDateTime)?"Busy":"Available");
     }
-
-
 
     /**
      * command string extract for weekdays are broken into chars and put in a list.

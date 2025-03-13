@@ -43,7 +43,7 @@ public class ExportToCSVTest {
         eventCollectionModel.addRecurringEvent(recurringCalendarEvent);
 
         String fileName = "test.csv";
-        String filepath = Paths.get(System.getProperty("user.dir"), fileName).toString();
+        String filepath = "/src/res/" + fileName;
 
         ExportToCSV.generateCSV(filepath, eventCollectionModel.getEventList());
 
@@ -99,7 +99,7 @@ public class ExportToCSVTest {
         }
 
         String fileName = "test.csv";
-        String filepath = Paths.get(System.getProperty("user.dir"), fileName).toString();
+        String filepath = "src/res/" + fileName;
 
         ExportToCSV.generateCSV(filepath, eventCollectionModel.getEventList());
 

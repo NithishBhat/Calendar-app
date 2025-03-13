@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Objects;
 
 public class ExportToCSV {
 
@@ -64,7 +65,7 @@ public class ExportToCSV {
     }
 
     public static String removeRegex(String stringValue) {
-        if(stringValue=="null") {
+        if(Objects.equals(stringValue, "null")) {
             return "";
         }
 
