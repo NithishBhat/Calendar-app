@@ -10,21 +10,43 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import Model.EventCollectionModel;
+
+/**
+ * The EventController class is responsible for managing event-related commands.
+ * It processes user commands, matches them against predefined patterns, and invokes
+ * the corresponding event handler methods.
+ */
 public class EventController {
 
   private EventCollectionModel eventCollection;
   private CommandParser parser;
   private EventHandler eventHandler;
 
+  /**
+   * Constructs an EventController instance.
+   * Initializes the event collection, command parser, and event handler.
+   */
   public EventController() {
     eventCollection = new EventCollectionModel();
     parser = new CommandParser();
     eventHandler = new EventHandler(eventCollection);
   }
-  public EventCollectionModel getEventCollection(){
+
+  /**
+   * Retrieves the event collection managed by the controller.
+   *
+   * @return The EventCollectionModel instance.
+   */
+  public EventCollectionModel getEventCollection() {
     return eventCollection;
   }
 
+  /**
+   * Processes a given command string by matching it against predefined patterns.
+   * If a matching pattern is found, the corresponding event handler method is executed.
+   *
+   * @param command The command string to be processed.
+   */
   public void filterCommand(String command) {
 
     Matcher matcher = parser.parseCommand(command);
@@ -35,19 +57,32 @@ public class EventController {
 
       // Map the pattern string to the command
       Map<String, Runnable> commandMap = new HashMap<>();
-      commandMap.put("createEventPattern", () -> eventHandler.processCreateEvent(matcher));
-      commandMap.put("createRecurringEventN", () -> eventHandler.processCreateRecurringEventN(matcher));
-      commandMap.put("createRecurringEventEndDate", () -> eventHandler.processCreateRecurringEventEndDate(matcher));
-      commandMap.put("createWholeDayEvent", () -> eventHandler.processCreateAllDayEvent(matcher));
-      commandMap.put("createRecurringWholeDayEventN", () -> eventHandler.processCreateAllDayRecurring(matcher));
-      commandMap.put("createRecurringWholeDayEventEnd", () -> eventHandler.processCreateRecurringWholeDayEventEnd(matcher));
-      commandMap.put("editEvent", () -> eventHandler.processEditEvent(matcher));
-      commandMap.put("editEvents", () -> eventHandler.processEditEvents(matcher));
-      commandMap.put("editEventsByName", () -> eventHandler.processEditEventsByName(matcher));
-      commandMap.put("printEventsOn", () -> eventHandler.processPrintEventsOn(matcher));
-      commandMap.put("printEventsBetween", () -> eventHandler.processPrintEventsBetween(matcher));
-      commandMap.put("export", () -> eventHandler.processExport(matcher));
-      commandMap.put("show", () -> eventHandler.processShowStatus(matcher));
+      commandMap.put("createEventPattern",
+              () -> eventHandler.processCreateEvent(matcher));
+      commandMap.put("createRecurringEventN",
+              () -> eventHandler.processCreateRecurringEventN(matcher));
+      commandMap.put("createRecurringEventEndDate",
+              () -> eventHandler.processCreateRecurringEventEndDate(matcher));
+      commandMap.put("createWholeDayEvent",
+              () -> eventHandler.processCreateAllDayEvent(matcher));
+      commandMap.put("createRecurringWholeDayEventN",
+              () -> eventHandler.processCreateAllDayRecurring(matcher));
+      commandMap.put("createRecurringWholeDayEventEnd",
+              () -> eventHandler.processCreateRecurringWholeDayEventEnd(matcher));
+      commandMap.put("editEvent",
+              () -> eventHandler.processEditEvent(matcher));
+      commandMap.put("editEvents",
+              () -> eventHandler.processEditEvents(matcher));
+      commandMap.put("editEventsByName",
+              () -> eventHandler.processEditEventsByName(matcher));
+      commandMap.put("printEventsOn",
+              () -> eventHandler.processPrintEventsOn(matcher));
+      commandMap.put("printEventsBetween",
+              () -> eventHandler.processPrintEventsBetween(matcher));
+      commandMap.put("export",
+              () -> eventHandler.processExport(matcher));
+      commandMap.put("show",
+              () -> eventHandler.processShowStatus(matcher));
 
       // go through the map and call method if there is a match
       for (Map.Entry<String, Pattern> entry : parser.getPatterns().entrySet()) {
@@ -56,11 +91,16 @@ public class EventController {
           return;
         }
       }
-    } //else {
-     // System.out.println("Invalid command format: " + command);
-    //} // Nithish removed it, invalid commands are handeled in command parser
+    }
   }
 
+  /**
+   * Reads and processes commands from a file in a headless mode.
+   * The method ensures the file exists, reads commands line by line,
+   * and processes them until an "exit" command is encountered.
+   *
+   * @param filename The name of the file containing commands.
+   */
   public void headlessMode(String filename) {
     File file = new File(filename);  // Force correct path
 
@@ -68,7 +108,8 @@ public class EventController {
     if (!file.exists()) {
       try {
         if (file.createNewFile()) {
-          System.out.println("File " + filename + " did not exist. A new file has been created at " + file.getAbsolutePath());
+          System.out.println("File " + filename +
+                  " did not exist. A new file has been created at " + file.getAbsolutePath());
         }
       } catch (IOException e) {
         System.out.println("Error creating file: " + file.getAbsolutePath());

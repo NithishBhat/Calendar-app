@@ -191,7 +191,6 @@ public class EventCollectionModel {
     return sb.append("}\n").toString();
   }
 
-
   /**
    * Prints a list of events in a user-friendly format.
    *
