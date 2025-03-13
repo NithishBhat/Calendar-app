@@ -37,8 +37,6 @@ public class EventModel {
                     String description, boolean isPrivate, boolean autoDecline, String location) {
     this.eventName = eventName;
     this.startDateTime = startDateTime;
-    //if enddatetime is null then samedate with last possible
-    // time of the day making it a all day event.
     this.endDateTime = endDateTime != null ?
             endDateTime : startDateTime.toLocalDate().atTime(LocalTime.of(23, 59));
     this.description = description;
