@@ -76,11 +76,4 @@ public class RecurringEventModel extends EventModel {
     return recurrenceEndDateTime;
   }
 
-  @Override
-  public String toString() {
-    return super.toString() + ",\n" +
-            "  Recurring days=" + recurringDays + ",\n" +
-            "  Occurrences=" + (occurrences == null ? "Until " + recurrenceEndDateTime : occurrences)
-            + "\n]";
-  }
 }
