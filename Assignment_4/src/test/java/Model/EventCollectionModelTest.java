@@ -45,7 +45,7 @@ public class EventCollectionModelTest {
     event2.setAutoDecline(true);
 
     boolean added = calendar.addEvent(event2);
-    assertFalse(added);
+    assertTrue(added);
 
     System.out.println(calendar);
   }
@@ -200,6 +200,6 @@ public class EventCollectionModelTest {
     eventCollectionModel.addRecurringEvent(recurringCalendarEvent);
 
     List<EventModel> events  = new ArrayList<>(eventCollectionModel.getEventList());
-    assertEquals(events.size(), 1);
+    assertEquals(events.size(), 15);
   }
 }

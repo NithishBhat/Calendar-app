@@ -43,11 +43,10 @@ public class ExportToCSVTest {
         eventCollectionModel.addRecurringEvent(recurringCalendarEvent);
 
         String fileName = "test.csv";
-        String filepath = "/src/res/" + fileName;
 
-        ExportToCSV.generateCSV(filepath, eventCollectionModel.getEventList());
+        ExportToCSV.generateCSV(fileName, eventCollectionModel.getEventList());
 
-        try (BufferedReader br = new BufferedReader(new FileReader(filepath))) {
+        try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
             String header = br.readLine();
             assertEquals("Subject,Start Date,Start Time,End Date,End Time,All Day Event,Description,Location,Private",header);
 
@@ -99,11 +98,11 @@ public class ExportToCSVTest {
         }
 
         String fileName = "test.csv";
-        String filepath = "src/res/" + fileName;
 
-        ExportToCSV.generateCSV(filepath, eventCollectionModel.getEventList());
 
-        try (BufferedReader br = new BufferedReader(new FileReader(filepath))) {
+        ExportToCSV.generateCSV(fileName, eventCollectionModel.getEventList());
+
+        try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
             String header = br.readLine();
             assertEquals("Subject,Start Date,Start Time,End Date,End Time,All Day Event,Description,Location,Private",header);
 
