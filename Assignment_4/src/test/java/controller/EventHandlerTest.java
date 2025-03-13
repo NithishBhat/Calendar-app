@@ -521,9 +521,16 @@ public class EventHandlerTest {
         eventController.filterCommand("create event \"hello world\" from 2025-10-12T10:00 to 2025-12-10T11:00");
         eventController.filterCommand("print events on 2025-10-10");
         EventModel eventOne = eventController.getEventCollection().getEventList().get(0);
-        assertEquals("*  eventName=hello world,  Start=2025-10-10T12:00,  " +
-                "End=2025-10-10T13:00,  description=null,  isPrivate=false,  location=null, " +
-                " autoDecline=false", eventOne.bulletString());
+
+        LocalDateTime startDateTime = LocalDateTime.of(2025, 10, 10, 12, 00);
+        LocalDateTime endDateTime = LocalDateTime.of(2025, 10, 10, 13, 00);
+
+        List<EventModel> printList= new ArrayList<>();
+        printList=eventController.getEventCollection().searchEventByTimeFrame(startDateTime,endDateTime);
+
+        assertEquals("\n*  eventName=hello world,  Start=2025-10-10T12:00, " +
+                        " End=2025-10-10T13:00,  description=null,  isPrivate=false,  location=null,  autoDecline=false\n"
+                , eventController.getEventCollection().printAssortments(printList));
 
         eventController.filterCommand("print events on 2025-10-10");
     }
@@ -539,10 +546,18 @@ public class EventHandlerTest {
         eventController.filterCommand("print events from 2025-10-11T10:00 to 2025-11-10T10:00");
         EventModel eventOne = eventController.getEventCollection().getEventList().get(2);
         EventModel eventTwo = eventController.getEventCollection().getEventList().get(3);
-        assertEquals("*  eventName=hello world,  Start=2025-10-10T12:00,  " +
-                "End=2025-10-10T13:00,  description=null,  isPrivate=false,  location=null, " +
-                " autoDecline=false", eventOne.bulletString());
 
+        LocalDateTime startDateTime = LocalDateTime.of(2025, 10, 11, 10, 00);
+        LocalDateTime endDateTime = LocalDateTime.of(2025, 11, 10, 10, 00);
+
+        List<EventModel> printList= new ArrayList<>();
+        printList=eventController.getEventCollection().searchEventByTimeFrame(startDateTime,endDateTime);
+
+        assertEquals(
+                "\n" +
+                        "*  eventName=hello world,  Start=2025-10-11T10:00,  End=2025-10-11T11:00,  description=null,  isPrivate=false,  location=null,  autoDecline=false\n" +
+                        "*  eventName=hello world,  Start=2025-10-12T10:00,  End=2025-10-12T11:00,  description=null,  isPrivate=false,  location=null,  autoDecline=false\n"
+                , eventController.getEventCollection().printAssortments(printList));
     }
     // export cal fileName.csv
     //Pattern export = Pattern.compile("export\\scal\\s([a-zA-Z0-9]+\\.csv)");
@@ -551,6 +566,7 @@ public class EventHandlerTest {
         EventController eventController = new EventController();
         eventController.filterCommand("create event \"hello world\" from 2025-10-10T10:00 to 2025-10-10T11:00");
         eventController.filterCommand("export cal test.csv");
+        assertEquals("1",0);
     }
     // show status on <dateStringTtimeString>
     //Pattern show = Pattern.compile("show\\sstatus\\son\\s" + dateTimeString + "$");

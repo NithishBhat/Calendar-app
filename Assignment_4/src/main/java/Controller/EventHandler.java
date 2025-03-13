@@ -284,10 +284,10 @@ public class EventHandler {
     // show status on <dateStringTtimeString>
     //Pattern show = Pattern.compile("show\\sstatus\\son\\s" + dateTimeString + "$");
     //Prints busy status if the user has events scheduled on a given day and time, otherwise, available.
-    void processShowStatus(Matcher matcher) {
+    String processShowStatus(Matcher matcher) {
         String startDate = matcher.group(1);
         LocalDateTime startDateTime = LocalDateTime.parse(startDate);
-        System.out.println(true==eventCollection.checkConflict(startDateTime,startDateTime)?"Busy":"Available");
+        return (true==eventCollection.checkConflict(startDateTime,startDateTime)?"Busy":"Available");
     }
 
 
