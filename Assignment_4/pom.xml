@@ -30,8 +30,14 @@
                 <version>1.17.2</version>
                 <configuration>
                     <targetTests>
-                        <param>*</param>
+                        <param>*Test</param>
                     </targetTests>
+                    <!-- Target your specific packages -->
+                    <targetClasses>
+                        <param>Controller.*</param>
+                        <param>Model.*</param>
+                        <param>View.*</param>
+                    </targetClasses>
                 </configuration>
             </plugin>
         </plugins>

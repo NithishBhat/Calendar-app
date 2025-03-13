@@ -12,6 +12,10 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
+/**
+ * Testing class of event handler and Event controller and the command parser
+ */
+
 public class EventHandlerTest {
 
   @Test
@@ -106,7 +110,7 @@ public class EventHandlerTest {
     eventController.filterCommand(" ");
     assertEquals(0, eventController.getEventCollection().getEventList().size());
 
-  } 
+  }
 
   @Test
   public void ValidCaseMixCommand() {
