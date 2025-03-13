@@ -34,7 +34,7 @@ public class CommandParser {
                         + dateTimeString
                         + "\\s+repeats\\s+"
                         + weekDay
-                        + "\\s+for\\s+(\\d+)\\s+times\\s+"
+                        + "\\s+for\\s+(\\d+)\\s+times\\s*"
                         + optionalParamsPattern
                         + "\\s*$",Pattern.CASE_INSENSITIVE));
         patterns.put("createRecurringEventEndDate",
