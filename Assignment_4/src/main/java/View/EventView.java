@@ -13,8 +13,6 @@ public class EventView {
 
   public void runInteractiveMode() {
     Scanner scanner = new Scanner(System.in);
-    
-
     while (true) {
       System.out.print("Enter Command: ");
       String command = scanner.nextLine();
@@ -22,7 +20,12 @@ public class EventView {
         System.out.println("Goodbye!");
         break;
       }
-      eventController.filterCommand(command);
+      try {
+        eventController.filterCommand(command);
+      } catch (Exception e) {
+        System.out.println("Error: " + e.getMessage());
+        break;
+      }
     }
     scanner.close();
   }

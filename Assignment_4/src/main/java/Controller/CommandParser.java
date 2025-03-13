@@ -13,7 +13,7 @@ public class CommandParser {
         String dateTimeString = "(\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2})";
         String dateString = "(\\d{4}-\\d{2}-\\d{2})";
         String weekDay="([MTWRFSU]{1,7})";
-        String optionalParamsPattern = "\\s+(?:description:\\s*\"(.*?)\")?\\s*(?:location:\\s*\"(.*?)\")?\\s*(?:privacy:\\s*\"(true|false)\")?";
+        String optionalParamsPattern = "\\s*(?:description:\\s*\"(.*?)\")?\\s*(?:location:\\s*\"(.*?)\")?\\s*(?:privacy:\\s*\"(true|false)\")?";
 
         // Create event patterns
         String pattern=("\\s*create\\s+event(\\s+--autoDecline)?\\s+\"(.*?)\"\\s+from\\s+"+ dateTimeString+ "\\s+to\\s+"+
