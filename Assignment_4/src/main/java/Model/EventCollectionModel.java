@@ -178,4 +178,8 @@ public class EventCollectionModel {
     return sb.append("\n").toString();
   }
 
+  public String checkStatus(LocalDateTime startDateTime,LocalDateTime endDateTime) {
+    return true==checkConflict(startDateTime,startDateTime)?"Busy":"Available";
+  }
+
 }

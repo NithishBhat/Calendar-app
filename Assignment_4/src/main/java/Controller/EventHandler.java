@@ -285,11 +285,13 @@ public class EventHandler {
     // show status on <dateStringTtimeString>
     //Pattern show = Pattern.compile("show\\sstatus\\son\\s" + dateTimeString + "$");
     //Prints busy status if the user has events scheduled on a given day and time, otherwise, available.
-    String processShowStatus(Matcher matcher) {
+    void processShowStatus(Matcher matcher) {
         String startDate = matcher.group(1);
         LocalDateTime startDateTime = LocalDateTime.parse(startDate);
-        return (true==eventCollection.checkConflict(startDateTime,startDateTime)?"Busy":"Available");
+        System.out.println(eventCollection.checkStatus(startDateTime,startDateTime) +" on "+startDate );
     }
+
+
 
     /**
      * command string extract for weekdays are broken into chars and put in a list.
@@ -400,42 +402,45 @@ public class EventHandler {
         }
     }
 
-    private void checkForCollision(EventModel event,boolean autoDecline,LocalDateTime startDateTime,LocalDateTime endDateTime) {
+    private boolean checkForCollision(EventModel event,boolean autoDecline,LocalDateTime startDateTime,LocalDateTime endDateTime) {
         if(autoDecline==true)
         {
             if (!eventCollection.checkConflict(startDateTime, endDateTime)) {
                 eventCollection.addEvent(event);
                 System.out.println("Event \""+event.getEventName()+"\" was created");
+                return false;
             } else {
                 System.out.println("Event \""+event.getEventName()+"\" was not created due to conflict");
+                return true;
             }
         }
         else{
             eventCollection.addEvent(event);
             System.out.println("Event \""+event.getEventName()+"\" was created");
+            return true;
         }
     }
 
-    private void checkForCollisionRecurringEvent(RecurringEventModel recurringEvent,boolean autoDecline) {
-        boolean conflictDetected = false;
+    private boolean checkForCollisionRecurringEvent(RecurringEventModel recurringEvent,boolean autoDecline) {
         if(autoDecline==true)
         {
             List<EventModel> recurringEventsList=eventCollection.generateOccurrences(recurringEvent);
             for (EventModel event : recurringEventsList) {
                 if (eventCollection.checkConflict(event.getStartDateTime(),event.getEndDateTime())) {
                     System.out.println("Conflict detected, your recurring event \""+recurringEvent.getEventName()+"\" was not created");
-                    conflictDetected = true;
-                    break;
+                    return true;
                 }
             }
-            if (!conflictDetected) {
+
                 eventCollection.addRecurringEvent(recurringEvent);
                 System.out.println("Event \""+recurringEvent.getEventName()+"\" was created");
-            }
+                return false;
+
         }
         else{
             eventCollection.addRecurringEvent(recurringEvent);
             System.out.println("Event \""+recurringEvent.getEventName()+"\" was created");
+            return false;
         }
     }
 
