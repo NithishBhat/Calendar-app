@@ -579,7 +579,6 @@ public class EventHandlerTest {
         eventController.filterCommand("create  event \"hello world\" from 2025-10-10T10:00 to 2025-10-10T11:00");
         eventController.filterCommand("create event --autoDecline \"hello world1\" from 2025-10-10T10:00 to 2025-10-10T11:00 repeats MTW for 10 times");
         eventController.filterCommand("print events from 2025-10-10T10:00 to 2025-12-10T10:00");
-
     }
 
     @Test
@@ -607,6 +606,5 @@ public class EventHandlerTest {
         eventController.filterCommand("create event \"hello world\" on 2025-10-10T10:00");
         eventController.filterCommand("create  event --autoDecline \"hello world\" from 2025-10-10T10:00 to 2025-10-10T11:00");
         eventController.filterCommand("print events from 2025-10-10T10:00 to 2025-10-12T10:00");
-
     }
 }

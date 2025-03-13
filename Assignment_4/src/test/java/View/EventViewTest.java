@@ -8,43 +8,39 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.PrintStream;
+import java.util.Scanner;
 
 import static org.junit.Assert.*;
 
 public class EventViewTest {
-    private final InputStream sysIn = System.in;
-    private final PrintStream sysOut = System.out;
-    private ByteArrayInputStream inContent;
-    private ByteArrayOutputStream outContent;
+    private final InputStream originalSystemIn = System.in;
+    private final PrintStream originalSystemOut = System.out;
+    private ByteArrayInputStream testIn;
+    private ByteArrayOutputStream testOut;
 
     @Before
-    public void setUpStreams() {
-        outContent = new ByteArrayOutputStream();
-        System.setOut(new PrintStream(outContent));
+    public void setUp() {
+        testOut = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(testOut));
     }
 
     @After
-    public void restoreStreams() {
-        System.setIn(sysIn);
-        System.setOut(sysOut);
+    public void restoreSystemIO() {
+        System.setIn(originalSystemIn);
+        System.setOut(originalSystemOut);
     }
 
     @Test
-    public void testRunInteractiveMode() {
-
+    public void testRunInteractiveMode_ValidCommand() {
+        String simulatedInput = "create  event \"hello world\" from 2025-10-10T10:00 to 2025-10-10T11:00\nexport cal test.csv\nexit\n";
+        testIn = new ByteArrayInputStream(simulatedInput.getBytes());
+        System.setIn(testIn);
 
         EventView eventView = new EventView();
         eventView.runInteractiveMode();
 
-        String consoleOutput = outContent.toString();
-        System.out.println("Captured Output:\n" + consoleOutput);
-
-        String simulatedUserInput = "create event \"hello world\" from 2025-10-10T10:00 to 2025-10-10T11:00"
-                +"\nexport cal test.csv\n"+"\nexit\n";
-        inContent = new ByteArrayInputStream(simulatedUserInput.getBytes());
-        System.setIn(inContent);
-
-        assertTrue(consoleOutput.contains("Enter Command:"));
-        assertTrue(consoleOutput.contains("Goodbye!"));
+        String output = testOut.toString();
+        assertTrue(output.contains("Enter Command:"));
+        assertTrue(output.contains("Goodbye!"));
     }
 }
