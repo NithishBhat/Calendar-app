@@ -35,7 +35,7 @@
                     <!-- Target your specific packages -->
                     <targetClasses>
                         <param>Controller.*</param>
-                        <param>Model.*</param>
+                        <param>model.*</param>
                         <param>View.*</param>
                     </targetClasses>
                 </configuration>

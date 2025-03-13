@@ -1,4 +1,4 @@
-package Model;
+package model;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -40,7 +40,7 @@ public class ExportToCSV {
           LocalTime startTime = event.getStartDateTime().toLocalTime();
           LocalTime endTime = event.getEndDateTime().toLocalTime();
 
-          String AllDayEvent = String.valueOf(event.isAllDayEvent());
+          String allDayEvent = String.valueOf(event.isAllDayEvent());
 
           String isPrivate = String.valueOf(event.getIsPrivate());
 
@@ -62,7 +62,7 @@ public class ExportToCSV {
           bw.write(", ");
           bw.write(endTime.toString());
           bw.write(", ");
-          bw.write(AllDayEvent);
+          bw.write(allDayEvent);
           bw.write(", ");
           bw.write(description);
           bw.write(", ");

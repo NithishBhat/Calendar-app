@@ -1,4 +1,4 @@
-package Model;
+package model;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -37,6 +37,8 @@ public class EventModel {
                     String description, boolean isPrivate, boolean autoDecline, String location) {
     this.eventName = eventName;
     this.startDateTime = startDateTime;
+    //if enddatetime is null then samedate with last possible
+    // time of the day making it a all day event.
     this.endDateTime = endDateTime != null ?
             endDateTime : startDateTime.toLocalDate().atTime(LocalTime.of(23, 59));
     this.description = description;
@@ -62,7 +64,6 @@ public class EventModel {
     this.startDateTime = startDateTime;
     this.endDateTime = endDateTime != null ?
             endDateTime : startDateTime.toLocalDate().atTime(LocalTime.of(23, 59));
-    ;
     this.description = null;
     this.isPrivate = false;
     this.autoDecline = autoDecline;
@@ -261,36 +262,30 @@ public class EventModel {
   /**
    * Checks if the event occurs completely within the specified date range.
    *
-   * @param eventStartDateTime The start of the date range.
-   * @param eventEndDateTime   The end of the date range.
-   * @return true if the event starts on or after eventStartDateTime and
-   * ends on or before eventEndDateTime, false otherwise.
+   * @param  eventStartDateTime  The start of the date range.
+   * @param  eventEndDateTime    The end of the date range.
+   * @return  true if the event starts on or after eventStartDateTime and
+   *          ends on or before eventEndDateTime, false otherwise.
    */
   public boolean isEventBetweenDates(LocalDateTime eventStartDateTime,
                                      LocalDateTime eventEndDateTime) {
-    if (!this.getStartDateTime().isBefore(eventStartDateTime)
-            && !this.getEndDateTime().isAfter(eventEndDateTime)) {
-      return true;
-    }
-    return false;
+    return !this.getStartDateTime().isBefore(eventStartDateTime)
+            && !this.getEndDateTime().isAfter(eventEndDateTime);
   }
 
   /**
-   * checks if the given DateTime is after the or before the time of the StartDateTime of the
-   * current event. If it is after then it returns true else false
+   * Checks if the given DateTime is after or before the time of the StartDateTime of the
+   * current event. If it is after then it returns true else false.
    *
-   * @param eventStartDateTime
-   * @return Boolean
+   * @param  eventStartDateTime  The DateTime to compare against the event's start time.
+   * @return  Boolean indicating whether the given time is after the start time.
    */
   public boolean isAfterDateTime(LocalDateTime eventStartDateTime) {
-    if (this.getStartDateTime().isAfter(eventStartDateTime)) {
-      return true;
-    }
-    return false;
+    return this.getStartDateTime().isAfter(eventStartDateTime);
   }
 
   /**
-   * returns a bulletted single line of string that can be used to print the list of events
+   * returns a bulletted single line of string that can be used to print the list of events.
    *
    * @return String
    */

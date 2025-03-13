@@ -1,8 +1,6 @@
 package controller;
 
-import Controller.EventController;
-import Model.EventCollectionModel;
-import Model.EventModel;
+import model.EventModel;
 
 import org.junit.Test;
 

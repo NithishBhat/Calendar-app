@@ -1,4 +1,4 @@
-package View;
+package view;
 
 import org.junit.Test;
 
@@ -9,10 +9,10 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
-import Model.EventCollectionModel;
-import Model.EventModel;
-import Model.ExportToCSV;
-import Model.RecurringEventModel;
+import model.EventCollectionModel;
+import model.EventModel;
+import model.ExportToCSV;
+import model.RecurringEventModel;
 
 import static org.junit.Assert.*;
 

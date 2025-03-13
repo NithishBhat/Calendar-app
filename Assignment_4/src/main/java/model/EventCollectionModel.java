@@ -1,4 +1,4 @@
-package Model;
+package model;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -91,8 +91,8 @@ public class EventCollectionModel {
                                           LocalDateTime eventEndDate) {
     List<EventModel> filteredList = new ArrayList<>();
     for (EventModel event : eventList) {
-      LocalDateTime eventEnd = event.getEndDateTime() ==
-              null ? event.getStartDateTime() : event.getEndDateTime();
+      LocalDateTime eventEnd = event.getEndDateTime()
+              == null ? event.getStartDateTime() : event.getEndDateTime();
 
       if (!eventEnd.isBefore(eventStartDate) && !event.getStartDateTime().isAfter(eventEndDate)) {
         filteredList.add(event);
@@ -102,18 +102,18 @@ public class EventCollectionModel {
   }
 
   /**
-   * returns List of all events within a specified Time Frame on a specific day
+   * returns List of all events within a specified Time Frame on a specific day.
    *
-   * @param eventStartDateTime Upper bound of time frame
-   * @param eventEndDateTime   Lower bound of time frame
-   * @return List of Events
+   * @param eventStartDateTime Upper bound of time frame.
+   * @param eventEndDateTime   Lower bound of time frame.
+   * @return List of Events.
    */
   public List<EventModel> searchEventByTimeFrame(LocalDateTime eventStartDateTime,
                                                  LocalDateTime eventEndDateTime) {
     List<EventModel> filteredList = new ArrayList<>();
     for (EventModel event : eventList) {
-      if (!event.getStartDateTime().isBefore(eventStartDateTime) &&
-              !event.getEndDateTime().isAfter(eventEndDateTime)) {
+      if (!event.getStartDateTime().isBefore(eventStartDateTime)
+              && !event.getEndDateTime().isAfter(eventEndDateTime)) {
         filteredList.add(event);
       }
     }
@@ -226,7 +226,7 @@ public class EventCollectionModel {
    * @return A string indicating the availability ("Busy" or "Available").
    */
   public String checkStatus(LocalDateTime startDateTime, LocalDateTime endDateTime) {
-    return true == checkConflict(startDateTime, startDateTime) ? "Busy" : "Available";
+    return checkConflict(startDateTime, startDateTime) ? "Busy" : "Available";
   }
 
 }

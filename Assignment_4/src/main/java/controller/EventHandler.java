@@ -1,9 +1,9 @@
 package controller;
 
-import Model.EventCollectionModel;
-import Model.EventModel;
-import Model.ExportToCSV;
-import Model.RecurringEventModel;
+import model.EventCollectionModel;
+import model.EventModel;
+import model.ExportToCSV;
+import model.RecurringEventModel;
 
 import java.io.File;
 import java.io.IOException;
@@ -35,8 +35,8 @@ public class EventHandler {
 
   /**
    * Processes the creation of an event from a regex matcher.
-   * Format: create event --autoDecline <eventName> from
-   * <dateStringTtimeString> to <dateStringTtimeString>
+   * Format: create event --autoDecline {@code <eventName>} from
+   * {@code <dateString>T<timeString>} to {@code <dateString>T<timeString>}.
    *
    * @param matcher The regex matcher containing event details.
    */
@@ -68,8 +68,8 @@ public class EventHandler {
 
   /**
    * Processes the creation of a recurring event for a specified number of times.
-   * Format: create event <eventName> from <dateStringTtimeString> to
-   * <dateStringTtimeString> repeats <weekdays> for <N> times
+   * Format: create event {@code <eventName>} from {@code <dateString>T<timeString>} to
+   * {@code <dateString>T<timeString>} repeats {@code <weekdays>} for {@code <N>} times.
    *
    * @param matcher The regex matcher containing event details.
    */
@@ -95,7 +95,7 @@ public class EventHandler {
       System.out.println("Event was not created");
       return;
     }
-    List<Character> recurringWeekDay = StringToDayOfWeek(weekDay);
+    List<Character> recurringWeekDay = stringToDayOfWeek(weekDay);
     RecurringEventModel recurringEvent = new RecurringEventModel(eventName,
             startDate, endDate, description,
             privacy, autoDecline, location,
@@ -107,8 +107,10 @@ public class EventHandler {
 
   /**
    * Processes the creation of a recurring event that repeats until a specified end date.
-   * Format: create event --autoDecline <eventName> from <dateStringTtimeString> to
-   * <dateStringTtimeString> repeats <weekdays> until <dateStringTtimeString>
+   * Format: create event --autoDecline {@code <eventName>} from
+   * {@code <dateString>T<timeString>} to
+   * {@code <dateString>T<timeString>} repeats {@code <weekdays>} until
+   * {@code <dateString>T<timeString>}.
    *
    * @param matcher The regex matcher containing event details.
    */
@@ -127,7 +129,7 @@ public class EventHandler {
     String location = matcher.group(8);
     Boolean privacy = matcher.group(9) != null ? Boolean.parseBoolean(matcher.group(9)) : false;
 
-    List<Character> recurringWeekDay = StringToDayOfWeek(weekDay);
+    List<Character> recurringWeekDay = stringToDayOfWeek(weekDay);
     LocalDateTime startDate = LocalDateTime.parse(startDateTime);
     LocalDateTime endDate = LocalDateTime.parse(endDateTime);
 
@@ -151,7 +153,7 @@ public class EventHandler {
 
   /**
    * Processes the creation of an all-day event.
-   * Format: create event --autoDecline <eventName> on <dateStringTtimeString>
+   * Format: create event --autoDecline {@code <eventName>} on {@code <dateString>T<timeString>}.
    *
    * @param matcher The regex matcher containing event details.
    */
@@ -176,7 +178,8 @@ public class EventHandler {
   /**
    * Processes the creation of an all-day recurring event that
    * repeats for a specified number of times.
-   * Format: create event <eventName> on <dateString> repeats <weekdays> for <N> times
+   * Format: create event {@code <eventName>} on {@code <dateString>} repeats {@code <weekdays>}
+   * for {@code <N>} times.
    *
    * @param matcher The regex matcher containing event details.
    */
@@ -196,7 +199,7 @@ public class EventHandler {
     Boolean privacy = matcher.group(8) != null ? Boolean.parseBoolean(matcher.group(8)) : false;
 
     LocalDateTime startDate = LocalDate.parse(startDateTime).atStartOfDay();
-    List<Character> recurringWeekDay = StringToDayOfWeek(weekDay);
+    List<Character> recurringWeekDay = stringToDayOfWeek(weekDay);
 
 
     RecurringEventModel recurringEvent = new RecurringEventModel(eventName, startDate,
@@ -209,7 +212,8 @@ public class EventHandler {
 
   /**
    * Processes the creation of an all-day recurring event that repeats until a specified end date.
-   * Format: create event <eventName> on <dateString> repeats <weekdays> until <dateString>
+   * Format: create event {@code <eventName>} on {@code <dateString>} repeats {@code <weekdays>}
+   * until {@code <dateString>}.
    *
    * @param matcher The regex matcher containing event details.
    */
@@ -228,7 +232,7 @@ public class EventHandler {
     String location = matcher.group(7);
     Boolean privacy = matcher.group(8) != null ? Boolean.parseBoolean(matcher.group(8)) : false;
 
-    List<Character> recurringWeekDay = StringToDayOfWeek(weekDay);
+    List<Character> recurringWeekDay = stringToDayOfWeek(weekDay);
     LocalDateTime startDateTime = LocalDate.parse(startDate).atStartOfDay();
     LocalDateTime recurrernceEndDateTime = LocalDate.parse(recurrernceEndDate).atStartOfDay();
 
@@ -243,8 +247,9 @@ public class EventHandler {
 
   /**
    * Processes the editing of a specific event property between two dates.
-   * Format: edit event <property> <eventName> from <dateStringTtimeString> to
-   * <dateStringTtimeString> with <NewPropertyValue>
+   * Format: edit event {@code <property>} {@code <eventName>} from
+   * {@code <dateString>T<timeString>} to
+   * {@code <dateString>T<timeString>} with {@code <NewPropertyValue>}.
    *
    * @param matcher The regex matcher containing event details.
    */
@@ -267,8 +272,8 @@ public class EventHandler {
 
   /**
    * Processes the editing of a property for all events with the specified name from a start date.
-   * Format: edit events <property> <eventName> from
-   * <dateStringTtimeString> with <NewPropertyValue>
+   * Format: edit events {@code <property>} {@code <eventName>} from
+   * {@code <dateString>T<timeString>} with {@code <NewPropertyValue>}.
    *
    * @param matcher The regex matcher containing event details.
    */
@@ -284,7 +289,7 @@ public class EventHandler {
 
   /**
    * Processes the editing of a property for all events with the specified name.
-   * Format: edit events <property> <eventName> <NewPropertyValue>
+   * Format: edit events {@code <property>} {@code <eventName>} {@code <NewPropertyValue>}.
    *
    * @param matcher The regex matcher containing event details.
    */
@@ -298,7 +303,7 @@ public class EventHandler {
 
   /**
    * Prints all events scheduled on a specific date.
-   * Format: print events on <dateString>
+   * Format: print events on {@code <dateString>}.
    * Prints a bulleted list of all events on that day along with
    * their start and end time and location.
    *
@@ -317,7 +322,8 @@ public class EventHandler {
 
   /**
    * Prints all events scheduled between two dates and times.
-   * Format: print events from <dateStringTtimeString> to <dateStringTtimeString>
+   * Format: print events from {@code <dateString>T<timeString>} to
+   * {@code <dateString>T<timeString>}.
    *
    * @param matcher The regex matcher containing date range details.
    */
@@ -340,7 +346,7 @@ public class EventHandler {
 
   /**
    * Exports all calendar events to a CSV file.
-   * Format: export cal fileName.csv
+   * Format: export cal fileName.csv.
    *
    * @param matcher The regex matcher containing the file name.
    */
@@ -374,7 +380,7 @@ public class EventHandler {
 
   /**
    * Shows availability status at a specific date and time.
-   * Format: show status on <dateStringTtimeString>
+   * Format: show status on {@code <dateString>T<timeString>}.
    * Prints busy status if the user has events scheduled
    * on a given day and time, otherwise, available.
    *
@@ -391,10 +397,10 @@ public class EventHandler {
    * Converts a string representation of weekdays to a list of characters.
    * Example: "MT" would be converted to a list containing 'M' and 'T'.
    *
-   * @param weekDay String representation of weekdays (e.g., "MT" for Monday and Tuesday)
-   * @return List of characters representing each day of the week
+   * @param weekDay String representation of weekdays (e.g., "MT" for Monday and Tuesday).
+   * @return List of characters representing each day of the week.
    */
-  private List<Character> StringToDayOfWeek(String weekDay) {
+  private List<Character> stringToDayOfWeek(String weekDay) {
     List<Character> dayOfWeek = new ArrayList<>();
     for (int i = 0; i < weekDay.length(); i++) {
       dayOfWeek.add(weekDay.charAt(i));
@@ -410,35 +416,35 @@ public class EventHandler {
    * @param property      The property to edit
    * @param newProperty   The new value for the property
    * @param eventName     The name of the event to edit
-   * @param StartDateTime The start date-time to filter events (can be null)
-   * @param EndDateTime   The end date-time to filter events (can be null)
+   * @param startDateTime The start date-time to filter events (can be null)
+   * @param endDateTime   The end date-time to filter events (can be null)
    */
   private void editEvents(String property, String newProperty, String eventName,
-                          LocalDateTime StartDateTime, LocalDateTime EndDateTime) {
+                          LocalDateTime startDateTime, LocalDateTime endDateTime) {
     if (property.contains("startDateTime")) {
-      setStartDateTime(LocalDateTime.parse(newProperty), eventName, StartDateTime, EndDateTime);
+      setStartDateTime(LocalDateTime.parse(newProperty), eventName, startDateTime, endDateTime);
     } else if (property.contains("endDateTime")) {
-      setEndDateTime(LocalDateTime.parse(newProperty), eventName, StartDateTime, EndDateTime);
+      setEndDateTime(LocalDateTime.parse(newProperty), eventName, startDateTime, endDateTime);
     } else if (property.contains("location")) {
-      setLocation(newProperty, eventName, StartDateTime, EndDateTime);
+      setLocation(newProperty, eventName, startDateTime, endDateTime);
     } else if (property.contains("description")) {
-      setDescription(eventName, newProperty, StartDateTime, EndDateTime);
+      setDescription(eventName, newProperty, startDateTime, endDateTime);
     } else if (newProperty.contains("private") && property.contains("privacyType")) {
-      setIsPrivate(eventName, true, StartDateTime, EndDateTime);
+      setIsPrivate(eventName, true, startDateTime, endDateTime);
     } else if (property.contains("public") && property.contains("privacyType")) {
-      setIsPrivate(newProperty, false, StartDateTime, EndDateTime);
+      setIsPrivate(newProperty, false, startDateTime, endDateTime);
     } else if (property.contains("eventName")) {
-      setEventName(eventName, newProperty, StartDateTime, EndDateTime);
+      setEventName(eventName, newProperty, startDateTime, endDateTime);
     }
   }
 
   /**
    * Sets the start date-time for events matching the criteria.
    *
-   * @param newProperty   The new start date-time
-   * @param eventName     The name of the event to update
-   * @param startDateTime The start date-time filter (can be null)
-   * @param endDateTime   The end date-time filter (can be null)
+   * @param newProperty   The new start date-time.
+   * @param eventName     The name of the event to update.
+   * @param startDateTime The start date-time filter (can be null).
+   * @param endDateTime   The end date-time filter (can be null).
    * @return Void (null)
    */
   private Void setStartDateTime(LocalDateTime newProperty, String eventName,
@@ -457,10 +463,10 @@ public class EventHandler {
   /**
    * Sets the end date-time for events matching the criteria.
    *
-   * @param newProperty   The new end date-time
-   * @param eventName     The name of the event to update
-   * @param startDateTime The start date-time filter (can be null)
-   * @param endDateTime   The end date-time filter (can be null)
+   * @param newProperty   The new end date-time.
+   * @param eventName     The name of the event to update.
+   * @param startDateTime The start date-time filter (can be null).
+   * @param endDateTime   The end date-time filter (can be null).
    * @return Void (null)
    */
   private Void setEndDateTime(LocalDateTime newProperty, String eventName,
@@ -477,10 +483,10 @@ public class EventHandler {
   /**
    * Sets the location for events matching the criteria.
    *
-   * @param location      The new location
-   * @param eventName     The name of the event to update
-   * @param startDateTime The start date-time filter (can be null)
-   * @param endDateTime   The end date-time filter (can be null)
+   * @param location      The new location.
+   * @param eventName     The name of the event to update.
+   * @param startDateTime The start date-time filter (can be null).
+   * @param endDateTime   The end date-time filter (can be null).
    * @return Void (null)
    */
   private Void setLocation(String location, String eventName, LocalDateTime startDateTime,
@@ -497,11 +503,11 @@ public class EventHandler {
   /**
    * Sets the event name for events matching the criteria.
    *
-   * @param eventName     The current name of the event
-   * @param newEventName  The new name for the event
-   * @param startDateTime The start date-time filter (can be null)
-   * @param endDateTime   The end date-time filter (can be null)
-   * @return Void (null)
+   * @param eventName     The current name of the event.
+   * @param newEventName  The new name for the event.
+   * @param startDateTime The start date-time filter (can be null).
+   * @param endDateTime   The end date-time filter (can be null).
+   * @return Void (null).
    */
   private Void setEventName(String eventName, String newEventName, LocalDateTime startDateTime,
                             LocalDateTime endDateTime) {
@@ -584,7 +590,7 @@ public class EventHandler {
    */
   private boolean checkForCollision(EventModel event, boolean autoDecline,
                                     LocalDateTime startDateTime, LocalDateTime endDateTime) {
-    if (autoDecline == true) {
+    if (autoDecline) {
       if (!eventCollection.checkConflict(startDateTime, endDateTime)) {
         eventCollection.addEvent(event);
         System.out.println("Event \"" + event.getEventName() + "\" was created");
@@ -610,7 +616,7 @@ public class EventHandler {
    */
   private boolean checkForCollisionRecurringEvent(RecurringEventModel recurringEvent,
                                                   boolean autoDecline) {
-    if (autoDecline == true) {
+    if (autoDecline) {
       List<EventModel> recurringEventsList = eventCollection.generateOccurrences(recurringEvent);
       for (EventModel event : recurringEventsList) {
         if (eventCollection.checkConflict(event.getStartDateTime(), event.getEndDateTime())) {
@@ -639,9 +645,6 @@ public class EventHandler {
    * @return true if end date-time is before start date-time, false otherwise
    */
   public boolean isEndBeforeStart(LocalDateTime startDateTime, LocalDateTime endDateTime) {
-    if (endDateTime.isBefore(startDateTime)) {
-      return true;
-    }
-    return false;
+    return endDateTime.isBefore(startDateTime);
   }
 }

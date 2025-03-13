@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import Model.EventCollectionModel;
+import model.EventCollectionModel;
 
 /**
  * The EventController class is responsible for managing event-related commands.
