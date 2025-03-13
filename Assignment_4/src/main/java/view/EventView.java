@@ -1,6 +1,6 @@
-package View;
+package view;
 
-import Controller.EventController;
+import controller.EventController;
 
 import java.util.Scanner;
 

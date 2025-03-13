@@ -1,4 +1,4 @@
-package Controller;
+package controller;
 
 import Model.EventCollectionModel;
 import Model.EventModel;

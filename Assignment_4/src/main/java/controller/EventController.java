@@ -1,4 +1,4 @@
-package Controller;
+package controller;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -57,32 +57,23 @@ public class EventController {
 
       // Map the pattern string to the command
       Map<String, Runnable> commandMap = new HashMap<>();
-      commandMap.put("createEventPattern",
-              () -> eventHandler.processCreateEvent(matcher));
-      commandMap.put("createRecurringEventN",
-              () -> eventHandler.processCreateRecurringEventN(matcher));
-      commandMap.put("createRecurringEventEndDate",
-              () -> eventHandler.processCreateRecurringEventEndDate(matcher));
-      commandMap.put("createWholeDayEvent",
-              () -> eventHandler.processCreateAllDayEvent(matcher));
-      commandMap.put("createRecurringWholeDayEventN",
-              () -> eventHandler.processCreateAllDayRecurring(matcher));
-      commandMap.put("createRecurringWholeDayEventEnd",
-              () -> eventHandler.processCreateRecurringWholeDayEventEnd(matcher));
-      commandMap.put("editEvent",
-              () -> eventHandler.processEditEvent(matcher));
-      commandMap.put("editEvents",
-              () -> eventHandler.processEditEvents(matcher));
-      commandMap.put("editEventsByName",
-              () -> eventHandler.processEditEventsByName(matcher));
-      commandMap.put("printEventsOn",
-              () -> eventHandler.processPrintEventsOn(matcher));
-      commandMap.put("printEventsBetween",
-              () -> eventHandler.processPrintEventsBetween(matcher));
-      commandMap.put("export",
-              () -> eventHandler.processExport(matcher));
-      commandMap.put("show",
-              () -> eventHandler.processShowStatus(matcher));
+      commandMap.put("createEventPattern", () -> eventHandler.processCreateEvent(matcher));
+      commandMap.put("createRecurringEventN", () -> eventHandler
+              .processCreateRecurringEventN(matcher));
+      commandMap.put("createRecurringEventEndDate", () -> eventHandler
+              .processCreateRecurringEventEndDate(matcher));
+      commandMap.put("createWholeDayEvent", () -> eventHandler.processCreateAllDayEvent(matcher));
+      commandMap.put("createRecurringWholeDayEventN", () -> eventHandler
+              .processCreateAllDayRecurring(matcher));
+      commandMap.put("createRecurringWholeDayEventEnd", () -> eventHandler
+              .processCreateRecurringWholeDayEventEnd(matcher));
+      commandMap.put("editEvent", () -> eventHandler.processEditEvent(matcher));
+      commandMap.put("editEvents", () -> eventHandler.processEditEvents(matcher));
+      commandMap.put("editEventsByName", () -> eventHandler.processEditEventsByName(matcher));
+      commandMap.put("printEventsOn", () -> eventHandler.processPrintEventsOn(matcher));
+      commandMap.put("printEventsBetween", () -> eventHandler.processPrintEventsBetween(matcher));
+      commandMap.put("export", () -> eventHandler.processExport(matcher));
+      commandMap.put("show", () -> eventHandler.processShowStatus(matcher));
 
       // go through the map and call method if there is a match
       for (Map.Entry<String, Pattern> entry : parser.getPatterns().entrySet()) {
