@@ -8,7 +8,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+
 
 /**
  * Testing class of event handler and Event controller and the command parser.
@@ -648,8 +649,8 @@ public class EventHandlerTest {
             .of(2025, 11, 10, 10, 00);
 
     List<EventModel> printList = new ArrayList<>();
-    printList = eventController.getEventCollection().searchEventByTimeFrame
-            (startDateTime, endDateTime);
+    printList = eventController.getEventCollection().searchEventByTimeFrame(
+        startDateTime, endDateTime);
 
     assertEquals(
             "\n" +

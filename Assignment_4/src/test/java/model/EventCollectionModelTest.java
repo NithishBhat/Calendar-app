@@ -7,7 +7,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 
 /**
  * Unit tests for the EventCollectionModel class.
@@ -171,7 +173,7 @@ public class EventCollectionModelTest {
   }
 
   @Test
-  public void testRecurringEvents() {// GOES INTO INFINITE LOOP>?????
+  public void testRecurringEvents() {
     EventCollectionModel eventCollectionModel = new EventCollectionModel();
     LocalDateTime startDateTime =
             LocalDateTime.of(2025, 3, 1, 10, 0);
@@ -203,7 +205,7 @@ public class EventCollectionModelTest {
     LocalDateTime endDateTime =
             LocalDateTime.of(2025, 3, 1, 11, 0);
 
-    LocalDateTime RecurrenceEndDateTime =
+    LocalDateTime recurrenceEndDateTime =
             LocalDateTime.of(2025, 4, 2, 0, 0);
 
     List<Character> days = Arrays.asList('M', 'T', 'W');// i changed it from date time to char list
@@ -214,7 +216,7 @@ public class EventCollectionModelTest {
             true,
             days,
             null,
-            RecurrenceEndDateTime);
+            recurrenceEndDateTime);
     eventCollectionModel.addRecurringEvent(recurringCalendarEvent);
 
     List<EventModel> events = new ArrayList<>(eventCollectionModel.getEventList());
@@ -236,7 +238,7 @@ public class EventCollectionModelTest {
     LocalDateTime endDateTime2 =
             LocalDateTime.of(2025, 3, 1, 13, 0);
 
-    LocalDateTime RecurrenceEndDateTime =
+    LocalDateTime recurrenceEndDateTime =
             LocalDateTime.of(2025, 4, 2, 0, 0);
 
     List<Character> days = Arrays.asList('M', 'T', 'W');// i changed it from date time to char list
@@ -247,7 +249,7 @@ public class EventCollectionModelTest {
             true,
             days,
             null,
-            RecurrenceEndDateTime);
+            recurrenceEndDateTime);
     eventCollectionModel.addRecurringEvent(recurringCalendarEvent);
 
     List<EventModel> events = new ArrayList<>(eventCollectionModel.getEventList());

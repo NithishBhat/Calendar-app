@@ -14,7 +14,11 @@ import model.EventModel;
 import model.ExportToCSV;
 import model.RecurringEventModel;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 
 /**
  * Unit tests for the ExportToCSV class.
@@ -47,7 +51,7 @@ public class ExportToCSVTest {
     LocalDateTime endDateTime2 =
             LocalDateTime.of(2025, 3, 1, 13, 0);
 
-    LocalDateTime RecurrenceEndDateTime =
+    LocalDateTime recurrenceEndDateTime =
             LocalDateTime.of(2025, 4, 2, 0, 0);
 
     List<Character> days = Arrays.asList('M', 'T', 'W');
@@ -58,7 +62,7 @@ public class ExportToCSVTest {
             true,
             days,
             null,
-            RecurrenceEndDateTime);
+            recurrenceEndDateTime);
     eventCollectionModel.addRecurringEvent(recurringCalendarEvent);
 
     String fileName = "test.csv";
@@ -101,7 +105,7 @@ public class ExportToCSVTest {
     LocalDateTime endDateTime2 =
             LocalDateTime.of(2025, 3, 1, 13, 0);
 
-    LocalDateTime RecurrenceEndDateTime =
+    LocalDateTime recurrenceEndDateTime =
             LocalDateTime.of(2025, 4, 2, 0, 0);
 
     List<Character> days = Arrays.asList('M', 'T', 'W');
@@ -112,7 +116,7 @@ public class ExportToCSVTest {
             true,
             days,
             null,
-            RecurrenceEndDateTime);
+            recurrenceEndDateTime);
 
     eventCollectionModel.addRecurringEvent(recurringCalendarEvent);
 

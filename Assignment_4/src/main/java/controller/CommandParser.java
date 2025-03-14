@@ -152,7 +152,7 @@ public class CommandParser {
     String[] words = input.trim().split("\\s+");
     if (words.length == 0) {
       return "Empty command";
-    };
+    }
 
     String firstWord = words[0].toLowerCase();
     switch (firstWord) {
@@ -223,34 +223,41 @@ public class CommandParser {
    * @return A string diagnostic message describing the error.
    */
   private String diagnoseEditCommand(String input) {
-    if (!input.contains("event") && !input.contains("events"))
-      return "Missing 'event' or 'events' keyword in edit command";
+    if (!input.contains("event") && !input.contains("events")) {
+      return ("Missing 'event' or 'events' keyword in edit command");
+    }
 
     if (input.matches("\\s*edit\\s+event\\s+.*")) {
       if (!input.contains("from")) {
-        return "Missing 'from' keyword in edit event command";
-      }
-      if (input.contains("from") && !input.contains("to"))
-        return "Missing 'to' keyword in edit event command";
-      if (!input.contains("with"))
-        return "Missing 'with' keyword for new property value in edit event command";
-      if (!input.matches(".*\".*\".*")) {
-        return "Missing event name in quotes";
-      }
-    } else if (input.matches("\\s*edit\\s+events\\s+.*")) {
-      if (!input.matches(".*\".*\".*")) {
-        return "Missing event name in quotes";
+        return ("Missing 'from' keyword in edit event command");
       }
 
+      if (input.contains("from") && !input.contains("to")) {
+        return "Missing 'to' keyword in edit event command";
+      }
+
+      if (!input.contains("with")) {
+        return "Missing 'with' keyword for new property value in edit event command";
+      }
+
+      if (!input.matches(".*\".*\".*")) {
+        return ("Missing event name in quotes");
+      }
+
+    }
+
+    else if (input.matches("\\s*edit\\s+events\\s+.*")) {
+      if (!input.matches(".*\".*\".*")) {
+        return ("Missing event name in quotes");
+      }
 
       if (input.contains("from") && !input.contains("with")) {
-        return "Missing 'with' keyword after 'from <dateTime>' in edit events command";
+        return ("Missing 'with' keyword after 'from <dateTime>' in edit events command");
       }
     }
 
-
     String[] validProperties = {"startDateTime", "endDateTime", "location",
-            "description", "privacyType", "eventName"};
+        "description", "privacyType", "eventName"};
     boolean hasValidProperty = false;
     for (String prop : validProperties) {
       if (input.contains(prop)) {
@@ -274,7 +281,7 @@ public class CommandParser {
    * Diagnoses the errors in the 'print' command format.
    *
    * @param input The 'print' command input string.
-   * @return  A string diagnostic message describing the error.
+   * @return A string diagnostic message describing the error.
    */
   private String diagnosePrintCommand(String input) {
     if (!input.contains("events")) {
@@ -304,8 +311,7 @@ public class CommandParser {
    * Diagnoses errors in the 'export' command format.
    *
    * @param input The 'export' command input string.
-   * @return  A diagnostic message describing the error if the command is invalid.
-   *
+   * @return A diagnostic message describing the error if the command is invalid.
    */
 
   private String diagnoseExportCommand(String input) {
@@ -324,8 +330,7 @@ public class CommandParser {
    * Diagnoses errors in the 'show' command format.
    *
    * @param input The 'show' command input string.
-   * @return  A diagnostic message describing the error if the command is invalid.
-   *
+   * @return A diagnostic message describing the error if the command is invalid.
    */
   private String diagnoseShowCommand(String input) {
     if (!input.contains("status")) {
