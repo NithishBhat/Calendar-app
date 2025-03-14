@@ -34,9 +34,9 @@
                     </targetTests>
                     <!-- Target your specific packages -->
                     <targetClasses>
-                        <param>Controller.*</param>
+                        <param>controller.*</param>
                         <param>model.*</param>
-                        <param>View.*</param>
+                        <param>view.*</param>
                     </targetClasses>
                 </configuration>
             </plugin>

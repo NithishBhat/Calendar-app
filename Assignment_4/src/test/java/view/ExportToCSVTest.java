@@ -71,9 +71,9 @@ public class ExportToCSVTest {
 
     try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
       String header = br.readLine();
-      assertEquals("Subject," +
-              "Start Date,Start Time,End Date,End Time,All Day Event," +
-              "Description,Location,Private", header);
+      assertEquals("Subject,"
+              + "Start Date,Start Time,End Date,End Time,All Day Event,"
+              + "Description,Location,Private", header);
 
       String firstEvent = br.readLine();
       assertNotNull(firstEvent);
@@ -122,8 +122,8 @@ public class ExportToCSVTest {
 
     for (EventModel event : eventCollectionModel.getEventList()) {
       if (event.getEventName().equals("Conference")) {
-        event.setDescription("Updated description with escape" +
-                " sequences\nThis should still print on the same line.");
+        event.setDescription("Updated description with escape"
+                + " sequences\nThis should still print on the same line.");
       }
     }
 
@@ -134,8 +134,8 @@ public class ExportToCSVTest {
 
     try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
       String header = br.readLine();
-      assertEquals("Subject,Start Date,Start Time,End Date," +
-              "End Time,All Day Event,Description,Location,Private", header);
+      assertEquals("Subject,Start Date,Start Time,End Date,"
+              + "End Time,All Day Event,Description,Location,Private", header);
 
       String firstEvent = br.readLine();
       assertNotNull(firstEvent);

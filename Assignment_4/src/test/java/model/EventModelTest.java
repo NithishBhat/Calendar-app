@@ -68,4 +68,47 @@ public class EventModelTest {
 
     System.out.println(eventModel);
   }
+
+  @Test
+  public void TestExtraParams() {
+    LocalDateTime startDateTime =
+            LocalDateTime.of(2025, 3, 1, 10, 0);
+    LocalDateTime endDateTime =
+            LocalDateTime.of(2025, 3, 1, 12, 0);
+
+    EventModel eventModel = new EventModel("Conference", startDateTime, endDateTime,
+            "description", false, true, "location");
+
+    assertEquals("Conference", eventModel.getEventName());
+    assertEquals(startDateTime, eventModel.getStartDateTime());
+    assertEquals(LocalDateTime.of(
+            2025, 3, 1, 12, 0), eventModel.getEndDateTime());
+    assertEquals("description", eventModel.getDescription());
+    assertEquals("location", eventModel.getLocation());
+    assertFalse(eventModel.getIsPrivate());
+    assertTrue(eventModel.getAutoDecline());
+
+    System.out.println(eventModel);
+  }
+
+  @Test
+  public void TestSameStartAndEndTime() {
+    LocalDateTime dateTime = LocalDateTime
+            .of(2025, 3, 1, 10, 0);
+    EventModel eventModel = new EventModel("Meeting", dateTime, dateTime);
+
+    assertEquals(dateTime, eventModel.getStartDateTime());
+    assertEquals(dateTime, eventModel.getEndDateTime());
+  }
+
+  @Test
+  public void TestNullEventName() {
+    LocalDateTime startDateTime = LocalDateTime
+            .of(2025, 3, 1, 10, 0);
+    EventModel event = new EventModel(null, startDateTime);
+    assertEquals(null, event.getEventName());
+
+    event.setEventName("");
+    assertEquals("", event.getEventName());
+  }
 }
