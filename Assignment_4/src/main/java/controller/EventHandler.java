@@ -41,17 +41,17 @@ public class EventHandler {
    * @param matcher The regex matcher containing event details.
    */
   void processCreateEvent(Matcher matcher) {
-    Boolean autoDecline;
+
 
     String autoDeclineString = matcher.group(1);
-    autoDecline = autoDeclineString == null ? false : true;
+    Boolean autoDecline = autoDeclineString!=null;
     String eventName = matcher.group(2);
     String startDateTime = matcher.group(3);
     String endDateTime = matcher.group(4);
 
     String description = matcher.group(5);
     String location = matcher.group(6);
-    boolean privacy = matcher.group(7) != null ? Boolean.parseBoolean(matcher.group(7)) : false;
+    boolean privacy = matcher.group(7) != null && Boolean.parseBoolean(matcher.group(7));
 
     LocalDateTime startDate = LocalDateTime.parse(startDateTime);
     LocalDateTime endDate = LocalDateTime.parse(endDateTime);
@@ -74,10 +74,9 @@ public class EventHandler {
    * @param matcher The regex matcher containing event details.
    */
   void processCreateRecurringEventN(Matcher matcher) {
-    Boolean autoDecline;
 
     String autoDeclineString = matcher.group(1);
-    autoDecline = autoDeclineString == null ? false : true;
+    Boolean autoDecline = autoDeclineString!=null;
     String eventName = matcher.group(2);
     String startDateTime = matcher.group(3);
     String endDateTime = matcher.group(4);
@@ -86,7 +85,7 @@ public class EventHandler {
 
     String description = matcher.group(7);
     String location = matcher.group(8);
-    Boolean privacy = matcher.group(9) != null ? Boolean.parseBoolean(matcher.group(9)) : false;
+    Boolean privacy = matcher.group(9) != null && Boolean.parseBoolean(matcher.group(9));
 
     LocalDateTime startDate = LocalDateTime.parse(startDateTime);
     LocalDateTime endDate = LocalDateTime.parse(endDateTime);
@@ -115,10 +114,9 @@ public class EventHandler {
    * @param matcher The regex matcher containing event details.
    */
   void processCreateRecurringEventEndDate(Matcher matcher) {
-    Boolean autoDecline;
 
     String autoDeclineString = matcher.group(1);
-    autoDecline = autoDeclineString == null ? false : true;
+    Boolean autoDecline = autoDeclineString != null;
     String eventName = matcher.group(2);
     String startDateTime = matcher.group(3);
     String endDateTime = matcher.group(4);
@@ -127,7 +125,7 @@ public class EventHandler {
 
     String description = matcher.group(7);
     String location = matcher.group(8);
-    Boolean privacy = matcher.group(9) != null ? Boolean.parseBoolean(matcher.group(9)) : false;
+    Boolean privacy = matcher.group(9) != null && Boolean.parseBoolean(matcher.group(9));
 
     List<Character> recurringWeekDay = stringToDayOfWeek(weekDay);
     LocalDateTime startDate = LocalDateTime.parse(startDateTime);
@@ -161,13 +159,13 @@ public class EventHandler {
     Boolean autoDecline;
 
     String autoDeclineString = matcher.group(1);
-    autoDecline = autoDeclineString == null ? false : true;
+    autoDecline = autoDeclineString != null;
     String eventName = matcher.group(2);
     String startDateTime = matcher.group(3);
 
     String description = matcher.group(4);
     String location = matcher.group(5);
-    Boolean privacy = matcher.group(6) != null ? Boolean.parseBoolean(matcher.group(6)) : false;
+    Boolean privacy = matcher.group(6) != null && Boolean.parseBoolean(matcher.group(6));
 
     LocalDateTime startDate = LocalDateTime.parse(startDateTime);
     EventModel event = new EventModel(eventName, startDate, null, description
@@ -184,10 +182,9 @@ public class EventHandler {
    * @param matcher The regex matcher containing event details.
    */
   void processCreateAllDayRecurring(Matcher matcher) {
-    Boolean autoDecline;
 
     String autoDeclineString = matcher.group(1);
-    autoDecline = autoDeclineString == null ? false : true;
+    Boolean autoDecline = autoDeclineString != null;
     String eventName = matcher.group(2);
     String startDateTime = matcher.group(3);
 
@@ -196,7 +193,7 @@ public class EventHandler {
 
     String description = matcher.group(6);
     String location = matcher.group(7);
-    Boolean privacy = matcher.group(8) != null ? Boolean.parseBoolean(matcher.group(8)) : false;
+    Boolean privacy = matcher.group(8) != null && Boolean.parseBoolean(matcher.group(8));
 
     LocalDateTime startDate = LocalDate.parse(startDateTime).atStartOfDay();
     List<Character> recurringWeekDay = stringToDayOfWeek(weekDay);
@@ -218,10 +215,9 @@ public class EventHandler {
    * @param matcher The regex matcher containing event details.
    */
   void processCreateRecurringWholeDayEventEnd(Matcher matcher) {
-    Boolean autoDecline;
 
     String autoDeclineString = matcher.group(1);
-    autoDecline = autoDeclineString == null ? false : true;
+    Boolean autoDecline = autoDeclineString !=null;
     String eventName = matcher.group(2);
     String startDate = matcher.group(3);
 
@@ -230,7 +226,7 @@ public class EventHandler {
 
     String description = matcher.group(6);
     String location = matcher.group(7);
-    Boolean privacy = matcher.group(8) != null ? Boolean.parseBoolean(matcher.group(8)) : false;
+    Boolean privacy = matcher.group(8) != null && Boolean.parseBoolean(matcher.group(8));
 
     List<Character> recurringWeekDay = stringToDayOfWeek(weekDay);
     LocalDateTime startDateTime = LocalDate.parse(startDate).atStartOfDay();
@@ -625,12 +621,11 @@ public class EventHandler {
           return true;
         }
       }
-
       eventCollection.addRecurringEvent(recurringEvent);
       System.out.println("Event \"" + recurringEvent.getEventName() + "\" was created");
       return false;
-
-    } else {
+    }
+    else {
       eventCollection.addRecurringEvent(recurringEvent);
       System.out.println("Event \"" + recurringEvent.getEventName() + "\" was created");
       return false;

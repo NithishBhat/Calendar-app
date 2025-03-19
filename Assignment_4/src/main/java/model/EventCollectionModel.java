@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.ArrayList;
 
-
 /**
  * EventCollectionModel represents a collection of events and provides methods to manage, search,
  * and manipulate events, including checking for conflicts and handling recurring events.
