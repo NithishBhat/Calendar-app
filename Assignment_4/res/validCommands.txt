@@ -1,0 +1,13 @@
+create event <"eventName"> from <dateStringTTimeString> to <dateStringTTimeString> <description:"value"> <location:"value"> <privacy:"true|false">
+create event [--autoDecline] <"eventName"> from <dateStringTtimeString> to <dateStringTtimeString> repeats <weekdays> for <N> times <description:"value"> <location:"value"> <privacy:"true|false">
+edit event <property> <"eventName"> from <dateStringTtimeString> to <dateStringTtimeString> with "<NewPropertyValue>"
+print events from <dateStringTtimeString> to <dateStringTtimeString>
+edit events <property> <"eventName"> from <dateStringTtimeString> with <NewPropertyValue>
+edit event <property> <"eventName"> from <dateStringTtimeString> to <dateStringTtimeString> with <NewPropertyValue>
+create event <"eventName"> on <dateString> repeats <weekdays> until <dateString> <description:"value"> <location:"value"> <privacy:"true|false">
+create event --autoDecline <"eventName"> on <dateStringTtimeString> <description:"value"> <location:"value"> <privacy:"true|false">
+create event --autoDecline <"eventName"> from <dateStringTtimeString> to <dateStringTtimeString> repeats <weekdays> until <dateStringTtimeString> <description:"value"> <location:"value"> <privacy:"true|false">
+print events on <dateString>
+export cal <fileName.csv>
+show status on <dateStringTtimeString>
+exit

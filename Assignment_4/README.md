@@ -168,7 +168,7 @@ show status on 2025-01-10T10:00
 ## Modes of Interaction
 In order to run the application the user must specify whether to use the interactive CLI 
 or the headless application. Before running any modes the user must compile the files from the 
-/java directory.
+/java directory. You must be in the /java directory when running commands.
 **Command Syntax:**
 ```bash
 javac -d . */*.java
@@ -192,3 +192,18 @@ and users get instant feedback from their actions.
 ```bash
 java view.EventView.java --mode interactive 
 ```
+
+## Distribution
+Nithish did the 
+  - Event handler
+  - Recurring events model, events model
+  - Model tests
+  - 
+
+Phillip did 
+  - Command parser
+  - event controller
+  - export to csv
+  - event collection model
+  - event view
+  - view test
