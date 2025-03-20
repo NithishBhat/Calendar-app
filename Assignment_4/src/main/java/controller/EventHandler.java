@@ -1,5 +1,7 @@
 package controller;
 
+import java.time.ZoneId;
+import model.CalenderCollection;
 import model.EventCollectionModel;
 import model.EventModel;
 import model.ExportToCSV;
@@ -22,14 +24,40 @@ import java.util.regex.Matcher;
 public class EventHandler {
 
   private EventCollectionModel eventCollection;
+  private CalenderCollection calenderCollection;
 
   /**
    * Constructor initializes the event collection model.
    *
-   * @param eventCollection The event collection model to manage events.
    */
-  public EventHandler(EventCollectionModel eventCollection) {
-    this.eventCollection = eventCollection;
+  public EventHandler() {
+
+    calenderCollection= new CalenderCollection();
+    createCalender("default",ZoneId.of("UTC"));
+    eventCollection=calenderCollection.getEventCollection("default");
+
+  }
+
+  private void setCurrentCalender(String calenderName) {
+    eventCollection= calenderCollection.getEventCollection(calenderName);
+  }
+
+  /**
+   * Retrieves the event collection managed by the controller.
+   *
+   * @return The EventCollectionModel instance.
+   */
+  public EventCollectionModel getEventCollection(String calenderName) {
+    return calenderCollection.getEventCollection(calenderName);
+  }
+
+  /**
+   * creates a calendar
+   * create calendar --name <calName> --timezone area/location
+   *
+   */
+  void createCalender(String calenderName,ZoneId timezone ) {
+    calenderCollection.addCalender(calenderName,timezone);
   }
 
 

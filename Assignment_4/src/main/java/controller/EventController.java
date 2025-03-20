@@ -18,28 +18,23 @@ import model.EventCollectionModel;
  */
 public class EventController {
 
-  private EventCollectionModel eventCollection;
   private CommandParser parser;
   private EventHandler eventHandler;
+
 
   /**
    * Constructs an EventController instance.
    * Initializes the event collection, command parser, and event handler.
    */
   public EventController() {
-    eventCollection = new EventCollectionModel();
     parser = new CommandParser();
-    eventHandler = new EventHandler(eventCollection);
+    eventHandler = new EventHandler();
   }
 
-  /**
-   * Retrieves the event collection managed by the controller.
-   *
-   * @return The EventCollectionModel instance.
-   */
-  public EventCollectionModel getEventCollection() {
-    return eventCollection;
+  public EventHandler getEventHandler(){
+    return eventHandler;
   }
+
 
   /**
    * Processes a given command string by matching it against predefined patterns.

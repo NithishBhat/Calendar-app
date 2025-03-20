@@ -6,7 +6,7 @@ public class CalenderModel {
   private EventCollectionModel eventCollection;
   private ZoneId TimeZone;
 
-  CalenderModel(EventCollectionModel eventCollection, ZoneId TimeZone) {
+  public CalenderModel(EventCollectionModel eventCollection, ZoneId TimeZone) {
     this.eventCollection = eventCollection;
     this.TimeZone = TimeZone==null?ZoneId.systemDefault():TimeZone;
   }
