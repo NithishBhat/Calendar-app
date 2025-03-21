@@ -38,8 +38,13 @@ public class EventHandler {
 
   }
 
-  private void setCurrentCalender(String calenderName) {
+  private void useCalender(String calenderName) {
     eventCollection= calenderCollection.getEventCollection(calenderName);
+  }
+
+  private void copyEventFromDateTime(LocalDateTime calDate,String calName,String tarCalName,LocalDateTime tarCalDate){
+
+
   }
 
   /**
@@ -60,6 +65,10 @@ public class EventHandler {
     calenderCollection.addCalender(calenderName,timezone);
   }
 
+  //edit calendar --name <name-of-calendar> --property <property-name> <new-property-value>
+  //copy event <eventName> on <dateStringTtimeString> --target <calendarName> to <dateStringTtimeString>
+  //copy events on <dateString> --target <calendarName> to <dateString>
+  //copy events between <dateString> and <dateString> to --target <calendarName> <dateString>
 
   /**
    * Processes the creation of an event from a regex matcher.
@@ -91,7 +100,7 @@ public class EventHandler {
 
     EventModel event = new EventModel(eventName, startDate, endDate, description,
             privacy, autoDecline, location);
-    checkForCollision(event, autoDecline, startDate, endDate);
+    eventCollection.checkForCollision(event, autoDecline);
   }
 
   /**
@@ -129,7 +138,7 @@ public class EventHandler {
             recurringWeekDay, numOfTimes,
             null);
 
-    checkForCollisionRecurringEvent(recurringEvent, autoDecline);
+    eventCollection.checkForCollisionRecurringEvent(recurringEvent, autoDecline);
   }
 
   /**
@@ -174,7 +183,7 @@ public class EventHandler {
             recurringWeekDay, null,
             recurrernceEndDateTime);
 
-    checkForCollisionRecurringEvent(recurringEvent, autoDecline);
+    eventCollection.checkForCollisionRecurringEvent(recurringEvent, autoDecline);
   }
 
   /**
@@ -198,7 +207,7 @@ public class EventHandler {
     LocalDateTime startDate = LocalDateTime.parse(startDateTime);
     EventModel event = new EventModel(eventName, startDate, null, description
             , privacy, autoDecline, location);
-    checkForCollision(event, autoDecline, event.getEndDateTime(), event.getEndDateTime());
+    eventCollection.checkForCollision(event, autoDecline);
   }
 
   /**
@@ -232,7 +241,7 @@ public class EventHandler {
             privacy, autoDecline, location,
             recurringWeekDay, numOfTimes,
             null);
-    checkForCollisionRecurringEvent(recurringEvent, autoDecline);
+    eventCollection.checkForCollisionRecurringEvent(recurringEvent, autoDecline);
   }
 
   /**
@@ -266,7 +275,7 @@ public class EventHandler {
             privacy, autoDecline, location,
             recurringWeekDay, null,
             recurrernceEndDateTime);
-    checkForCollisionRecurringEvent(recurringEvent, autoDecline);
+    eventCollection.checkForCollisionRecurringEvent(recurringEvent, autoDecline);
   }
 
   /**
@@ -603,62 +612,6 @@ public class EventHandler {
     }
   }
 
-  /**
-   * Checks for collision with existing events and adds the event if allowed.
-   *
-   * @param event         The event to check and potentially add
-   * @param autoDecline   Whether to automatically decline events with conflicts
-   * @param startDateTime The start date-time of the event
-   * @param endDateTime   The end date-time of the event
-   * @return true if event was added, false if there was a conflict and autoDecline is true
-   */
-  private boolean checkForCollision(EventModel event, boolean autoDecline,
-                                    LocalDateTime startDateTime, LocalDateTime endDateTime) {
-    if (autoDecline) {
-      if (!eventCollection.checkConflict(startDateTime, endDateTime)) {
-        eventCollection.addEvent(event);
-        System.out.println("Event \"" + event.getEventName() + "\" was created");
-        return false;
-      } else {
-        System.out.println("Event \"" + event.getEventName()
-                + "\" was not created due to conflict");
-        return true;
-      }
-    } else {
-      eventCollection.addEvent(event);
-      System.out.println("Event \"" + event.getEventName() + "\" was created");
-      return true;
-    }
-  }
-
-  /**
-   * Checks for collision with existing events for recurring events and adds if allowed.
-   *
-   * @param recurringEvent The recurring event to check and potentially add
-   * @param autoDecline    Whether to automatically decline events with conflicts
-   * @return true if event was added, false if there was a conflict and autoDecline is true
-   */
-  private boolean checkForCollisionRecurringEvent(RecurringEventModel recurringEvent,
-                                                  boolean autoDecline) {
-    if (autoDecline) {
-      List<EventModel> recurringEventsList = eventCollection.generateOccurrences(recurringEvent);
-      for (EventModel event : recurringEventsList) {
-        if (eventCollection.checkConflict(event.getStartDateTime(), event.getEndDateTime())) {
-          System.out.println("Conflict detected, your recurring event \""
-                  + recurringEvent.getEventName() + "\" was not created");
-          return true;
-        }
-      }
-      eventCollection.addRecurringEvent(recurringEvent);
-      System.out.println("Event \"" + recurringEvent.getEventName() + "\" was created");
-      return false;
-    }
-    else {
-      eventCollection.addRecurringEvent(recurringEvent);
-      System.out.println("Event \"" + recurringEvent.getEventName() + "\" was created");
-      return false;
-    }
-  }
 
   /**
    * Checks if the end date-time is before the start date-time.

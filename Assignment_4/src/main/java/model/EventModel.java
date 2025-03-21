@@ -71,6 +71,21 @@ public class EventModel {
   }
 
   /**
+   * Constructor that copies an event to another.
+   *
+   * @param event Event model object.
+   */
+  public EventModel(EventModel event) {
+    this.eventName = event.getEventName();
+    this.startDateTime = event.getStartDateTime();
+    this.endDateTime = event.getEndDateTime();
+    this.description =event.getDescription();
+    this.isPrivate = event.getIsPrivate();
+    this.autoDecline = event.getAutoDecline();
+    this.location =event.getLocation();
+  }
+
+  /**
    * Constructs an EventModel with the specified event name, start and end date-time.
    * This constructor defaults the auto-decline setting to false.
    *
