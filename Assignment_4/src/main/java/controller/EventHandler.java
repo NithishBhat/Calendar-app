@@ -42,9 +42,8 @@ public class EventHandler {
     eventCollection= calenderCollection.getEventCollection(calenderName);
   }
 
-  private void copyEventFromDateTime(LocalDateTime calDate,String calName,String tarCalName,LocalDateTime tarCalDate){
-
-
+  public void copyEventFromDateTime(LocalDateTime calDate,String calName,String tarCalName,LocalDateTime tarCalDate){
+   calenderCollection.copyCalenderFromDate(calDate,calName,tarCalDate,tarCalName);
   }
 
   /**
@@ -55,6 +54,7 @@ public class EventHandler {
   public EventCollectionModel getEventCollection(String calenderName) {
     return calenderCollection.getEventCollection(calenderName);
   }
+
 
   /**
    * creates a calendar

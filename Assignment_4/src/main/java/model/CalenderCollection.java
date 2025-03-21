@@ -50,15 +50,14 @@ public class CalenderCollection {
     CalenderModel targetCalender = calenderCollection.get(tarCalName);
     EventCollectionModel sourceEventCollection = sourceCalender.getEventCollection();
     EventCollectionModel targetEventCollection = targetCalender.getEventCollection();
-    ZoneId sourceTimeZone = sourceCalender.getTimeZone();
-    ZoneId targetTimeZone = targetCalender.getTimeZone();
+    //ZoneId sourceTimeZone = sourceCalender.getTimeZone();
+    //ZoneId targetTimeZone = targetCalender.getTimeZone();
 
-    List<EventModel> EventsToBeCopied = convertTimeZoneList(
-            sourceEventCollection.searchEventByEventStartDate(calDate),
-            sourceTimeZone,
-            targetTimeZone);
-
-
+    List<EventModel> eventsToBeCopied = deepCopyList(sourceEventCollection.searchEventByEventStartDate(calDate));
+    changeDateTime(eventsToBeCopied,tarCalDate);
+    for (EventModel event : eventsToBeCopied ) {
+      targetEventCollection.checkForCollision(event, true);
+    }
   }
 
   private List<EventModel> convertTimeZoneList(List<EventModel> events, ZoneId sourceZoneId, ZoneId destinationZoneId) {
@@ -70,6 +69,12 @@ public class CalenderCollection {
       eventsList.add(event);
     }
     return eventsList;
+  }
+
+  private void changeDateTime(List<EventModel> events, LocalDateTime newDateTime){
+    for (EventModel event : events) {
+      event.setStartDateTime(newDateTime);
+    }
   }
 
   private LocalDateTime convertTimeZone(LocalDateTime dateTime, ZoneId sourceZoneId, ZoneId destinationZoneId) {
@@ -85,5 +90,6 @@ public class CalenderCollection {
     }
     return copy;
   }
+
 
 }

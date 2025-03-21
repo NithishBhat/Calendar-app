@@ -5,6 +5,7 @@ import model.EventModel;
 import org.junit.Test;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,7 +27,34 @@ public class EventHandlerTest {
             + "from 2025-10-10T10:00 to 2025-10-10T10:00 "
             + "description:\"test HELLO\" location:\"MA\" privacy:\"true\"");
 
+
     assertEquals(1, eventController.getEventHandler().getEventCollection("default").getEventList().size());
+    EventModel event = eventController.getEventHandler().getEventCollection("default").getEventList().get(0);
+
+    assertEquals("hello world", event.getEventName());
+    assertEquals("2025-10-10T10:00", event.getStartDateTime().toString());
+    assertEquals("2025-10-10T10:00", event.getEndDateTime().toString());
+    assertEquals("test HELLO", event.getDescription());
+    assertEquals("MA", event.getLocation());
+    assertEquals(true, event.getIsPrivate());
+  }
+
+  @Test
+  public void copycalEventCreation() {
+
+    EventController eventController = new EventController();
+    eventController.filterCommand("create event \"hello world\" "
+            + "from 2025-10-10T10:00 to 2025-10-10T10:00 "
+            + "description:\"test HELLO\" location:\"MA\" privacy:\"true\"");
+
+    eventController.getEventHandler().createCalender("Hello", ZoneId.of("America/New_York"));
+    eventController.getEventHandler().copyEventFromDateTime(LocalDateTime.parse("2025-10-10T10:00"),"default","Hello",
+            LocalDateTime.parse("2025-12-19T10:00")  );
+
+
+
+    assertEquals(1, eventController.getEventHandler().getEventCollection("default").getEventList().size());
+
     EventModel event = eventController.getEventHandler().getEventCollection("default").getEventList().get(0);
 
     assertEquals("hello world", event.getEventName());
