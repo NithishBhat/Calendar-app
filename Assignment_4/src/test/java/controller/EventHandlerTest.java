@@ -54,15 +54,24 @@ public class EventHandlerTest {
 
 
     assertEquals(1, eventController.getEventHandler().getEventCollection("default").getEventList().size());
+    assertEquals(1, eventController.getEventHandler().getEventCollection("Hello").getEventList().size());
 
-    EventModel event = eventController.getEventHandler().getEventCollection("default").getEventList().get(0);
+    EventModel event1 = eventController.getEventHandler().getEventCollection("default").getEventList().get(0);
+    EventModel event2 = eventController.getEventHandler().getEventCollection("Hello").getEventList().get(0);
 
-    assertEquals("hello world", event.getEventName());
-    assertEquals("2025-10-10T10:00", event.getStartDateTime().toString());
-    assertEquals("2025-10-10T10:00", event.getEndDateTime().toString());
-    assertEquals("test HELLO", event.getDescription());
-    assertEquals("MA", event.getLocation());
-    assertEquals(true, event.getIsPrivate());
+    assertEquals("hello world", event1.getEventName());
+    assertEquals("2025-10-10T10:00", event1.getStartDateTime().toString());
+    assertEquals("2025-10-10T10:00", event1.getEndDateTime().toString());
+    assertEquals("test HELLO", event1.getDescription());
+    assertEquals("MA", event1.getLocation());
+    assertEquals(true, event1.getIsPrivate());
+
+    assertEquals("hello world", event2.getEventName());
+    assertEquals("2025-12-19T10:00", event2.getStartDateTime().toString());
+    assertEquals("2025-10-10T10:00", event2.getEndDateTime().toString());
+    assertEquals("test HELLO", event2.getDescription());
+    assertEquals("MA", event2.getLocation());
+    assertEquals(true, event2.getIsPrivate());
   }
 
 
