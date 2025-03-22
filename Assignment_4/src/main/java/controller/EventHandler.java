@@ -46,6 +46,9 @@ public class EventHandler {
    calenderCollection.copyCalenderFromDate(calDate,calName,tarCalDate,tarCalName);
   }
 
+  public void copyEntireDay(LocalDateTime calDate,String calName,String tarCalName,LocalDateTime tarCalDate){
+    calenderCollection.copyCalenderFromDate(calDate,calName,tarCalDate,tarCalName);
+  }
   /**
    * Retrieves the event collection managed by the controller.
    *

@@ -1,6 +1,7 @@
 package model;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.ZoneId;
 
 import java.time.ZonedDateTime;
@@ -60,6 +61,38 @@ public class CalenderCollection {
     }
   }
 
+  public void copyCalenderEntireDay(LocalDateTime calDate, String calName, LocalDateTime tarCalDate, String tarCalName) {
+    CalenderModel sourceCalender = calenderCollection.get(calName);
+    CalenderModel targetCalender = calenderCollection.get(tarCalName);
+    EventCollectionModel sourceEventCollection = sourceCalender.getEventCollection();
+    EventCollectionModel targetEventCollection = targetCalender.getEventCollection();
+    //ZoneId sourceTimeZone = sourceCalender.getTimeZone();
+    //ZoneId targetTimeZone = targetCalender.getTimeZone();
+
+    List<EventModel> eventsToBeCopied = deepCopyList(sourceEventCollection.searchEventByTimeFrame(
+            calDate,calDate.toLocalDate().atTime(LocalTime.of(23, 59))));
+    changeDateTime(eventsToBeCopied,tarCalDate);
+    for (EventModel event : eventsToBeCopied ) {
+      targetEventCollection.checkForCollision(event, true);
+    }
+  }
+
+  public void copyCalenderBetweenDates(LocalDateTime fromDate,LocalDateTime toDate, String calName, LocalDateTime tarCalDate, String tarCalName) {
+    CalenderModel sourceCalender = calenderCollection.get(calName);
+    CalenderModel targetCalender = calenderCollection.get(tarCalName);
+    EventCollectionModel sourceEventCollection = sourceCalender.getEventCollection();
+    EventCollectionModel targetEventCollection = targetCalender.getEventCollection();
+    //ZoneId sourceTimeZone = sourceCalender.getTimeZone();
+    //ZoneId targetTimeZone = targetCalender.getTimeZone();
+
+    List<EventModel> eventsToBeCopied = deepCopyList(sourceEventCollection.searchEventByTimeFrame(
+            fromDate,toDate));
+    changeDateTime(eventsToBeCopied,tarCalDate);
+    for (EventModel event : eventsToBeCopied ) {
+      targetEventCollection.checkForCollision(event, true);
+    }
+  }
+
   private List<EventModel> convertTimeZoneList(List<EventModel> events, ZoneId sourceZoneId, ZoneId destinationZoneId) {
     List<EventModel> eventsList = new ArrayList<>();
     eventsList=deepCopyList(events);
@@ -77,13 +110,15 @@ public class CalenderCollection {
     }
   }
 
+
+
   private LocalDateTime convertTimeZone(LocalDateTime dateTime, ZoneId sourceZoneId, ZoneId destinationZoneId) {
     ZonedDateTime sourceZonedDateTime = dateTime.atZone(sourceZoneId);
     ZonedDateTime destinationZonedDateTime = sourceZonedDateTime.withZoneSameInstant(destinationZoneId);
     return destinationZonedDateTime.toLocalDateTime();
   }
 
-  private List<EventModel> deepCopyList(List<EventModel> original) {
+  private List<EventModel> deepCopyList(List<EventModel> original) {//deep copy to prevent reference
     List<EventModel> copy = new ArrayList<>();
     for (EventModel event : original) {
       copy.add(new EventModel(event));
