@@ -33,7 +33,6 @@ public class EventController {
     return eventHandler;
   }
 
-
   /**
    * Processes a given command string by matching it against predefined patterns.
    * If a matching pattern is found, the corresponding event handler method is executed.

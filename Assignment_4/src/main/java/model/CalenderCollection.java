@@ -1,11 +1,14 @@
 package model;
 
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
 
+import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -24,10 +27,13 @@ public class CalenderCollection {
   }
 
   public void addCalender(String name, ZoneId timeZone) {
-    calenderCollection.put(name, new CalenderModel(new EventCollectionModel(), timeZone));
+    calenderCollection.put(name.replace("\"", ""), new CalenderModel(new EventCollectionModel(), timeZone));
   }
 
   public EventCollectionModel getEventCollection(String name) {
+    if (!calenderCollection.containsKey(name)) {
+      throw new IllegalArgumentException("Calendar does not exist: " + name);
+    }
     return calenderCollection.get(name).getEventCollection();
   }
 
@@ -44,7 +50,7 @@ public class CalenderCollection {
   }
 
   public void changeCalenderName(String oldName, String newName) {
-    calenderCollection.put(newName, calenderCollection.remove(oldName));
+    calenderCollection.put(newName.replace("\"", ""), calenderCollection.remove(oldName));
   }
 
   public String getCalendarName(EventCollectionModel eventCollection) {
@@ -87,8 +93,7 @@ public class CalenderCollection {
     EventCollectionModel sourceEventCollection = sourceCalender.getEventCollection();
     EventCollectionModel targetEventCollection = targetCalender.getEventCollection();
 
-    EventModel eventToCopy = sourceEventCollection
-            .searchEventByStartTimeAndName(eventName, calDate);
+    EventModel eventToCopy = sourceEventCollection.searchEventByStartTimeAndName(eventName, calDate);
 
     if (eventToCopy == null) {
       System.out.println("Error: Event " + eventName
@@ -97,8 +102,13 @@ public class CalenderCollection {
       return;
     }
 
+    Duration duration = Duration.between(eventToCopy.getStartDateTime(), eventToCopy.getEndDateTime());
+
     EventModel copiedEvent = new EventModel(eventToCopy);
     copiedEvent.setStartDateTime(tarCalDate);
+
+    LocalDateTime newEndDateTime = tarCalDate.plus(duration);
+    copiedEvent.setEndDateTime(newEndDateTime);
     targetEventCollection.checkForCollision(copiedEvent, true);
   }
 
@@ -108,22 +118,27 @@ public class CalenderCollection {
     EventCollectionModel sourceEventCollection = sourceCalender.getEventCollection();
     EventCollectionModel targetEventCollection = targetCalender.getEventCollection();
 
+    ZoneId sourceTimeZone = sourceCalender.getTimeZone();
+    ZoneId targetTimeZone = targetCalender.getTimeZone();
+
     LocalDateTime fromDateTime = fromDate.atStartOfDay();
     LocalDateTime endCalDate = fromDate.atTime(LocalTime.of(23, 59));
 
     List<EventModel> eventsToBeCopied = deepCopyList(sourceEventCollection.searchEventByTimeFrame(
             fromDateTime,endCalDate));
 
-    //changeDateTime(eventsToBeCopied,tarCalDateTime);
-
     long daysOffset = java.time.temporal.ChronoUnit.DAYS.between(fromDate, tarCalDate);
 
     for (EventModel event : eventsToBeCopied ) {
-      LocalDateTime eventStart = event.getStartDateTime().plusDays(daysOffset);
-      LocalDateTime eventEnd = event.getEndDateTime().plusDays(daysOffset);
+      ZonedDateTime eventStartZoned = event.getStartDateTime().atZone(sourceTimeZone).plusDays(daysOffset);
+      ZonedDateTime eventEndZoned = event.getEndDateTime().atZone(sourceTimeZone).plusDays(daysOffset);
 
-      event.setStartDateTime(eventStart);
-      event.setEndDateTime(eventEnd);
+      //Convert to the target time zone
+      eventStartZoned = eventStartZoned.withZoneSameInstant(targetTimeZone);
+      eventEndZoned = eventEndZoned.withZoneSameInstant(targetTimeZone);
+
+      event.setStartDateTime(eventStartZoned.toLocalDateTime());
+      event.setEndDateTime(eventEndZoned.toLocalDateTime());
 
       targetEventCollection.checkForCollision(event, true);
     }
@@ -134,6 +149,9 @@ public class CalenderCollection {
     CalenderModel targetCalender = calenderCollection.get(tarCalName);
     EventCollectionModel sourceEventCollection = sourceCalender.getEventCollection();
     EventCollectionModel targetEventCollection = targetCalender.getEventCollection();
+
+    ZoneId sourceTimeZone = sourceCalender.getTimeZone();
+    ZoneId targetTimeZone = targetCalender.getTimeZone();
 
     LocalDateTime fromDateTime = fromDate.atStartOfDay();
     LocalDateTime toDateTime = toDate.atTime(LocalTime.of(23, 59));
@@ -146,12 +164,14 @@ public class CalenderCollection {
     for (EventModel event : eventsToBeCopied) {
       //convert to target calendar time zone
 
-      LocalDateTime eventStart = event.getStartDateTime().plusDays(daysOffset);
-      LocalDateTime eventEnd = event.getEndDateTime().plusDays(daysOffset);
+      ZonedDateTime eventStartZoned = event.getStartDateTime().atZone(sourceTimeZone).plusDays(daysOffset);
+      ZonedDateTime eventEndZoned = event.getEndDateTime().atZone(sourceTimeZone).plusDays(daysOffset);
 
-      //set new times
-      event.setStartDateTime(eventStart);
-      event.setEndDateTime(eventEnd);
+      eventStartZoned = eventStartZoned.withZoneSameInstant(targetTimeZone);
+      eventEndZoned = eventEndZoned.withZoneSameInstant(targetTimeZone);
+
+      event.setStartDateTime(eventStartZoned.toLocalDateTime());
+      event.setEndDateTime(eventEndZoned.toLocalDateTime());
 
       targetEventCollection.checkForCollision(event, true);
     }

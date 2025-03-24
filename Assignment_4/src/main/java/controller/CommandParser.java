@@ -36,15 +36,16 @@ public class CommandParser {
             "\\s*create\\s+"
             + "calendar"
             + "\\s+--name\\s+(\\S+)"
-            + "\\s+--timezone\\s+\"([^\"]+)\""
+            + "\\s+--timezone\\s+\"(.*?)\""
             + "\\s*$", Pattern.CASE_INSENSITIVE));
 
     //edit calendar --name <calName> --property <property-name> <property-value>
     patterns.put("editCalendar", Pattern.compile(
-            "\\s*edit\\s+calendar"
+            "\\s*edit\\s+"
+            + "calendar"
             + "\\s+--name\\s+\"(.*?)\""
-            + "\\s+--property\\s+([a-zA-Z0-9_-]+)"
-            + "\\s+\"(.*?)\"\\s*", Pattern.CASE_INSENSITIVE));
+            + "\\s+--property\\s+\"(.*?)\""
+            + "\\s+\"(.*?)\"\\s*$", Pattern.CASE_INSENSITIVE));
 
     //copy event <eventName> on <dateTimeString> --target <calName> to <dateTimeString>
     patterns.put("processCopyEventOn", Pattern.compile(
@@ -53,20 +54,20 @@ public class CommandParser {
             + "+on\\s+"+ dateTimeString
             + "\\s+--target\\s+\"(.*?)\"\\s"
             + "+to\\s+"
-            + dateTimeString +"\\s*", Pattern.CASE_INSENSITIVE));
+            + dateTimeString +"\\s*$", Pattern.CASE_INSENSITIVE));
 
     //copy events on <dateString> --target <calName> to <dateString>
     patterns.put("copyEventsOn", Pattern.compile(
             "\\s*copy\\s+events\\s+on\\s+" + dateString +
             "\\s+--target\\s+\"([^\"]+)\"\\s+to\\s+" + dateString +
-            "\\s*", Pattern.CASE_INSENSITIVE));
+            "\\s*$", Pattern.CASE_INSENSITIVE));
 
     //copy events between <dateString> and <dateString> --target <calName> to <dateString>
     patterns.put("copyEventsBetween", Pattern.compile(
             "\\s*copy\\s+events\\s+between\\s+" + dateString +
             "\\s+and\\s+" + dateString +
             "\\s+--target\\s+\"([^\"]+)\"\\s+to\\s+" + dateString +
-            "\\s*", Pattern.CASE_INSENSITIVE));
+            "\\s*$", Pattern.CASE_INSENSITIVE));
 
     //Create Events pattern
     patterns.put("createEventPattern", Pattern.compile("\\s*create\\s+"

@@ -73,108 +73,46 @@ public class EventHandlerTest {
   }
 
   @Test
-  public void copycalEntireDay() {
+  public void copyCalEventCreationChangeTimeZone() {
 
     EventController eventController = new EventController();
+    eventController.filterCommand("create calendar --name \"test\" --timezone \"America/New_York\"");
+    eventController.getEventHandler().processPrintCalendars();
+    eventController.filterCommand("use calendar --name \"test\" ");
     eventController.filterCommand("create event \"hello world\" "
-            + "from 2025-10-10T08:00 to 2025-10-10T09:00 "
+            + "from 2025-10-10T10:00 to 2025-10-10T10:00 "
             + "description:\"test HELLO\" location:\"MA\" privacy:\"true\"");
 
-    eventController.filterCommand("create event \"hello world\" "
-            + "from 2025-10-10T10:00 to 2025-10-10T11:00 "
-            + "description:\"test HELLO\" location:\"MA\" privacy:\"true\"");
+    eventController.filterCommand("create calendar --name \"test1\" --timezone \"America/Chicago\"");
+    eventController.filterCommand("copy event \"hello world\" on 2025-10-10T10:00 --target \"test1\" to 2025-12-19T12:00");
 
-    eventController.filterCommand("create event \"hello world\" "
-            + "from 2025-10-10T11:00 to 2025-10-10T12:00 "
-            + "description:\"test HELLO\" location:\"MA\" privacy:\"true\"");
+    assertEquals(1, eventController.getEventHandler().getEventCollection("test").getEventList().size());
+    assertEquals(1, eventController.getEventHandler().getEventCollection("test1").getEventList().size());
 
-    eventController.getEventHandler().createCalender("Hello", ZoneId.of("America/New_York"));
-    eventController.getEventHandler().copyEntireDay(LocalDateTime.parse("2025-10-10T00:00"),"default","Hello",
-            LocalDateTime.parse("2025-12-19T00:00")  );
-
-
-
-    assertEquals(3, eventController.getEventHandler().getEventCollection("default").getEventList().size());
-    assertEquals(3, eventController.getEventHandler().getEventCollection("Hello").getEventList().size());
-
-    EventModel event1 = eventController.getEventHandler().getEventCollection("default").getEventList().get(0);
-    EventModel event2 = eventController.getEventHandler().getEventCollection("Hello").getEventList().get(0);
+    EventModel event1 = eventController.getEventHandler().getEventCollection("test").getEventList().get(0);
+    EventModel event2 = eventController.getEventHandler().getEventCollection("test1").getEventList().get(0);
 
     assertEquals("hello world", event1.getEventName());
-    assertEquals("2025-10-10T08:00", event1.getStartDateTime().toString());
-    assertEquals("2025-10-10T09:00", event1.getEndDateTime().toString());
+    assertEquals("2025-10-10T10:00", event1.getStartDateTime().toString());
+    assertEquals("2025-10-10T10:00", event1.getEndDateTime().toString());
     assertEquals("test HELLO", event1.getDescription());
     assertEquals("MA", event1.getLocation());
     assertEquals(true, event1.getIsPrivate());
 
     assertEquals("hello world", event2.getEventName());
-    assertEquals("2025-12-19T08:00", event2.getStartDateTime().toString());
-    assertEquals("2025-12-19T08:00", event2.getEndDateTime().toString());
+    assertEquals("2025-12-19T12:00", event2.getStartDateTime().toString());
+    assertEquals("2025-12-19T12:00", event2.getEndDateTime().toString());
     assertEquals("test HELLO", event2.getDescription());
     assertEquals("MA", event2.getLocation());
     assertEquals(true, event2.getIsPrivate());
-
-    System.out.println(eventController.getEventHandler().getEventCollection("default").printAssortments(
-            eventController.getEventHandler().getEventCollection("default").getEventList()));
-
-    System.out.println(eventController.getEventHandler().getEventCollection("Hello").printAssortments(
-            eventController.getEventHandler().getEventCollection("Hello").getEventList()));
-
-  }
-  @Test
-  public void copycalBetweenDates() {
-
-    EventController eventController = new EventController();
-    eventController.filterCommand("create event \"hello world\" "
-            + "from 2025-10-10T08:00 to 2025-10-10T09:00 "
-            + "description:\"test HELLO\" location:\"MA\" privacy:\"true\"");
-
-    eventController.filterCommand("create event \"hello world\" "
-            + "from 2025-10-11T10:00 to 2025-10-11T11:00 "
-            + "description:\"test HELLO\" location:\"MA\" privacy:\"true\"");
-
-    eventController.filterCommand("create event \"hello world\" "
-            + "from 2025-10-12T11:00 to 2025-10-12T12:00 "
-            + "description:\"test HELLO\" location:\"MA\" privacy:\"true\"");
-
-    eventController.getEventHandler().createCalender("Hello", ZoneId.of("America/New_York"));
-    eventController.getEventHandler().copyEventsBetween(LocalDateTime.parse("2025-10-10T00:00"),LocalDateTime.parse("2025-10-12T00:00"),
-            LocalDateTime.parse("2025-12-19T00:00"),"default","Hello"
-              );
-
-
-
-    assertEquals(3, eventController.getEventHandler().getEventCollection("default").getEventList().size());
-    assertEquals(2, eventController.getEventHandler().getEventCollection("Hello").getEventList().size());
-
-    EventModel event1 = eventController.getEventHandler().getEventCollection("default").getEventList().get(0);
-    EventModel event2 = eventController.getEventHandler().getEventCollection("Hello").getEventList().get(0);
-
-    assertEquals("hello world", event1.getEventName());
-    assertEquals("2025-10-10T08:00", event1.getStartDateTime().toString());
-    assertEquals("2025-10-10T09:00", event1.getEndDateTime().toString());
-    assertEquals("test HELLO", event1.getDescription());
-    assertEquals("MA", event1.getLocation());
-    assertEquals(true, event1.getIsPrivate());
-
-    assertEquals("hello world", event2.getEventName());
-    assertEquals("2025-12-19T08:00", event2.getStartDateTime().toString());
-    assertEquals("2025-12-19T08:00", event2.getEndDateTime().toString());
-    assertEquals("test HELLO", event2.getDescription());
-    assertEquals("MA", event2.getLocation());
-    assertEquals(true, event2.getIsPrivate());
-
-    System.out.println(eventController.getEventHandler().getEventCollection("default").printAssortments(
-            eventController.getEventHandler().getEventCollection("default").getEventList()));
-
-    System.out.println(eventController.getEventHandler().getEventCollection("Hello").printAssortments(
-            eventController.getEventHandler().getEventCollection("Hello").getEventList()));
-
   }
 
   @Test
   public void copyCalEventsOnSameDay() {
     EventController eventController = new EventController();
+
+    eventController.filterCommand("create calendar --name \"test\" --timezone \"America/New_York\"");
+    eventController.filterCommand("use calendar --name \"test\" ");
 
     eventController.filterCommand("create event \"test\" "
             + "from 2025-09-05T09:00 to 2025-09-05T10:30 "
@@ -188,22 +126,22 @@ public class EventHandlerTest {
             + "from 2025-09-05T14:00 to 2025-09-05T15:30 "
             + "description:\"test\" location:\"test\" privacy:\"true\"");
 
-    eventController.getEventHandler().createCalender("testCal", ZoneId.of("America/New_York"));
+    eventController.filterCommand("create calendar --name \"testCal\" --timezone \"America/Chicago\"");
 
     eventController.filterCommand("copy events on 2025-09-05 --target \"testCal\" to 2026-01-08");
 
     //check number of events in both calendars
-    assertEquals(3, eventController.getEventHandler().getEventCollection("default").getEventList().size());
+    assertEquals(3, eventController.getEventHandler().getEventCollection("test").getEventList().size());
     assertEquals(3, eventController.getEventHandler().getEventCollection("testCal").getEventList().size());
 
     //get copied events
-    EventModel originalEvent1 = eventController.getEventHandler().getEventCollection("default").getEventList().get(0);
+    EventModel originalEvent1 = eventController.getEventHandler().getEventCollection("test").getEventList().get(0);
     EventModel copiedEvent1 = eventController.getEventHandler().getEventCollection("testCal").getEventList().get(0);
 
-    EventModel originalEvent2 = eventController.getEventHandler().getEventCollection("default").getEventList().get(1);
+    EventModel originalEvent2 = eventController.getEventHandler().getEventCollection("test").getEventList().get(1);
     EventModel copiedEvent2 = eventController.getEventHandler().getEventCollection("testCal").getEventList().get(1);
 
-    EventModel originalEvent3 = eventController.getEventHandler().getEventCollection("default").getEventList().get(2);
+    EventModel originalEvent3 = eventController.getEventHandler().getEventCollection("test").getEventList().get(2);
     EventModel copiedEvent3 = eventController.getEventHandler().getEventCollection("testCal").getEventList().get(2);
 
     //check props
@@ -213,19 +151,70 @@ public class EventHandlerTest {
     assertEquals(originalEvent1.getIsPrivate(), copiedEvent1.getIsPrivate());
 
     // Ensure date offsets are correctly applied
-    assertEquals("2026-01-08T09:00", copiedEvent1.getStartDateTime().toString());
-    assertEquals("2026-01-08T10:30", copiedEvent1.getEndDateTime().toString());
+    assertEquals("2026-01-08T08:00", copiedEvent1.getStartDateTime().toString());
+    assertEquals("2026-01-08T09:30", copiedEvent1.getEndDateTime().toString());
 
-    assertEquals("2026-01-08T11:00", copiedEvent2.getStartDateTime().toString());
-    assertEquals("2026-01-08T12:30", copiedEvent2.getEndDateTime().toString());
+    assertEquals("2026-01-08T10:00", copiedEvent2.getStartDateTime().toString());
+    assertEquals("2026-01-08T11:30", copiedEvent2.getEndDateTime().toString());
 
-    assertEquals("2026-01-08T14:00", copiedEvent3.getStartDateTime().toString());
-    assertEquals("2026-01-08T15:30", copiedEvent3.getEndDateTime().toString());
+    assertEquals("2026-01-08T13:00", copiedEvent3.getStartDateTime().toString());
+    assertEquals("2026-01-08T14:30", copiedEvent3.getEndDateTime().toString());
   }
+
+  @Test
+  public void copycalEntireDay() {
+
+
+
+    EventController eventController = new EventController();  eventController.filterCommand("create event \"hello world\" "
+            + "from 2025-10-10T08:00 to 2025-10-10T09:00 "
+            + "description:\"test HELLO\" location:\"MA\" privacy:\"true\"");
+
+    eventController.filterCommand("create event \"hello world\" "
+            + "from 2025-10-10T10:00 to 2025-10-10T11:00 "
+            + "description:\"test HELLO\" location:\"MA\" privacy:\"true\"");
+
+    eventController.filterCommand("create event \"hello world\" "
+            + "from 2025-10-10T11:00 to 2025-10-10T12:00 "
+            + "description:\"test HELLO\" location:\"MA\" privacy:\"true\"");
+
+    eventController.getEventHandler().createCalender("Hello", ZoneId.of("America/New_York"));
+
+    eventController.filterCommand("copy events on 2025-10-10 --target \"Hello\" to 2025-12-19");
+    assertEquals(3, eventController.getEventHandler().getEventCollection("default").getEventList().size());
+    assertEquals(2, eventController.getEventHandler().getEventCollection("Hello").getEventList().size());
+    EventModel event1 = eventController.getEventHandler().getEventCollection("default").getEventList().get(0);
+    EventModel event2 = eventController.getEventHandler().getEventCollection("Hello").getEventList().get(0);
+    assertEquals("hello world", event1.getEventName());  assertEquals("2025-10-10T08:00",
+
+    event1.getStartDateTime().toString());  assertEquals("2025-10-10T09:00", event1.getEndDateTime().toString());
+
+    assertEquals("test HELLO", event1.getDescription());
+    assertEquals("MA", event1.getLocation());
+    assertEquals(true, event1.getIsPrivate());
+    assertEquals("hello world", event2.getEventName());
+    assertEquals("2025-12-19T08:00",
+            event2.getStartDateTime().toString());
+    assertEquals("2025-12-19T08:00",
+            event2.getEndDateTime().toString());
+    assertEquals("test HELLO",
+            event2.getDescription());
+    assertEquals("MA", event2.getLocation());
+    assertEquals(true, event2.getIsPrivate());
+
+
+    System.out.println(eventController.getEventHandler().getEventCollection("default").printAssortments(
+            eventController.getEventHandler().getEventCollection("default").getEventList()));
+
+    System.out.println(eventController.getEventHandler().getEventCollection("Hello").printAssortments(
+            eventController.getEventHandler().getEventCollection("Hello").getEventList()));}
 
   @Test
   public void copyCalEventBetweenDates() {
     EventController eventController = new EventController();
+
+    eventController.filterCommand("create calendar --name \"test\" --timezone \"America/New_York\"");
+    eventController.filterCommand("use calendar --name \"test\" ");
 
     eventController.filterCommand("create event \"test\" "
             + "from 2025-09-05T09:00 to 2025-09-05T10:30 "
@@ -239,22 +228,22 @@ public class EventHandlerTest {
             + "from 2025-09-12T14:00 to 2025-09-12T15:30 "
             + "description:\"test\" location:\"test\" privacy:\"true\"");
 
-    eventController.getEventHandler().createCalender("testCal", ZoneId.of("America/New_York"));
+    eventController.getEventHandler().createCalender("testCal", ZoneId.of("America/Los_Angeles"));
 
     eventController.filterCommand("copy events between 2025-09-05 and 2025-09-12 --target \"testCal\" to 2026-01-08");
 
     //check number of events in both calendars
-    assertEquals(3, eventController.getEventHandler().getEventCollection("default").getEventList().size());
+    assertEquals(3, eventController.getEventHandler().getEventCollection("test").getEventList().size());
     assertEquals(3, eventController.getEventHandler().getEventCollection("testCal").getEventList().size());
 
     //get copied events
-    EventModel originalEvent1 = eventController.getEventHandler().getEventCollection("default").getEventList().get(0);
+    EventModel originalEvent1 = eventController.getEventHandler().getEventCollection("test").getEventList().get(0);
     EventModel copiedEvent1 = eventController.getEventHandler().getEventCollection("testCal").getEventList().get(0);
 
-    EventModel originalEvent2 = eventController.getEventHandler().getEventCollection("default").getEventList().get(1);
+    EventModel originalEvent2 = eventController.getEventHandler().getEventCollection("test").getEventList().get(1);
     EventModel copiedEvent2 = eventController.getEventHandler().getEventCollection("testCal").getEventList().get(1);
 
-    EventModel originalEvent3 = eventController.getEventHandler().getEventCollection("default").getEventList().get(2);
+    EventModel originalEvent3 = eventController.getEventHandler().getEventCollection("test").getEventList().get(2);
     EventModel copiedEvent3 = eventController.getEventHandler().getEventCollection("testCal").getEventList().get(2);
 
     //check props
@@ -264,14 +253,14 @@ public class EventHandlerTest {
     assertEquals(originalEvent1.getIsPrivate(), copiedEvent1.getIsPrivate());
 
     // Ensure date offsets are correctly applied
-    assertEquals("2026-01-08T09:00", copiedEvent1.getStartDateTime().toString());
-    assertEquals("2026-01-08T10:30", copiedEvent1.getEndDateTime().toString());
+    assertEquals("2026-01-08T06:00", copiedEvent1.getStartDateTime().toString());
+    assertEquals("2026-01-08T07:30", copiedEvent1.getEndDateTime().toString());
 
-    assertEquals("2026-01-10T11:00", copiedEvent2.getStartDateTime().toString());
-    assertEquals("2026-01-10T12:30", copiedEvent2.getEndDateTime().toString());
+    assertEquals("2026-01-10T08:00", copiedEvent2.getStartDateTime().toString());
+    assertEquals("2026-01-10T09:30", copiedEvent2.getEndDateTime().toString());
 
-    assertEquals("2026-01-15T14:00", copiedEvent3.getStartDateTime().toString());
-    assertEquals("2026-01-15T15:30", copiedEvent3.getEndDateTime().toString());
+    assertEquals("2026-01-15T11:00", copiedEvent3.getStartDateTime().toString());
+    assertEquals("2026-01-15T12:30", copiedEvent3.getEndDateTime().toString());
   }
 
   @Test
@@ -358,6 +347,8 @@ public class EventHandlerTest {
   public void testUseCalendar() {
     EventController eventController = new EventController();
     eventController.getEventHandler().createCalender("testCal1", ZoneId.of("America/New_York"));
+    //eventController.filterCommand("create calendar --name \"testCal1\" " +
+            //"--timezone \"America/New_York\"");
     //eventController.getEventHandler().useCalender("testCal1");
     eventController.filterCommand("use calendar --name \"testCal1\" ");
     eventController.filterCommand("create event \"test\" "
