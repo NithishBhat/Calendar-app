@@ -39,7 +39,7 @@ public class CalenderCollection {
     calenderCollection.remove(name);
   }
 
-  public void removeAllCalenders() {
+  public void RemoveAllCalenders() {
     calenderCollection.clear();
   }
 
@@ -157,16 +157,22 @@ public class CalenderCollection {
     }
   }
 
-  /**
-   * Method to copy events with the same name occurring from a specific start date to end date
-   * to another calendar
-   * @param eventName
-   * @param fromDate
-   * @param toDate
-   * @param calName
-   * @param tarCalDate
-   * @param tarCalName
-   */
+  public void copyCalenderBetweenDates(LocalDateTime fromDate,LocalDateTime toDate, String calName, LocalDateTime tarCalDate, String tarCalName) {
+    CalenderModel sourceCalender = calenderCollection.get(calName);
+    CalenderModel targetCalender = calenderCollection.get(tarCalName);
+    EventCollectionModel sourceEventCollection = sourceCalender.getEventCollection();
+    EventCollectionModel targetEventCollection = targetCalender.getEventCollection();
+    //ZoneId sourceTimeZone = sourceCalender.getTimeZone();
+    //ZoneId targetTimeZone = targetCalender.getTimeZone();
+
+    List<EventModel> eventsToBeCopied = deepCopyList(sourceEventCollection.searchEventByTimeFrame(
+            fromDate,toDate));
+    changeDateTime(eventsToBeCopied,tarCalDate);
+    for (EventModel event : eventsToBeCopied ) {
+      targetEventCollection.checkForCollision(event, true);
+    }
+  }
+
   public void copyEventsWithSameNameBetweenDates(String eventName, LocalDateTime fromDate,
                                                  LocalDateTime toDate, String calName,
                                                  LocalDateTime tarCalDate, String tarCalName) {
@@ -198,21 +204,35 @@ public class CalenderCollection {
 
   private List<EventModel> convertTimeZoneList(List<EventModel> events, ZoneId sourceZoneId, ZoneId destinationZoneId) {
     List<EventModel> eventsList = new ArrayList<>();
-    eventsList=deepCopyList(events);
+    eventsList = deepCopyList(events);
     for (EventModel event : eventsList) {
-      event.setStartDateTime(convertTimeZone(event.getStartDateTime(),sourceZoneId,destinationZoneId));
-      event.setEndDateTime(convertTimeZone(event.getEndDateTime(),sourceZoneId,destinationZoneId));
+      event.setStartDateTime(convertTimeZone(event.getStartDateTime(), sourceZoneId, destinationZoneId));
+      event.setEndDateTime(convertTimeZone(event.getEndDateTime(), sourceZoneId, destinationZoneId));
       eventsList.add(event);
     }
     return eventsList;
   }
 
-  private void changeDateTime(List<EventModel> events, LocalDateTime newDateTime){
+  private void changeDateTime(List<EventModel> events, LocalDateTime newDateTime) {
     for (EventModel event : events) {
       event.setStartDateTime(newDateTime);
     }
   }
 
+  public void changeDate(List<EventModel> events, LocalDateTime newDateTime) {
+    for (EventModel event : events) {
+      LocalDateTime oldStartDateTime = event.getStartDateTime();
+      LocalDateTime oldEndDateTime = event.getStartDateTime();
+
+      LocalTime oldStartTime = oldStartDateTime.toLocalTime(); // Extract the original time
+      LocalTime oldEndTime = oldEndDateTime.toLocalTime();
+      LocalDateTime updatedStartDateTime = LocalDateTime.of(newDateTime.toLocalDate(), oldStartTime);
+      LocalDateTime updatedEndDateTime = LocalDateTime.of(newDateTime.toLocalDate(), oldStartTime);// Combine new date with old time
+
+      event.setStartDateTime(updatedStartDateTime);
+      event.setEndDateTime(updatedEndDateTime);
+    }
+  }
 
 
   private LocalDateTime convertTimeZone(LocalDateTime dateTime, ZoneId sourceZoneId, ZoneId destinationZoneId) {
