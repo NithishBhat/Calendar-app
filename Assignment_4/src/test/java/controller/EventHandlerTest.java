@@ -40,7 +40,7 @@ public class EventHandlerTest {
   }
 
   @Test
-  public void copycalEventCreation() {
+  public void copycalEvent() {
 
     EventController eventController = new EventController();
     eventController.filterCommand("create event \"hello world\" "
@@ -72,6 +72,106 @@ public class EventHandlerTest {
     assertEquals("test HELLO", event2.getDescription());
     assertEquals("MA", event2.getLocation());
     assertEquals(true, event2.getIsPrivate());
+  }
+
+  @Test
+  public void copycalEntireDay() {
+
+    EventController eventController = new EventController();
+    eventController.filterCommand("create event \"hello world\" "
+            + "from 2025-10-10T08:00 to 2025-10-10T09:00 "
+            + "description:\"test HELLO\" location:\"MA\" privacy:\"true\"");
+
+    eventController.filterCommand("create event \"hello world\" "
+            + "from 2025-10-10T10:00 to 2025-10-10T11:00 "
+            + "description:\"test HELLO\" location:\"MA\" privacy:\"true\"");
+
+    eventController.filterCommand("create event \"hello world\" "
+            + "from 2025-10-10T11:00 to 2025-10-10T12:00 "
+            + "description:\"test HELLO\" location:\"MA\" privacy:\"true\"");
+
+    eventController.getEventHandler().createCalender("Hello", ZoneId.of("America/New_York"));
+    eventController.getEventHandler().copyEntireDay(LocalDateTime.parse("2025-10-10T00:00"),"default","Hello",
+            LocalDateTime.parse("2025-12-19T00:00")  );
+
+
+
+    assertEquals(3, eventController.getEventHandler().getEventCollection("default").getEventList().size());
+    assertEquals(3, eventController.getEventHandler().getEventCollection("Hello").getEventList().size());
+
+    EventModel event1 = eventController.getEventHandler().getEventCollection("default").getEventList().get(0);
+    EventModel event2 = eventController.getEventHandler().getEventCollection("Hello").getEventList().get(0);
+
+    assertEquals("hello world", event1.getEventName());
+    assertEquals("2025-10-10T08:00", event1.getStartDateTime().toString());
+    assertEquals("2025-10-10T09:00", event1.getEndDateTime().toString());
+    assertEquals("test HELLO", event1.getDescription());
+    assertEquals("MA", event1.getLocation());
+    assertEquals(true, event1.getIsPrivate());
+
+    assertEquals("hello world", event2.getEventName());
+    assertEquals("2025-12-19T08:00", event2.getStartDateTime().toString());
+    assertEquals("2025-12-19T08:00", event2.getEndDateTime().toString());
+    assertEquals("test HELLO", event2.getDescription());
+    assertEquals("MA", event2.getLocation());
+    assertEquals(true, event2.getIsPrivate());
+
+    System.out.println(eventController.getEventHandler().getEventCollection("default").printAssortments(
+            eventController.getEventHandler().getEventCollection("default").getEventList()));
+
+    System.out.println(eventController.getEventHandler().getEventCollection("Hello").printAssortments(
+            eventController.getEventHandler().getEventCollection("Hello").getEventList()));
+
+  }
+  @Test
+  public void copycalBetweenDates() {
+
+    EventController eventController = new EventController();
+    eventController.filterCommand("create event \"hello world\" "
+            + "from 2025-10-10T08:00 to 2025-10-10T09:00 "
+            + "description:\"test HELLO\" location:\"MA\" privacy:\"true\"");
+
+    eventController.filterCommand("create event \"hello world\" "
+            + "from 2025-10-11T10:00 to 2025-11-10T11:00 "
+            + "description:\"test HELLO\" location:\"MA\" privacy:\"true\"");
+
+    eventController.filterCommand("create event \"hello world\" "
+            + "from 2025-10-12T11:00 to 2025-10-12T12:00 "
+            + "description:\"test HELLO\" location:\"MA\" privacy:\"true\"");
+
+    eventController.getEventHandler().createCalender("Hello", ZoneId.of("America/New_York"));
+    eventController.getEventHandler().copyEventsBetween(LocalDateTime.parse("2025-10-10T00:00"),LocalDateTime.parse("2025-10-12T00:00"),
+            LocalDateTime.parse("2025-12-19T00:00"),"default","Hello"
+              );
+
+
+
+    assertEquals(3, eventController.getEventHandler().getEventCollection("default").getEventList().size());
+    assertEquals(3, eventController.getEventHandler().getEventCollection("Hello").getEventList().size());
+
+    EventModel event1 = eventController.getEventHandler().getEventCollection("default").getEventList().get(0);
+    EventModel event2 = eventController.getEventHandler().getEventCollection("Hello").getEventList().get(0);
+
+    assertEquals("hello world", event1.getEventName());
+    assertEquals("2025-10-10T08:00", event1.getStartDateTime().toString());
+    assertEquals("2025-10-10T09:00", event1.getEndDateTime().toString());
+    assertEquals("test HELLO", event1.getDescription());
+    assertEquals("MA", event1.getLocation());
+    assertEquals(true, event1.getIsPrivate());
+
+    assertEquals("hello world", event2.getEventName());
+    assertEquals("2025-12-19T08:00", event2.getStartDateTime().toString());
+    assertEquals("2025-12-19T08:00", event2.getEndDateTime().toString());
+    assertEquals("test HELLO", event2.getDescription());
+    assertEquals("MA", event2.getLocation());
+    assertEquals(true, event2.getIsPrivate());
+
+    System.out.println(eventController.getEventHandler().getEventCollection("default").printAssortments(
+            eventController.getEventHandler().getEventCollection("default").getEventList()));
+
+    System.out.println(eventController.getEventHandler().getEventCollection("Hello").printAssortments(
+            eventController.getEventHandler().getEventCollection("Hello").getEventList()));
+
   }
 
 

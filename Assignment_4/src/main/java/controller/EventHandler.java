@@ -45,10 +45,17 @@ public class EventHandler {
   public void copyEventFromDateTime(LocalDateTime calDate,String calName,String tarCalName,LocalDateTime tarCalDate){
    calenderCollection.copyCalenderFromDate(calDate,calName,tarCalDate,tarCalName);
   }
-
+  //copy events on <dateString> --target <calendarName> to <dateString>
   public void copyEntireDay(LocalDateTime calDate,String calName,String tarCalName,LocalDateTime tarCalDate){
-    calenderCollection.copyCalenderFromDate(calDate,calName,tarCalDate,tarCalName);
+    calenderCollection.copyCalenderEntireDay(calDate,calName,tarCalDate,tarCalName);
   }
+
+  //copy events between <dateString> and <dateString> --target <calendarName> to <dateString>
+  public void copyEventsBetween(LocalDateTime fromDate,LocalDateTime toDate, LocalDateTime tarCalDate,String calName,String tarCalName){
+    calenderCollection.copyCalenderBetweenDates(fromDate,toDate,calName,tarCalDate,tarCalName);
+  }
+
+
   /**
    * Retrieves the event collection managed by the controller.
    *

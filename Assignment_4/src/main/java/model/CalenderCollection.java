@@ -55,8 +55,8 @@ public class CalenderCollection {
     //ZoneId targetTimeZone = targetCalender.getTimeZone();
 
     List<EventModel> eventsToBeCopied = deepCopyList(sourceEventCollection.searchEventByEventStartDate(calDate));
-    changeDateTime(eventsToBeCopied,tarCalDate);
-    for (EventModel event : eventsToBeCopied ) {
+    changeDateTime(eventsToBeCopied, tarCalDate);
+    for (EventModel event : eventsToBeCopied) {
       targetEventCollection.checkForCollision(event, true);
     }
   }
@@ -70,14 +70,14 @@ public class CalenderCollection {
     //ZoneId targetTimeZone = targetCalender.getTimeZone();
 
     List<EventModel> eventsToBeCopied = deepCopyList(sourceEventCollection.searchEventByTimeFrame(
-            calDate,calDate.toLocalDate().atTime(LocalTime.of(23, 59))));
-    changeDateTime(eventsToBeCopied,tarCalDate);
-    for (EventModel event : eventsToBeCopied ) {
+            calDate, calDate.toLocalDate().atTime(LocalTime.of(23, 59))));
+    changeDate(eventsToBeCopied, tarCalDate);
+    for (EventModel event : eventsToBeCopied) {
       targetEventCollection.checkForCollision(event, true);
     }
   }
 
-  public void copyCalenderBetweenDates(LocalDateTime fromDate,LocalDateTime toDate, String calName, LocalDateTime tarCalDate, String tarCalName) {
+  public void copyCalenderBetweenDates(LocalDateTime fromDate, LocalDateTime toDate, String calName, LocalDateTime tarCalDate, String tarCalName) {
     CalenderModel sourceCalender = calenderCollection.get(calName);
     CalenderModel targetCalender = calenderCollection.get(tarCalName);
     EventCollectionModel sourceEventCollection = sourceCalender.getEventCollection();
@@ -86,30 +86,44 @@ public class CalenderCollection {
     //ZoneId targetTimeZone = targetCalender.getTimeZone();
 
     List<EventModel> eventsToBeCopied = deepCopyList(sourceEventCollection.searchEventByTimeFrame(
-            fromDate,toDate));
-    changeDateTime(eventsToBeCopied,tarCalDate);
-    for (EventModel event : eventsToBeCopied ) {
+            fromDate, toDate));
+    changeDateTime(eventsToBeCopied, tarCalDate);
+    for (EventModel event : eventsToBeCopied) {
       targetEventCollection.checkForCollision(event, true);
     }
   }
 
   private List<EventModel> convertTimeZoneList(List<EventModel> events, ZoneId sourceZoneId, ZoneId destinationZoneId) {
     List<EventModel> eventsList = new ArrayList<>();
-    eventsList=deepCopyList(events);
+    eventsList = deepCopyList(events);
     for (EventModel event : eventsList) {
-      event.setStartDateTime(convertTimeZone(event.getStartDateTime(),sourceZoneId,destinationZoneId));
-      event.setEndDateTime(convertTimeZone(event.getEndDateTime(),sourceZoneId,destinationZoneId));
+      event.setStartDateTime(convertTimeZone(event.getStartDateTime(), sourceZoneId, destinationZoneId));
+      event.setEndDateTime(convertTimeZone(event.getEndDateTime(), sourceZoneId, destinationZoneId));
       eventsList.add(event);
     }
     return eventsList;
   }
 
-  private void changeDateTime(List<EventModel> events, LocalDateTime newDateTime){
+  private void changeDateTime(List<EventModel> events, LocalDateTime newDateTime) {
     for (EventModel event : events) {
       event.setStartDateTime(newDateTime);
     }
   }
 
+  public void changeDate(List<EventModel> events, LocalDateTime newDateTime) {
+    for (EventModel event : events) {
+      LocalDateTime oldStartDateTime = event.getStartDateTime();
+      LocalDateTime oldEndDateTime = event.getStartDateTime();
+
+      LocalTime oldStartTime = oldStartDateTime.toLocalTime(); // Extract the original time
+      LocalTime oldEndTime = oldEndDateTime.toLocalTime();
+      LocalDateTime updatedStartDateTime = LocalDateTime.of(newDateTime.toLocalDate(), oldStartTime);
+      LocalDateTime updatedEndDateTime = LocalDateTime.of(newDateTime.toLocalDate(), oldStartTime);// Combine new date with old time
+
+      event.setStartDateTime(updatedStartDateTime);
+      event.setEndDateTime(updatedEndDateTime);
+    }
+  }
 
 
   private LocalDateTime convertTimeZone(LocalDateTime dateTime, ZoneId sourceZoneId, ZoneId destinationZoneId) {
