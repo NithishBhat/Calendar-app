@@ -9,8 +9,6 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import model.EventCollectionModel;
-
 /**
  * The EventController class is responsible for managing event-related commands.
  * It processes user commands, matches them against predefined patterns, and invokes
@@ -52,6 +50,12 @@ public class EventController {
 
       // Map the pattern string to the command
       Map<String, Runnable> commandMap = new HashMap<>();
+      commandMap.put("createCalendar", () -> eventHandler.processCreateCalendar(matcher));
+      commandMap.put("editCalendar", () -> eventHandler.processEditCalendar(matcher));
+      commandMap.put("useCalendar", () -> eventHandler.processUseCalendar(matcher));
+      commandMap.put("processCopyEventOn", () -> eventHandler.processCopyEventOn(matcher));
+      commandMap.put("copyEventsOn", () -> eventHandler.processCopyEventsOn(matcher));
+      commandMap.put("copyEventsBetween", () -> eventHandler.processCopyCalenderBetweenDates(matcher));
       commandMap.put("createEventPattern", () -> eventHandler.processCreateEvent(matcher));
       commandMap.put("createRecurringEventN", () -> eventHandler
               .processCreateRecurringEventN(matcher));

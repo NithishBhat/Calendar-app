@@ -38,16 +38,102 @@ public class EventHandler {
 
   }
 
-  private void useCalender(String calenderName) {
+  public void useCalender(String calenderName) {
     eventCollection= calenderCollection.getEventCollection(calenderName);
   }
 
-  public void copyEventFromDateTime(LocalDateTime calDate,String calName,String tarCalName,LocalDateTime tarCalDate){
-   calenderCollection.copyCalenderFromDate(calDate,calName,tarCalDate,tarCalName);
+  public void processCopyEventOn(Matcher matcher) {
+    String eventName = matcher.group(1);
+    LocalDateTime eventDateTime = LocalDateTime.parse(matcher.group(2));
+    String tarCalName = matcher.group(3);
+    LocalDateTime tarCalDateTime = LocalDateTime.parse(matcher.group(4));
+
+    String sourceCalendar = calenderCollection.getCalendarName(eventCollection);
+
+    calenderCollection.copyCalendarEventOn(sourceCalendar, eventName,
+            eventDateTime,tarCalName, tarCalDateTime );
   }
 
-  public void copyEntireDay(LocalDateTime calDate,String calName,String tarCalName,LocalDateTime tarCalDate){
-    calenderCollection.copyCalenderFromDate(calDate,calName,tarCalDate,tarCalName);
+  public void processCopyCalenderBetweenDates(Matcher matcher) {
+    // Extract values from the matcher
+    LocalDate fromDate = LocalDate.parse(matcher.group(1));
+    LocalDate toDate = LocalDate.parse(matcher.group(2));
+    String targetCalendarName = matcher.group(3);
+    LocalDate targetStartDate = LocalDate.parse(matcher.group(4));
+
+
+    String sourceCalendar = calenderCollection.getCalendarName(eventCollection);
+
+    if (sourceCalendar == null) {
+      System.out.println("Error: No active calendar is in use.");
+    }
+
+    calenderCollection.copyCalenderBetweenDates(fromDate, toDate, sourceCalendar,
+            targetStartDate, targetCalendarName);
+  }
+
+  public void processCopyEventsOn(Matcher matcher) {
+    LocalDate eventDateTime = LocalDate.parse(matcher.group(1));
+    String targetCalendar = matcher.group(2);
+    LocalDate targetDateTime = LocalDate.parse(matcher.group(3));
+
+    String sourceCalendar = calenderCollection.getCalendarName(eventCollection);
+
+    if (sourceCalendar == null) {
+      System.out.println("Error: No active calendar is in use.");
+    }
+
+    calenderCollection.copyCalenderEntireDay(eventDateTime, sourceCalendar,
+            targetDateTime, targetCalendar);
+  }
+
+  public void processCopyCalendarBetweenDatesWithName(String eventName, LocalDateTime fromDate,
+                                                      LocalDateTime toDate,
+                                                      String sourceCalendarName,
+                                                      LocalDateTime targetStartDate,
+                                                      String targetCalendarName) {
+    calenderCollection.copyEventsWithSameNameBetweenDates(eventName,fromDate,toDate,
+            sourceCalendarName,targetStartDate,targetCalendarName);
+  }
+
+  public void processEditCalendar(Matcher matcher) {
+    //calendar name
+    String calName = matcher.group(1);
+
+    //prop name
+    String property = matcher.group(2);
+
+    //get the new name or the timezone
+    String propertyValue = matcher.group(3);
+
+    if (calenderCollection.getEventCollection(calName) == null) {
+      System.out.println("Error: Calendar with name \"" + calName + "\" not found.");
+      return;
+    }
+
+    switch (property) {
+      case "name":
+        calenderCollection.changeCalenderName(calName, propertyValue);
+        System.out.println("Calendar name updated to: " + propertyValue);
+        break;
+
+      case "time-zone":
+        ZoneId newZone = ZoneId.of(propertyValue);
+        calenderCollection.changeCalendarTimeZone(calName, newZone);
+        System.out.println("Calendar time zone updated to: " + propertyValue);
+        break;
+
+      default:
+        //property not recognized. Throw error.
+        System.out.println("Error: Invalid property \"" + property + "\".");
+        break;
+    }
+  }
+
+  public void processUseCalendar(Matcher matcher) {
+    String calName = matcher.group(1);
+    useCalender(calName);
+    System.out.println("Changed to calendar: " + calName);
   }
   /**
    * Retrieves the event collection managed by the controller.
@@ -58,6 +144,9 @@ public class EventHandler {
     return calenderCollection.getEventCollection(calenderName);
   }
 
+  public int getCalenderCollectionSize() {
+    return calenderCollection.getCalenderCollectionSize();
+  }
 
   /**
    * creates a calendar
@@ -68,10 +157,18 @@ public class EventHandler {
     calenderCollection.addCalender(calenderName,timezone);
   }
 
-  //edit calendar --name <name-of-calendar> --property <property-name> <new-property-value>
-  //copy event <eventName> on <dateStringTtimeString> --target <calendarName> to <dateStringTtimeString>
-  //copy events on <dateString> --target <calendarName> to <dateString>
-  //copy events between <dateString> and <dateString> to --target <calendarName> <dateString>
+  void processCreateCalendar(Matcher matcher) {
+    String calName = matcher.group(1);
+    String timeZoneString = matcher.group(2);
+
+    try {
+      ZoneId timeZone = ZoneId.of(timeZoneString);
+      createCalender(calName, timeZone);
+      System.out.println("Calender: " + calName + " created in Timezone: " + timeZoneString);
+    } catch (Exception e) {
+      System.out.println("Invalid time zone: " + timeZoneString);
+    }
+  }
 
   /**
    * Processes the creation of an event from a regex matcher.
@@ -104,6 +201,10 @@ public class EventHandler {
     EventModel event = new EventModel(eventName, startDate, endDate, description,
             privacy, autoDecline, location);
     eventCollection.checkForCollision(event, autoDecline);
+  }
+
+  public EventCollectionModel getEventCollection() {
+    return eventCollection;
   }
 
   /**
@@ -378,6 +479,11 @@ public class EventHandler {
     List<EventModel> printList = new ArrayList<>();
     printList = eventCollection.searchEventByTimeFrame(startDateTime, endDateTime);
     System.out.println(eventCollection.printAssortments(printList));
+  }
+
+  void processPrintCalendars() {
+    String printList = calenderCollection.printCalendars();
+    System.out.println(printList);
   }
 
   /**

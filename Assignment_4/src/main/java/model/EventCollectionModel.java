@@ -135,6 +135,31 @@ public class EventCollectionModel {
     return filteredList;
   }
 
+  public List<EventModel> searchEventByTimeFrameAndName(String eventName,
+                                                        LocalDateTime eventStartDateTime,
+                                                        LocalDateTime eventEndDateTime) {
+    List<EventModel> filteredList = new ArrayList<>();
+    for (EventModel event : eventList) {
+      if (!event.getStartDateTime().isBefore(eventStartDateTime)
+              && !event.getEndDateTime().isAfter(eventEndDateTime)
+              && event.getEventName().equals(eventName)) {
+        filteredList.add(event);
+      }
+    }
+    return filteredList;
+  }
+
+  public EventModel searchEventByStartTimeAndName(String eventName,
+                                                        LocalDateTime eventStartDateTime) {
+    List<EventModel> filteredList = new ArrayList<>();
+    for (EventModel event : eventList) {
+      if (event.getEventName().equals(eventName) && event.getStartDateTime().equals(eventStartDateTime)) {
+        return event;
+      }
+    }
+    return null;
+  }
+
   /**
    * Checks if there is any conflict between the given start and end dates with existing events.
    *

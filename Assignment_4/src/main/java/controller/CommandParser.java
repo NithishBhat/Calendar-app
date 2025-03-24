@@ -25,6 +25,48 @@ public class CommandParser {
     String optionalParamsPattern = "\\s*(?:description:\\s*\"(.*?)\")?\\s*" +
             "(?:location:\\s*\"(.*?)\")?\\s*(?:privacy:\\s*\"(true|false)\")?";
 
+    //Calendar commands
+    //use calendar --name <name-of-calendar>
+    patterns.put("useCalendar", Pattern.compile(
+            "\\s*use\\s+"
+                    + "calendar"
+                    + "\\s+--name\\s+\"(.*?)\"\\s*", Pattern.CASE_INSENSITIVE));
+
+    patterns.put("createCalendar", Pattern.compile(
+            "\\s*create\\s+"
+            + "calendar"
+            + "\\s+--name\\s+(\\S+)"
+            + "\\s+--timezone\\s+\"([^\"]+)\""
+            + "\\s*$", Pattern.CASE_INSENSITIVE));
+
+    //edit calendar --name <calName> --property <property-name> <property-value>
+    patterns.put("editCalendar", Pattern.compile(
+            "\\s*edit\\s+calendar"
+            + "\\s+--name\\s+\"(.*?)\""
+            + "\\s+--property\\s+([a-zA-Z0-9_-]+)"
+            + "\\s+\"(.*?)\"\\s*", Pattern.CASE_INSENSITIVE));
+
+    //copy event <eventName> on <dateTimeString> --target <calName> to <dateTimeString>
+    patterns.put("processCopyEventOn", Pattern.compile(
+            "\\s*copy\\s+"
+            + "event\\s+\"(.*?)\"\\s"
+            + "+on\\s+"+ dateTimeString
+            + "\\s+--target\\s+\"(.*?)\"\\s"
+            + "+to\\s+"
+            + dateTimeString +"\\s*", Pattern.CASE_INSENSITIVE));
+
+    //copy events on <dateString> --target <calName> to <dateString>
+    patterns.put("copyEventsOn", Pattern.compile(
+            "\\s*copy\\s+events\\s+on\\s+" + dateString +
+            "\\s+--target\\s+\"([^\"]+)\"\\s+to\\s+" + dateString +
+            "\\s*", Pattern.CASE_INSENSITIVE));
+
+    //copy events between <dateString> and <dateString> --target <calName> to <dateString>
+    patterns.put("copyEventsBetween", Pattern.compile(
+            "\\s*copy\\s+events\\s+between\\s+" + dateString +
+            "\\s+and\\s+" + dateString +
+            "\\s+--target\\s+\"([^\"]+)\"\\s+to\\s+" + dateString +
+            "\\s*", Pattern.CASE_INSENSITIVE));
 
     //Create Events pattern
     patterns.put("createEventPattern", Pattern.compile("\\s*create\\s+"
@@ -121,6 +163,7 @@ public class CommandParser {
    */
   public Matcher parseCommand(String input) {
     for (Map.Entry<String, Pattern> entry : patterns.entrySet()) {
+      //System.out.println(entry.getKey());
       Matcher matcher = entry.getValue().matcher(input);
       if (matcher.matches()) {
         return matcher;
@@ -226,8 +269,32 @@ public class CommandParser {
     if (!input.contains("event") && !input.contains("events")) {
       return ("Missing 'event' or 'events' keyword in edit command");
     }
+    //Calendar edit
+    if (input.matches("\\s*edit\\s+calendar\\s+.*")) {
+      if (!input.contains("--name")) {
+        return "Missing '--name' argument to specify the calendar name in edit calendar command";
+      }
 
-    if (input.matches("\\s*edit\\s+event\\s+.*")) {
+      if (!input.contains("--property")) {
+        return "Missing '--property' argument to specify the property to edit in edit calendar command";
+      }
+
+      if (!input.contains("\"")) {
+        return "Missing value for property in edit calendar command";
+      }
+
+      // Validate the property being edited (name or time-zone)
+      if (!(input.contains("--property \"name\"") || input.contains("--property \"time-zone\""))) {
+        return "Invalid property for calendar. Valid properties are: name, time-zone";
+      }
+
+      // Check if a value is provided after the property
+      if (!input.matches(".*\"([^\"]+)\".*")) {
+        return "Missing value for the property in edit calendar command";
+      }
+    }
+
+    else if (input.matches("\\s*edit\\s+event\\s+.*")) {
       if (!input.contains("from")) {
         return ("Missing 'from' keyword in edit event command");
       }
@@ -256,6 +323,8 @@ public class CommandParser {
       }
     }
 
+
+
     String[] validProperties = {"startDateTime", "endDateTime", "location",
         "description", "privacyType", "eventName"};
     boolean hasValidProperty = false;
@@ -274,7 +343,9 @@ public class CommandParser {
             + "  edit event eventName \"Meeeeeeeting 1\" from 2023-03-15T14:00 to "
             + "2023-03-15T15:00 with \"New Meeting\"\n" + "  edit events location \"Meeting 2\" "
             + "from 2023-03-15T14:00 with \"Conference Room\"\n" + "  edit events description"
-            + " \"Meeting\" \"Weekly status update\"";
+            + " \"Meeting\" \"Weekly status update\""
+            + "  edit calendar --name \"test\" --property \"name\" \"CS5010\"\n"
+            + "  edit calendar --name \"test2\" --property \"time-zone\" \"America/New_York\"";
   }
 
   /**
