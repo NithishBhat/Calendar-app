@@ -132,7 +132,7 @@ public class EventHandlerTest {
             + "description:\"test HELLO\" location:\"MA\" privacy:\"true\"");
 
     eventController.filterCommand("create event \"hello world\" "
-            + "from 2025-10-11T10:00 to 2025-11-10T11:00 "
+            + "from 2025-10-11T10:00 to 2025-10-11T11:00 "
             + "description:\"test HELLO\" location:\"MA\" privacy:\"true\"");
 
     eventController.filterCommand("create event \"hello world\" "
@@ -147,7 +147,7 @@ public class EventHandlerTest {
 
 
     assertEquals(3, eventController.getEventHandler().getEventCollection("default").getEventList().size());
-    assertEquals(3, eventController.getEventHandler().getEventCollection("Hello").getEventList().size());
+    assertEquals(2, eventController.getEventHandler().getEventCollection("Hello").getEventList().size());
 
     EventModel event1 = eventController.getEventHandler().getEventCollection("default").getEventList().get(0);
     EventModel event2 = eventController.getEventHandler().getEventCollection("Hello").getEventList().get(0);

@@ -87,7 +87,7 @@ public class CalenderCollection {
 
     List<EventModel> eventsToBeCopied = deepCopyList(sourceEventCollection.searchEventByTimeFrame(
             fromDate, toDate));
-    changeDateTime(eventsToBeCopied, tarCalDate);
+    changeDate(eventsToBeCopied, tarCalDate);
     for (EventModel event : eventsToBeCopied) {
       targetEventCollection.checkForCollision(event, true);
     }
