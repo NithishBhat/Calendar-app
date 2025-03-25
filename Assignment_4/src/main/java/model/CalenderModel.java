@@ -15,9 +15,7 @@ public class CalenderModel {
     return eventCollection;
   }
 
-  public void setEventCollection(EventCollectionModel eventCollection) {
-    this.eventCollection = eventCollection;
-  }
+
   public ZoneId getTimeZone() {
     return TimeZone;
   }

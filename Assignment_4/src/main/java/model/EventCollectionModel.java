@@ -95,26 +95,6 @@ public class EventCollectionModel {
     return filteredList;
   }
 
-  /**
-   * Searches for events that overlap with the given start and end dates.
-   *
-   * @param eventStartDate The start date of the new event.
-   * @param eventEndDate   The end date of the new event.
-   * @return A list of events that overlap with the specified time frame.
-   */
-  public List<EventModel> collisionSearch(LocalDateTime eventStartDate,
-                                          LocalDateTime eventEndDate) {
-    List<EventModel> filteredList = new ArrayList<>();
-    for (EventModel event : eventList) {
-      LocalDateTime eventEnd = event.getEndDateTime()
-              == null ? event.getStartDateTime() : event.getEndDateTime();
-
-      if (!eventEnd.isBefore(eventStartDate) && !event.getStartDateTime().isAfter(eventEndDate)) {
-        filteredList.add(event);
-      }
-    }
-    return filteredList;
-  }
 
   /**
    * returns List of all events within a specified Time Frame on a specific day.

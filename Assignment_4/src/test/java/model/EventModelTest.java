@@ -166,5 +166,46 @@ public class EventModelTest {
     assertEquals(true, event.isAfterDateTime(dateTime));
   }
 
+  @Test
+  public void betweenDateTime() {
+    LocalDateTime startDateTime = LocalDateTime
+            .of(2025, 3, 1, 10, 0);
+
+    EventModel event = new EventModel("hello", startDateTime);
+    LocalDateTime dateTimeX = LocalDateTime
+            .of(2025, 3, 1, 9, 0);
+    LocalDateTime dateTimeY = LocalDateTime
+            .of(2025, 4, 1, 9, 0);
+
+    assertEquals(true, event.isEventBetweenDates(dateTimeX, dateTimeY));
+  }
+
+  @Test
+  public void betweenDateTimeFalse() {
+    LocalDateTime startDateTime = LocalDateTime
+            .of(2025, 3, 1, 10, 0);
+
+    EventModel event = new EventModel("hello", startDateTime);
+    LocalDateTime dateTimeX = LocalDateTime
+            .of(2025, 3, 1, 11, 0);
+    LocalDateTime dateTimeY = LocalDateTime
+            .of(2025, 3, 1, 18, 0);
+
+    assertEquals(false, event.isEventBetweenDates(dateTimeX,dateTimeY));
+  }
+
+  @Test
+  public void autoDeclineTest() {
+    LocalDateTime startDateTime = LocalDateTime
+            .of(2025, 3, 1, 10, 0);
+    LocalDateTime EndDateTime = LocalDateTime
+            .of(2025, 3, 1, 11, 0);
+
+    EventModel event = new EventModel("hello", startDateTime);
+    assertEquals(false, event.isAutoDecline());
+    event.setAutoDecline(true);
+    assertEquals(true, event.isAutoDecline());
+  }
+
 
 }

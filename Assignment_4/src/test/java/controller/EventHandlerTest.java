@@ -647,6 +647,7 @@ public class EventHandlerTest {
     assertEquals("test", eventOne.getDescription());
     assertEquals("MA", eventOne.getLocation());
     assertEquals(true, eventOne.getIsPrivate());
+
   }
 
   @Test

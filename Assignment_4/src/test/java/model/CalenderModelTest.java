@@ -41,5 +41,11 @@ public class CalenderModelTest {
     assertEquals("TimeZone provided is null", thrown.getMessage());
   }
 
+  @Test public void calenderTimezone() {
+    EventController eventController = new EventController();
+
+    assertEquals(ZoneId.of("UTC"),eventController.getEventHandler().getCalenderCollection().getCalenderCollection().get("default").getTimeZone());
+  }
+
 
 }
