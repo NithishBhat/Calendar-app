@@ -11,7 +11,7 @@ import java.util.List;
 
 import model.EventCollectionModel;
 import model.EventModel;
-import model.ExportToCSV;
+import controller.ExportToCSV;
 import model.RecurringEventModel;
 
 import static org.junit.Assert.assertEquals;

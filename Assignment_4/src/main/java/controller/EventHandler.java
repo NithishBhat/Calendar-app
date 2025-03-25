@@ -2,9 +2,9 @@ package controller;
 
 import java.time.ZoneId;
 import model.CalenderCollection;
+import model.CalenderModel;
 import model.EventCollectionModel;
 import model.EventModel;
-import model.ExportToCSV;
 import model.RecurringEventModel;
 
 import java.io.File;
@@ -13,6 +13,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.regex.Matcher;
 
@@ -142,6 +143,10 @@ public class EventHandler {
    */
   public EventCollectionModel getEventCollection(String calenderName) {
     return calenderCollection.getEventCollection(calenderName);
+  }
+
+  public CalenderCollection getCalenderCollection() {
+    return calenderCollection;
   }
 
   public int getCalenderCollectionSize() {

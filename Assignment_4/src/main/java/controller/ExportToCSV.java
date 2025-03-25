@@ -1,4 +1,4 @@
-package model;
+package controller;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -8,6 +8,8 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Objects;
+
+import model.EventModel;
 
 
 /**

@@ -23,7 +23,10 @@ public class CalenderModel {
   }
 
   public void setTimeZone(ZoneId TimeZone) {
-    this.TimeZone = TimeZone==null?ZoneId.systemDefault():TimeZone;
+   if(TimeZone==null)
+   {throw new IllegalArgumentException("TimeZone provided is null");
+   }
+   this.TimeZone = TimeZone;
   }
 
 }

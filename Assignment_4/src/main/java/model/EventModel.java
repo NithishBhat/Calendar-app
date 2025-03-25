@@ -109,7 +109,8 @@ public class EventModel {
    * @param startDateTime The starting date and time of the event.
    */
   public EventModel(String eventName, LocalDateTime startDateTime) {
-    this(eventName, startDateTime, null, false);
+
+    this(eventName, startDateTime, startDateTime.toLocalDate().atTime(LocalTime.of(23, 59)), false);
   }
 
 
@@ -139,11 +140,7 @@ public class EventModel {
    * @return the end date and time of the event
    */
   public LocalDateTime getEndDateTime() {
-    if (endDateTime == null) {
-      return startDateTime.with(LocalTime.of(23, 59));
-    } else {
       return endDateTime;
-    }
   }
 
   /**
@@ -263,12 +260,6 @@ public class EventModel {
    * @return true if the event lasts all day, false otherwise.
    */
   public boolean isAllDayEvent() {
-    if (endDateTime == null) {
-      return true;
-    }
-    //check if day is the same
-    //check if start time is at 00:00
-    //check if end time is at 23:59
     return startDateTime.toLocalDate().equals(endDateTime.toLocalDate()) &&
             startDateTime.toLocalTime().equals(LocalTime.MIN) &&
             endDateTime.toLocalTime().equals(LocalTime.of(23, 59));

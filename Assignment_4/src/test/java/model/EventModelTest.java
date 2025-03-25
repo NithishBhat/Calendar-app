@@ -111,4 +111,60 @@ public class EventModelTest {
     event.setEventName("");
     assertEquals("", event.getEventName());
   }
+
+  @Test
+  public void TestNullEndDateTime() {
+    LocalDateTime startDateTime = LocalDateTime
+            .of(2025, 3, 1, 10, 0);
+    EventModel event = new EventModel("hello", startDateTime);
+    assertEquals( LocalDateTime
+            .of(2025, 3, 1, 23, 59), event.getEndDateTime());
+
+    assertEquals(false, event.getAutoDecline());
+  }
+
+  @Test
+  public void checkAllDayevent() {
+    LocalDateTime startDateTime = LocalDateTime
+            .of(2025, 3, 1, 0, 0);
+    EventModel event = new EventModel("hello", startDateTime);
+    assertEquals( LocalDateTime
+            .of(2025, 3, 1, 23, 59), event.getEndDateTime());
+
+    assertEquals(true, event.isAllDayEvent());
+  }
+
+  @Test
+  public void checkAllDayeventNegative() {
+    LocalDateTime startDateTime = LocalDateTime
+            .of(2025, 3, 1, 10, 0);
+    EventModel event = new EventModel("hello", startDateTime);
+    assertEquals( LocalDateTime
+            .of(2025, 3, 1, 23, 59), event.getEndDateTime());
+
+    assertEquals(false, event.isAllDayEvent());
+  }
+
+  @Test
+  public void afterDateTime() {
+    LocalDateTime startDateTime = LocalDateTime
+            .of(2025, 3, 1, 10, 0);
+    EventModel event = new EventModel("hello", startDateTime);
+    LocalDateTime dateTime = LocalDateTime
+            .of(2025, 3, 1, 11, 0);
+
+    assertEquals(false, event.isAfterDateTime(dateTime));
+  }
+  @Test
+  public void invalidAfterDateTime() {
+    LocalDateTime startDateTime = LocalDateTime
+            .of(2025, 3, 1, 10, 0);
+    EventModel event = new EventModel("hello", startDateTime);
+    LocalDateTime dateTime = LocalDateTime
+            .of(2025, 3, 1, 9, 0);
+
+    assertEquals(true, event.isAfterDateTime(dateTime));
+  }
+
+
 }

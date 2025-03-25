@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 
 
@@ -64,9 +65,10 @@ public class EventHandlerTest {
     assertEquals("MA", event1.getLocation());
     assertEquals(true, event1.getIsPrivate());
 
+
     assertEquals("hello world", event2.getEventName());
     assertEquals("2025-12-19T10:00", event2.getStartDateTime().toString());
-    assertEquals("2025-10-10T10:00", event2.getEndDateTime().toString());
+    assertEquals("2025-12-19T10:00", event2.getEndDateTime().toString());
     assertEquals("test HELLO", event2.getDescription());
     assertEquals("MA", event2.getLocation());
     assertEquals(true, event2.getIsPrivate());
@@ -185,17 +187,17 @@ public class EventHandlerTest {
     assertEquals(2, eventController.getEventHandler().getEventCollection("Hello").getEventList().size());
     EventModel event1 = eventController.getEventHandler().getEventCollection("default").getEventList().get(0);
     EventModel event2 = eventController.getEventHandler().getEventCollection("Hello").getEventList().get(0);
-    assertEquals("hello world", event1.getEventName());  assertEquals("2025-10-10T08:00",
-
-    event1.getStartDateTime().toString());  assertEquals("2025-10-10T09:00", event1.getEndDateTime().toString());
+    assertEquals("hello world", event1.getEventName());
+    assertEquals("2025-10-10T08:00", event1.getStartDateTime().toString());
+    assertEquals("2025-10-10T09:00", event1.getEndDateTime().toString());
 
     assertEquals("test HELLO", event1.getDescription());
     assertEquals("MA", event1.getLocation());
     assertEquals(true, event1.getIsPrivate());
     assertEquals("hello world", event2.getEventName());
-    assertEquals("2025-12-19T08:00",
+    assertEquals("2025-12-19T03:00",
             event2.getStartDateTime().toString());
-    assertEquals("2025-12-19T08:00",
+    assertEquals("2025-12-19T04:00",
             event2.getEndDateTime().toString());
     assertEquals("test HELLO",
             event2.getDescription());
@@ -1050,4 +1052,93 @@ public class EventHandlerTest {
     assertEquals("Busy", eventController.getEventHandler().getEventCollection("default")
             .checkStatus(startDateTime, startDateTime));
   }
+
+  @Test
+  public void removeCalender() {
+
+    EventController eventController = new EventController();
+    eventController.filterCommand("create event \"hello world\" "
+            + "from 2025-10-10T10:00 to 2025-10-10T10:00 "
+            + "description:\"test HELLO\" location:\"MA\" privacy:\"true\"");
+
+    eventController.getEventHandler().createCalender("Hello", ZoneId.of("America/New_York"));
+    eventController.filterCommand("copy event \"hello world\" on 2025-10-10T10:00 --target \"Hello\" to 2025-12-19T10:00");
+
+    assertEquals(2,eventController.getEventHandler().getCalenderCollection().getCalenderCollectionSize());
+    eventController.getEventHandler().getCalenderCollection().removeCalenderByName("Hello");
+    assertEquals(1,eventController.getEventHandler().getCalenderCollection().getCalenderCollectionSize());
+  }
+
+  //edit calendar --name <calName> --property <property-name> <property-value>
+  @Test
+  public void printCalendersTest() {
+    String print =
+            "\nAvailable Calendars: \n" +
+                    " - default\n" +
+                    " - test2\n" +
+                    " - CS5010\n";
+    EventController eventController = new EventController();
+    eventController.filterCommand("create calendar --name \"test\" " +
+            "--timezone \"America/New_York\"");
+
+    eventController.filterCommand("create calendar --name \"test2\" " +
+            "--timezone \"America/Los_Angeles\"");
+
+    eventController.filterCommand("edit calendar --name \"test\" --property \"name\" \"CS5010\"");
+    eventController.filterCommand("edit calendar --name \"test2\" --property \"time-zone\" \"America/New_York\" ");
+    assertEquals(print,eventController.getEventHandler().getCalenderCollection().printCalendars());
+
+  }
+  @Test
+  public void EditCalenderTimezone() {
+    String print =
+            "\nAvailable Calendars: \n" +
+                    " - default\n" +
+                    " - test2\n" +
+                    " - CS5010\n";
+    EventController eventController = new EventController();
+    eventController.filterCommand("create calendar --name \"test\" " +
+            "--timezone \"America/New_York\"");
+
+    eventController.filterCommand("create calendar --name \"test2\" " +
+            "--timezone \"America/Los_Angeles\"");
+
+    eventController.filterCommand("edit calendar --name \"test\" --property \"name\" \"CS5010\"");
+    eventController.filterCommand("edit calendar --name \"test2\" --property \"time-zone\" \"America/New_York\" ");
+    assertEquals(print,eventController.getEventHandler().getCalenderCollection().printCalendars());
+    assertEquals(ZoneId.of("America/New_York"),
+            eventController.getEventHandler().getCalenderCollection().getCalenderCollection()
+                    .get("test2").getTimeZone());
+
+  }
+  @Test
+public void TestGetCalenderName() {
+    EventController eventController = new EventController();
+  assertEquals("default", eventController.getEventHandler().getCalenderCollection().
+          getCalendarName(eventController.getEventHandler().getEventCollection("default")));
+  }
+
+  @Test
+  public void TestGetCalenderNameInvalid() {
+      EventController eventController = new EventController();
+      Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+        eventController.getEventHandler().getCalenderCollection().getCalendarName(null);
+      });
+      assertEquals("event collection not attached to a calender collection", exception.getMessage());
+  }
+
+  @Test
+  public void GetCalenderNameDoesNotExist() {
+    EventController eventController = new EventController();
+    Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+      eventController.getEventHandler().getCalenderCollection().getCalendarName(
+              eventController.getEventHandler().getEventCollection("defaultttt"));
+    });
+    assertEquals("Calendar does not exist: defaultttt", exception.getMessage());
+  }
+
+
+
+
 }
+
