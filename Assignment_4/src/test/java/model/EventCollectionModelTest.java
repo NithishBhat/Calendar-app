@@ -107,32 +107,6 @@ public class EventCollectionModelTest {
     assertEquals(events.size(), 2);
   }
 
-  @Test
-  public void searchEventByStartDateTime() {
-    EventCollectionModel eventCollectionModel = new EventCollectionModel();
-    LocalDateTime startDateTime =
-            LocalDateTime.of(2025, 3, 1, 10, 0);
-    LocalDateTime endDateTime =
-            LocalDateTime.of(2025, 3, 1, 15, 0);
-    EventModel event1 = new EventModel("Conference", startDateTime, endDateTime);
-
-    eventCollectionModel.addEvent(event1);
-
-    LocalDateTime startDateTime_2 =
-            LocalDateTime.of(2025, 5, 1, 10, 15);
-    LocalDateTime endDateTime_2 =
-            LocalDateTime.of(2025, 5, 1, 16, 0);
-    EventModel event3 = new EventModel("Presentation", startDateTime_2, endDateTime_2);
-
-    eventCollectionModel.addEvent(event3);
-
-    LocalDateTime startDateTime_search =
-            LocalDateTime.of(2025, 5, 1, 10, 15);
-
-    List<EventModel> events = new ArrayList<>(eventCollectionModel
-            .searchEventByEventStartDate(startDateTime_search));
-    assertEquals(events.size(), 1);
-  }
 
   @Test
   public void searchEventByRange() {
@@ -254,5 +228,48 @@ public class EventCollectionModelTest {
 
     List<EventModel> events = new ArrayList<>(eventCollectionModel.getEventList());
     assertEquals(events.size(), 15);
+    eventCollectionModel.removeEvent(events.get(0));
+    assertEquals(eventCollectionModel.getEventList().size(), 14);
   }
+
+  @Test
+  public void checkConflictingEvents() {
+    EventCollectionModel eventCollectionModel = new EventCollectionModel();
+    LocalDateTime startDateTime =
+            LocalDateTime.of(2025, 3, 1, 10, 0);
+    LocalDateTime endDateTime =
+            LocalDateTime.of(2025, 3, 1, 15, 0);
+
+    LocalDateTime startDateTimeX =
+            LocalDateTime.of(2025, 3, 1, 10, 0);
+    LocalDateTime endDateTimeY =
+            LocalDateTime.of(2025, 3, 1, 15, 0);
+    EventModel eventX = new EventModel("Conference", startDateTime, endDateTime);
+    EventModel eventY = new EventModel("Conference", startDateTimeX, endDateTimeY);
+
+    eventCollectionModel.addEvent(eventX);
+    assertEquals(true,eventCollectionModel.checkForCollision(eventY,true));
+  }
+
+  @Test
+  public void checkConflictingEventsAutodecline() {
+    EventCollectionModel eventCollectionModel = new EventCollectionModel();
+    LocalDateTime startDateTime =
+            LocalDateTime.of(2025, 3, 1, 10, 0);
+    LocalDateTime endDateTime =
+            LocalDateTime.of(2025, 3, 1, 15, 0);
+
+    LocalDateTime startDateTimeX =
+            LocalDateTime.of(2025, 3, 1, 10, 0);
+    LocalDateTime endDateTimeY =
+            LocalDateTime.of(2025, 3, 1, 15, 0);
+    EventModel eventX = new EventModel("Conference", startDateTime, endDateTime);
+    EventModel eventY = new EventModel("Conference", startDateTimeX, endDateTimeY);
+
+    eventCollectionModel.addEvent(eventX);
+    assertEquals(false,eventCollectionModel.checkForCollision(eventY,false));
+  }
+
+
+
 }

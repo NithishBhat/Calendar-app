@@ -63,37 +63,6 @@ public class EventCollectionModel {
     return filteredList;
   }
 
-  /**
-   * Searches that begin from a particular DateTime inclusive.
-   *
-   * @param dateTime The name of the event to search for.
-   * @return A list of events Starting from a dateTime.
-   */
-  public List<EventModel> searchEventFromDateTime(LocalDateTime dateTime) {
-    List<EventModel> filteredList = new ArrayList<>();
-    for (EventModel event : eventList) {
-      if (event.getStartDateTime().isAfter(dateTime) || event.getStartDateTime().isEqual(dateTime)) {
-        filteredList.add(event);
-      }
-    }
-    return filteredList;
-  }
-
-  /**
-   * Searches for events by their start date in Event list.
-   *
-   * @param eventDate The start date to search for.
-   * @return A list of events starting at the given date.
-   */
-  public List<EventModel> searchEventByEventStartDate(LocalDateTime eventDate) {
-    List<EventModel> filteredList = new ArrayList<>();
-    for (EventModel event : eventList) {
-      if (event.getStartDateTime().equals(eventDate)) {
-        filteredList.add(event);
-      }
-    }
-    return filteredList;
-  }
 
 
   /**
@@ -199,25 +168,6 @@ public class EventCollectionModel {
       date = date.plusDays(1);
     }
     return occurringEvents;
-  }
-
-  /**
-   * Converts the event collection to a string representation.
-   *
-   * @return A string representing all events in the collection.
-   */
-  @Override
-  public String toString() {
-    StringBuilder sb = new StringBuilder("EventCollectionModel{\n");
-    int count = 0;
-    for (EventModel event : eventList) {
-      sb.append(event.toString());
-      if (++count < eventList.size()) {
-        sb.append(","); //add comma before last child
-      }
-      sb.append("\n");
-    }
-    return sb.append("}\n").toString();
   }
 
   /**
