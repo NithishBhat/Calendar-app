@@ -56,18 +56,12 @@ public class EventHandler {
   }
 
   public void processCopyCalenderBetweenDates(Matcher matcher) {
-    // Extract values from the matcher
     LocalDate fromDate = LocalDate.parse(matcher.group(1));
     LocalDate toDate = LocalDate.parse(matcher.group(2));
     String targetCalendarName = matcher.group(3);
     LocalDate targetStartDate = LocalDate.parse(matcher.group(4));
 
-
     String sourceCalendar = calenderCollection.getCalendarName(eventCollection);
-
-    if (sourceCalendar == null) {
-      System.out.println("Error: No active calendar is in use.");
-    }
 
     calenderCollection.copyCalenderBetweenDates(fromDate, toDate, sourceCalendar,
             targetStartDate, targetCalendarName);
@@ -80,9 +74,6 @@ public class EventHandler {
 
     String sourceCalendar = calenderCollection.getCalendarName(eventCollection);
 
-    if (sourceCalendar == null) {
-      System.out.println("Error: No active calendar is in use.");
-    }
 
     calenderCollection.copyCalenderEntireDay(eventDateTime, sourceCalendar,
             targetDateTime, targetCalendar);
@@ -107,27 +98,20 @@ public class EventHandler {
     //get the new name or the timezone
     String propertyValue = matcher.group(3);
 
-    if (calenderCollection.getEventCollection(calName) == null) {
-      System.out.println("Error: Calendar with name \"" + calName + "\" not found.");
-      return;
-    }
-
     switch (property) {
       case "name":
         calenderCollection.changeCalenderName(calName, propertyValue);
-        System.out.println("Calendar name updated to: " + propertyValue);
+        //System.out.println("Calendar name updated to: " + propertyValue);
         break;
 
       case "time-zone":
         ZoneId newZone = ZoneId.of(propertyValue);
         calenderCollection.changeCalendarTimeZone(calName, newZone);
-        System.out.println("Calendar time zone updated to: " + propertyValue);
+        //System.out.println("Calendar time zone updated to: " + propertyValue);
         break;
 
       default:
-        //property not recognized. Throw error.
-        System.out.println("Error: Invalid property \"" + property + "\".");
-        break;
+        throw new IllegalArgumentException("Invalid property: " + property);
     }
   }
 
@@ -236,10 +220,9 @@ public class EventHandler {
     LocalDateTime startDate = LocalDateTime.parse(startDateTime);
     LocalDateTime endDate = LocalDateTime.parse(endDateTime);
     if (isEndBeforeStart(startDate, endDate)) {
-      System.out.println("End Date: " + endDate + " is before Start Date: " + startDate);
-      System.out.println("Event was not created");
-      return;
+      throw new IllegalArgumentException("End time cannot be before start time, Event was not created");
     }
+
     List<Character> recurringWeekDay = stringToDayOfWeek(weekDay);
     RecurringEventModel recurringEvent = new RecurringEventModel(eventName,
             startDate, endDate, description,
@@ -279,9 +262,7 @@ public class EventHandler {
 
 
     if (isEndBeforeStart(startDate, endDate)) {
-      System.out.println("End Date: " + endDate + " is before Start Date: " + startDate);
-      System.out.println("Event was not created");
-      return;
+      throw new IllegalArgumentException("End time cannot be before start time, Event was not created");
     }
 
     LocalDateTime recurrernceEndDateTime = LocalDateTime.parse(recurrernceEndDate);
@@ -405,9 +386,7 @@ public class EventHandler {
     LocalDateTime startDateTime = LocalDateTime.parse(startDate);
     LocalDateTime endDateTime = LocalDateTime.parse(endDate);
     if (isEndBeforeStart(startDateTime, endDateTime)) {
-      System.out.println("End Date: " + endDate + " is before Start Date: " + startDate);
-      System.out.println("Event was not created");
-      return;
+      throw new IllegalArgumentException("End time cannot be before start time, Event was not created");
     }
     editEvents(property, newProperty, eventName, startDateTime, endDateTime);
   }
@@ -476,9 +455,7 @@ public class EventHandler {
     LocalDateTime endDateTime = LocalDateTime.parse(endDate);
 
     if (isEndBeforeStart(startDateTime, endDateTime)) {
-      System.out.println("End Date: " + endDate + " is before Start Date: " + startDate);
-      System.out.println("Event was not created");
-      return;
+      throw new IllegalArgumentException("End time cannot be before start time, Event was not created");
     }
 
     List<EventModel> printList = new ArrayList<>();
@@ -578,8 +555,8 @@ public class EventHandler {
       setDescription(eventName, newProperty, startDateTime, endDateTime);
     } else if (newProperty.contains("private") && property.contains("privacyType")) {
       setIsPrivate(eventName, true, startDateTime, endDateTime);
-    } else if (property.contains("public") && property.contains("privacyType")) {
-      setIsPrivate(newProperty, false, startDateTime, endDateTime);
+    } else if (newProperty.contains("public") && property.contains("privacyType")) {
+      setIsPrivate(eventName, false, startDateTime, endDateTime);
     } else if (property.contains("eventName")) {
       setEventName(eventName, newProperty, startDateTime, endDateTime);
     }
