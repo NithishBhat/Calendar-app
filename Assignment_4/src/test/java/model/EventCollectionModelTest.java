@@ -7,7 +7,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import controller.EventController;
+import controller.EventHandler;
+
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 
@@ -269,7 +273,112 @@ public class EventCollectionModelTest {
     eventCollectionModel.addEvent(eventX);
     assertEquals(false,eventCollectionModel.checkForCollision(eventY,false));
   }
+  @Test
+  public void testRecurringEventModelInitialization() {
+    // Sample valid inputs
+    String eventName = "Daily Standup";
+    LocalDateTime startDateTime = LocalDateTime.of(2025, 3, 25, 9, 0);
+    LocalDateTime endDateTime = LocalDateTime.of(2025, 3, 25, 9, 30);
+    boolean autoDecline = false;
+    List<Character> recurringDays = Arrays.asList('M', 'T', 'W', 'T', 'F'); // Weekdays
+    Integer occurrences = 5;
+    LocalDateTime recurrenceEndDateTime = LocalDateTime.of(2025, 4, 1, 9, 0);
+
+    RecurringEventModel event = new RecurringEventModel(
+            eventName, startDateTime, endDateTime, autoDecline, recurringDays, occurrences, recurrenceEndDateTime
+    );
+
+    // Assertions
+    assertEquals(eventName, event.getEventName());
+    assertEquals(startDateTime, event.getStartDateTime());
+    assertEquals(endDateTime, event.getEndDateTime());
+    assertFalse(event.isAutoDecline());
+    assertEquals(recurringDays, event.getRecurringDays());
+    assertEquals(occurrences, event.getOccurrences());
+    assertEquals(recurrenceEndDateTime, event.getRecurrenceEndDateTime());
+  }
 
 
+
+
+  @Test
+  public void testRecurringEventModelCollision() {
+    String eventName = "Meeting";
+    EventController eventController = new EventController();
+    EventHandler eventHandler = eventController.getEventHandler();
+
+    // Fixing the incorrect endDateTime (should be after startDateTime)
+    LocalDateTime startDateTime = LocalDateTime.of(2025, 3, 29, 10, 0);
+    LocalDateTime endDateTime = LocalDateTime.of(2025, 3, 29, 11, 0); // Fixed: End is after start
+
+    boolean autoDecline = true;
+    List<Character> recurringDays = Arrays.asList('M', 'W');
+    Integer occurrences = 5;
+    LocalDateTime recurrenceEndDateTime = LocalDateTime.of(2025, 4, 5, 10, 0);
+    String dateTimeString = "2025-03-31T10:00";
+    LocalDateTime localDateTime = LocalDateTime.parse(dateTimeString);
+    RecurringEventModel recurringEventModel = new RecurringEventModel(
+            eventName, startDateTime, endDateTime, autoDecline, recurringDays, occurrences, recurrenceEndDateTime
+    );
+
+    RecurringEventModel recurringEventModelX = new RecurringEventModel(
+            "X", startDateTime.plusHours(1), endDateTime.plusHours(1), autoDecline, recurringDays, occurrences, recurrenceEndDateTime
+    );
+
+    assertEquals(false,eventHandler.getEventCollection().checkForCollisionRecurringEvent(recurringEventModel, true));
+    assertEquals(true,eventHandler.getEventCollection().checkForCollisionRecurringEvent(recurringEventModelX, true));
+
+    assertEquals(2, eventHandler.getEventCollection().getEventList().size());
+    assertEquals(recurringEventModel.getEventName(), eventHandler.getEventCollection().getEventList().get(0).getEventName());
+    assertEquals(localDateTime, eventHandler.getEventCollection().getEventList().get(0).getStartDateTime());
+  }
+
+  @Test
+  public void testSearchEventByTimeFrame_WithinRange() {
+    EventController eventController = new EventController();
+    EventHandler eventHandler = eventController.getEventHandler();
+    eventHandler.getEventCollection().checkForCollision(new EventModel("Meeting",
+            LocalDateTime.of(2025, 3, 25, 10, 0),
+            LocalDateTime.of(2025, 3, 25, 11, 0),
+            false),false);
+
+    eventHandler.getEventCollection().checkForCollision(new EventModel("Lunch",
+            LocalDateTime.of(2025, 3, 25, 12, 30),
+            LocalDateTime.of(2025, 3, 25, 13, 30),
+            false),false);
+
+    LocalDateTime searchStart = LocalDateTime.of(2025, 3, 25, 10, 0);
+    LocalDateTime searchEnd = LocalDateTime.of(2025, 3, 25, 13, 30);
+
+    List<EventModel> result = eventHandler.getEventCollection().searchEventByTimeFrame(searchStart, searchEnd);
+
+    assertEquals(2, result.size());
+    assertEquals("Meeting", result.get(0).getEventName());
+    assertEquals("Lunch", result.get(1).getEventName());
+  }
+
+
+  @Test
+  public void autoDeclineEventCollectionModel() {
+    EventController eventController = new EventController();
+    EventHandler eventHandler = eventController.getEventHandler();
+    eventHandler.getEventCollection().checkForCollision(new EventModel("Meeting",
+            LocalDateTime.of(2025, 3, 25, 10, 0),
+            LocalDateTime.of(2025, 3, 25, 11, 0),
+            false),false);
+    eventHandler.getEventCollection().checkForCollision(new EventModel("Meeting",
+            LocalDateTime.of(2025, 3, 25, 10, 0),
+            LocalDateTime.of(2025, 3, 25, 11, 0),
+            false),true);
+    assertEquals(1,eventHandler.getEventCollection().getEventList().size());
+
+  }
+
+  @Test
+  public void nullSearchEventByTimeFrame() {
+    EventController eventController = new EventController();
+    EventHandler eventHandler = eventController.getEventHandler();
+    assertEquals(null,eventHandler.getEventCollection().searchEventByStartTimeAndName("Meeting", LocalDateTime.of(2025, 3, 25, 10, 0)));
+  }
 
 }
