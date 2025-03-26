@@ -6,11 +6,18 @@ import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
 
+import controller.EventController;
+
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 /**
  * This class tests various functionalities of the EventView interactive mode,
@@ -345,6 +352,57 @@ public class EventViewTest {
     assertTrue(output.contains("No Events in Calendar"));
   }
 
-  
+  @Test
+  public void testMainValidArgs() {
+    String[] args = {"--mode", "interactive"};
+
+    ByteArrayOutputStream out = new ByteArrayOutputStream();
+    System.setOut(new PrintStream(out));
+
+    String exitInput = "exit\n";
+    InputStream originalSystemIn = System.in;
+    System.setIn(new ByteArrayInputStream(exitInput.getBytes()));
+
+    EventView.main(args);
+
+    System.setIn(originalSystemIn);
+
+    String output = out.toString();
+    assertTrue(output.contains("Enter Command: "));
+
+    assertTrue(output.contains("Goodbye!"));
+  }
+
+  @Test
+  public void testMainHeadlessArgs() throws IOException {
+    File tempFile = File.createTempFile("testCommands", ".txt");
+    tempFile.deleteOnExit();
+
+    try (FileWriter writer = new FileWriter(tempFile)) {
+      writer.write("exit\n");
+    }
+
+    String[] args = {"--mode", "headless", tempFile.getAbsolutePath()};
+    ByteArrayOutputStream out = new ByteArrayOutputStream();
+    System.setOut(new PrintStream(out));
+
+    EventView.main(args);
+
+    String output = out.toString();
+    assertTrue(output.contains("Bye"));
+  }
+
+  @Test
+  public void testMainInvalidArgs() {
+    String[] args = {"--mode", "invalid"};
+
+    ByteArrayOutputStream out = new ByteArrayOutputStream();
+    System.setOut(new PrintStream(out));
+
+    EventView.main(args);
+
+    String output = out.toString();
+    assertTrue(output.contains("Usage: java EventView --mode [interactive|headless filename]"));
+  }
 }
 
