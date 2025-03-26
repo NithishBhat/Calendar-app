@@ -5,7 +5,6 @@ This document outlines the commands used for creating, editing, printing, export
 ---
 
 ### Table of Contents
-
 - [Create Event Commands](#create-event-commands)
   - [Single Event](#single-event)
   - [Recurring Event by Number of Occurrences](#recurring-event-for-n-times)
@@ -23,6 +22,14 @@ This document outlines the commands used for creating, editing, printing, export
 - [Export Command](#export-command)
 - [Status Command](#status-command)
 - [Notes on Formatting](#notes-on-formatting)
+
+- [Calender Commands]
+  - [Create calendar](#create-event-commands)
+  - [Use calendar](#create-event-commands)
+  - [Copy Specific Event](#create-event-commands)
+  - [Copy All Events On A Day](#create-event-commands)
+  - [Copy All Events In Interval](#create-event-commands)
+  - [Edit Calendar](#create-event-commands)
 
 ---
 
@@ -300,6 +307,112 @@ show status on 2025-01-10T10:00
   - `[description:"..."], [location:"..."], [privacy:"true" or "false"]` (optional): Must be in the order shown.
 
 ---
+##  Calender Commands
+  - [Create calendar](#create-event-commands)
+  - [Use calendar](#create-event-commands)
+  - [Copy Specific Event](#create-event-commands)
+  - [Copy All Events On A Day](#create-event-commands)
+  - [Copy All Events In Interval](#create-event-commands)
+
+
+### Create Calendar
+
+This command will create a new calendar with a unique name and timezone as specified by the user. The expected timezone format is the IANA Time Zone Database format Links to an external site. . In this format the timezone is specified as "area/location". Few examples include "America/New_York", "Europe/Paris", "Asia/Kolkata", "Australia/Sydney", "Africa/Cairo", etc. The command is invalid if the user provides a non-unique calendar name or an unsupported timezone.
+
+**Command Syntax:**
+
+```bash
+create calendar --name <calName> --timezone area/location
+```
+
+**Example:**
+
+```bash
+create calendar --name "default" --timezone "Africa/Cairo"
+```
+
+### Use Calendar
+
+A user can create/edit/print/export events in the context of a calendar. They can use this command to set the calendar context. Note this means that the commands in the previous iteration only make sense when a calendar is in use (i.e. some calendar must be in use for them to work). Otherwise, they are invalid.
+
+**Command Syntax:**
+
+```bash
+use calendar --name <name-of-calendar>
+```
+
+**Example:**
+
+```bash
+use calendar --name "Hello"
+```
+
+### Copy Specific Event
+
+A user can create/edit/print/export events in the context of a calendar. They can use this command to set the calendar context. Note this means that the commands in the previous iteration only make sense when a calendar is in use (i.e. some calendar must be in use for them to work). Otherwise, they are invalid.
+
+**Command Syntax:**
+
+```bash
+use calendar --name <name-of-calendar>
+```
+
+**Example:**
+
+```bash
+use calendar --name "Hello"
+```
+
+### Copy All Events On A Day
+
+A user can create/edit/print/export events in the context of a calendar. They can use this command to set the calendar context. Note this means that the commands in the previous iteration only make sense when a calendar is in use (i.e. some calendar must be in use for them to work). Otherwise, they are invalid.
+
+**Command Syntax:**
+
+```bash
+use calendar --name <name-of-calendar>
+```
+
+**Example:**
+
+```bash
+use calendar --name "Hello"
+```
+### Copy All Events In Interval
+
+A user can create/edit/print/export events in the context of a calendar. They can use this command to set the calendar context. Note this means that the commands in the previous iteration only make sense when a calendar is in use (i.e. some calendar must be in use for them to work). Otherwise, they are invalid.
+
+**Command Syntax:**
+
+```bash
+use calendar --name <name-of-calendar>
+```
+
+**Example:**
+
+```bash
+use calendar --name "Hello"
+```
+
+### Edit Calendar
+
+A user can create/edit/print/export events in the context of a calendar. They can use this command to set the calendar context. Note this means that the commands in the previous iteration only make sense when a calendar is in use (i.e. some calendar must be in use for them to work). Otherwise, they are invalid.
+
+**Command Syntax:**
+
+```bash
+use calendar --name <name-of-calendar>
+```
+
+**Example:**
+
+```bash
+use calendar --name "Hello"
+```
+
+
+
+
 ## Modes of Interaction
 In order to run the application the user must specify whether to use the interactive CLI 
 or the headless application. Before running any modes the user must compile the files from the 
