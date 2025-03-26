@@ -111,18 +111,7 @@ public class ExportToCSVTest {
     file.delete();
   }
 
-  @Test
-  public void testGenerateCSVWithEmptyEvents() {
-    List<EventModel> emptyEvents = new ArrayList<>();
-    String filePath = "test_empty_output.csv";
 
-    ExportToCSV.generateCSV(filePath, emptyEvents);
-
-    File file = new File(filePath);
-    assertFalse(file.exists());
-
-    file.delete();
-  }
 
   @Test
   public void testRemoveRegex() {

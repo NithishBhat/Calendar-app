@@ -9,7 +9,7 @@ import java.time.LocalTime;
  * This class serves as a base model for different types of events.
  * It also provides getter and setter methods to access and modify event details.
  */
-public class EventModel {
+public class EventModel implements Event{
 
   private String eventName;
   private LocalDateTime startDateTime;
@@ -166,7 +166,7 @@ public class EventModel {
    *
    * @return true if auto decline is enabled, false otherwise
    */
-  public boolean getAutoDecline() {
+  public Boolean getAutoDecline() {
     return autoDecline;
   }
 
@@ -177,6 +177,11 @@ public class EventModel {
    */
   public Boolean getIsPrivate() {
     return isPrivate;
+  }
+
+  @Override
+  public void setIsPrivate(boolean isPrivate) {
+
   }
 
   /**

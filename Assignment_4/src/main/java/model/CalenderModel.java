@@ -1,7 +1,8 @@
 package model;
+import java.io.Serializable;
 import java.time.ZoneId;
 
-public class CalenderModel {
+public class CalenderModel implements Calendar{
 
   private EventCollectionModel eventCollection;
   private ZoneId TimeZone;
