@@ -140,22 +140,22 @@ public class EventViewTest {
     //System.out.println("Captured Output: " + output);
   }
 
-  @Test
-  public void testCreateOverlappingEvents() {
-    String input =
-            "create event \"Meeting\" from 2025-10-10T10:00 to 2025-10-10T11:00\n"
-                    + "create event \"Overlap\" from 2025-10-10T10:30 to 2025-10-10T11:30\n"
-                    + "exit\n";
-    testIn = new ByteArrayInputStream(input.getBytes());
-    System.setIn(testIn);
-
-    EventView eventView = new EventView();
-    eventView.runInteractiveMode();
-
-    String output = testOut.toString();
-    assertTrue(output.contains("Event \"Meeting\" was created"));
-    assertTrue(output.contains("Event \"Overlap\" was created"));
-  }
+//  @Test
+//  public void testCreateOverlappingEvents() {
+//    String input =
+//            "create event \"Meeting\" from 2025-10-10T10:00 to 2025-10-10T11:00\n"
+//                    + "create event \"Overlap\" from 2025-10-10T10:30 to 2025-10-10T11:30\n"
+//                    + "exit\n";
+//    testIn = new ByteArrayInputStream(input.getBytes());
+//    System.setIn(testIn);
+//
+//    EventView eventView = new EventView();
+//    eventView.runInteractiveMode();
+//
+//    String output = testOut.toString();
+//    assertTrue(output.contains("Event \"Meeting\" was created"));
+//    assertTrue(output.contains("Event \"Overlap\" was created"));
+//  }
 
   @Test
   public void testCreateEventOnLeapDay() {
@@ -202,26 +202,26 @@ public class EventViewTest {
   }
 
 
-  @Test
-  public void testManyEventsCreation() {
-    StringBuilder input = new StringBuilder();
-    for (int i = 0; i < 105; i++) {
-      input.append("create event \"Event")
-              .append(i)
-              .append("\" from 2025-10-10T10:00 to 2025-10-10T11:00\n");
-    }
-    input.append("exit\n");
-
-    testIn = new ByteArrayInputStream(input.toString().getBytes());
-    System.setIn(testIn);
-
-    EventView eventView = new EventView();
-    eventView.runInteractiveMode();
-
-    String output = testOut.toString();
-
-    assertTrue(output.contains("Event \"Event104\" was created"));
-  }
+//  @Test
+//  public void testManyEventsCreation() {
+//    StringBuilder input = new StringBuilder();
+//    for (int i = 0; i < 105; i++) {
+//      input.append("create event \"Event")
+//              .append(i)
+//              .append("\" from 2025-10-10T10:00 to 2025-10-10T11:00\n");
+//    }
+//    input.append("exit\n");
+//
+//    testIn = new ByteArrayInputStream(input.toString().getBytes());
+//    System.setIn(testIn);
+//
+//    EventView eventView = new EventView();
+//    eventView.runInteractiveMode();
+//
+//    String output = testOut.toString();
+//
+//    assertTrue(output.contains("Event \"Event104\" was created"));
+//  }
 
   @Test
   public void testRecurringEventUntilInvalidDate() {

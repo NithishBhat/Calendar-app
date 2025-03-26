@@ -241,6 +241,7 @@ public class EventModel implements Event{
    *
    * @param autoDecline the value to set for auto decline
    */
+  @Override
   public void setAutoDecline(Boolean autoDecline) {
     this.autoDecline = autoDecline;
   }

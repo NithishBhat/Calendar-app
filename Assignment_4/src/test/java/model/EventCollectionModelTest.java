@@ -255,24 +255,7 @@ public class EventCollectionModelTest {
     assertEquals(true,eventCollectionModel.checkForCollision(eventY,true));
   }
 
-  @Test
-  public void checkConflictingEventsAutodecline() {
-    EventCollectionModel eventCollectionModel = new EventCollectionModel();
-    LocalDateTime startDateTime =
-            LocalDateTime.of(2025, 3, 1, 10, 0);
-    LocalDateTime endDateTime =
-            LocalDateTime.of(2025, 3, 1, 15, 0);
 
-    LocalDateTime startDateTimeX =
-            LocalDateTime.of(2025, 3, 1, 10, 0);
-    LocalDateTime endDateTimeY =
-            LocalDateTime.of(2025, 3, 1, 15, 0);
-    EventModel eventX = new EventModel("Conference", startDateTime, endDateTime);
-    EventModel eventY = new EventModel("Conference", startDateTimeX, endDateTimeY);
-
-    eventCollectionModel.addEvent(eventX);
-    assertEquals(false,eventCollectionModel.checkForCollision(eventY,false));
-  }
   @Test
   public void testRecurringEventModelInitialization() {
     // Sample valid inputs

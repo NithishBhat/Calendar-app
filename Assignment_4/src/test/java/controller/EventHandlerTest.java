@@ -185,7 +185,7 @@ public class EventHandlerTest {
     eventController.getEventHandler().createCalender("Hello", ZoneId.of("America/New_York"));
 
     eventController.filterCommand("copy events on 2025-10-10 --target \"Hello\" to 2025-12-19");
-    assertEquals(3, eventController.getEventHandler().getEventCollection("default").getEventList().size());
+    assertEquals(2, eventController.getEventHandler().getEventCollection("default").getEventList().size());
     assertEquals(2, eventController.getEventHandler().getEventCollection("Hello").getEventList().size());
     EventModel event1 = eventController.getEventHandler().getEventCollection("default").getEventList().get(0);
     EventModel event2 = eventController.getEventHandler().getEventCollection("Hello").getEventList().get(0);
@@ -1281,7 +1281,7 @@ public class EventHandlerTest {
 
     eventController.filterCommand("print events from 2025-10-11T10:00 to 2025-11-10T10:00");
     EventModel eventOne = eventController.getEventHandler().getEventCollection("default").getEventList().get(2);
-    EventModel eventTwo = eventController.getEventHandler().getEventCollection("default").getEventList().get(3);
+
 
     LocalDateTime startDateTime = LocalDateTime
             .of(2025, 10, 11, 10, 00);
@@ -1510,13 +1510,13 @@ public void TestGetCalenderName() {
 
     EventModel eventOne = eventController.getEventHandler().getEventCollection("default").getEventList().get(0);
     EventModel eventTwo = eventController.getEventHandler().getEventCollection("default").getEventList().get(1);
-    EventModel eventThree = eventController.getEventHandler().getEventCollection("default").getEventList().get(2);
+
 //edit events <property> <eventName> from <dateStringTtimeString> with <NewPropertyValue>
     eventController.filterCommand("edit events eventName \"hello world\" from 2025-10-10T09:00 with  \"New Event Name\"\n");
 
     assertEquals("New Event Name", eventOne.getEventName());
     assertEquals("New Event Name", eventTwo.getEventName());
-    assertEquals("New Event Name", eventThree.getEventName());
+
   }
 
   @Test
@@ -1531,13 +1531,12 @@ public void TestGetCalenderName() {
 
     EventModel eventOne = eventController.getEventHandler().getEventCollection("default").getEventList().get(0);
     EventModel eventTwo = eventController.getEventHandler().getEventCollection("default").getEventList().get(1);
-    EventModel eventThree = eventController.getEventHandler().getEventCollection("default").getEventList().get(2);
 //edit events <property> <eventName> from <dateStringTtimeString> with <NewPropertyValue>
     eventController.filterCommand("edit events eventName \"hello world\" from 2025-10-10T11:00 with  \"New Event Name\"\n");
 
     assertEquals("hello world", eventOne.getEventName());
-    assertEquals("hello world", eventTwo.getEventName());
-    assertEquals("New Event Name", eventThree.getEventName());
+    assertEquals("New Event Name", eventTwo.getEventName());
+
   }
 
 
@@ -1553,13 +1552,13 @@ public void TestGetCalenderName() {
 
     EventModel eventOne = eventController.getEventHandler().getEventCollection("default").getEventList().get(0);
     EventModel eventTwo = eventController.getEventHandler().getEventCollection("default").getEventList().get(1);
-    EventModel eventThree = eventController.getEventHandler().getEventCollection("default").getEventList().get(2);
+
 //dit event <property> "<eventName>" from <dateStringTtimeString> to <dateStringTtimeString> with "<NewPropertyValue>"
     eventController.filterCommand("edit event eventName \"hello world\" from 2025-10-10T11:00 to  2025-10-10T12:00 with  \"New Event Name\"\n");
 
     assertEquals("hello world", eventOne.getEventName());
-    assertEquals("New Event Name", eventTwo.getEventName());
-    assertEquals("hello world", eventThree.getEventName());
+    assertEquals("hello world", eventTwo.getEventName());
+
   }
 
 

@@ -202,7 +202,7 @@ public class EventCollectionModel {
 
   public boolean checkForCollision(EventModel event, boolean autoDecline) {
     boolean hasConflict = checkConflict(event.getStartDateTime(),event.getEndDateTime());
-
+    autoDecline=true;
     if (autoDecline && hasConflict) {
       System.out.println("Event \"" + event.getEventName() + "\" was not created due to conflict");
       return true;
@@ -221,6 +221,7 @@ public class EventCollectionModel {
    * @return true if event was added, false if there was a conflict and autoDecline is true
    */
   public boolean checkForCollisionRecurringEvent(RecurringEventModel recurringEvent, boolean autoDecline) {
+    autoDecline=true;
     if (!autoDecline) {
       addRecurringEvent(recurringEvent);
       System.out.println("Event \"" + recurringEvent.getEventName() + "\" was created");
