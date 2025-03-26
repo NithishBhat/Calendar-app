@@ -23,7 +23,7 @@ This document outlines the commands used for creating, editing, printing, export
 - [Status Command](#status-command)
 - [Notes on Formatting](#notes-on-formatting)
 
-- [Calender Commands]
+- [Calender Commands](#create-event-commands)
   - [Create calendar](#create-event-commands)
   - [Use calendar](#create-event-commands)
   - [Copy Specific Event](#create-event-commands)
@@ -307,12 +307,6 @@ show status on 2025-01-10T10:00
   - `[description:"..."], [location:"..."], [privacy:"true" or "false"]` (optional): Must be in the order shown.
 
 ---
-##  Calender Commands
-  - [Create calendar](#create-event-commands)
-  - [Use calendar](#create-event-commands)
-  - [Copy Specific Event](#create-event-commands)
-  - [Copy All Events On A Day](#create-event-commands)
-  - [Copy All Events In Interval](#create-event-commands)
 
 
 ### Create Calendar
@@ -354,61 +348,73 @@ A user can create/edit/print/export events in the context of a calendar. They ca
 **Command Syntax:**
 
 ```bash
-use calendar --name <name-of-calendar>
+copy event <eventName> on <dateStringTtimeString> --target <calendarName> to <dateStringTtimeString>
 ```
 
 **Example:**
 
 ```bash
-use calendar --name "Hello"
+copy event "Hello" on 2025-10-10T13:00  --target "Hello" to 2025-10-10T13:00 
 ```
 
 ### Copy All Events On A Day
 
-A user can create/edit/print/export events in the context of a calendar. They can use this command to set the calendar context. Note this means that the commands in the previous iteration only make sense when a calendar is in use (i.e. some calendar must be in use for them to work). Otherwise, they are invalid.
+The command is used to copy a specific event with the given name and start date/time from the current calendar to the target calendar to start at the specified date/time. The "to" date/time is assumed to be specified in the timezone of the target calendar. The copied event must be in the same timezone as the target calendar.
 
 **Command Syntax:**
 
 ```bash
-use calendar --name <name-of-calendar>
+copy events on <dateString> --target <calendarName> to <dateString>
 ```
 
 **Example:**
 
-```bash
-use calendar --name "Hello"
+```
+copy events on 2025-10-10 --target "hello" to 2025-10-10
 ```
 ### Copy All Events In Interval
 
-A user can create/edit/print/export events in the context of a calendar. They can use this command to set the calendar context. Note this means that the commands in the previous iteration only make sense when a calendar is in use (i.e. some calendar must be in use for them to work). Otherwise, they are invalid.
+The command has the same behavior as the other copy commands, except it copies all events scheduled in the specified date interval. The date string in the target calendar corresponds to the start of the interval. The endpoint dates of the interval are inclusive.
 
 **Command Syntax:**
 
 ```bash
-use calendar --name <name-of-calendar>
+copy events between <dateString> and <dateString> --target <calendarName> to <dateString>
 ```
 
 **Example:**
 
 ```bash
-use calendar --name "Hello"
+copy events between 2025-10-10 and 2025-11-10 --target "Hello" to 2025-10-10
 ```
 
 ### Edit Calendar
 
-A user can create/edit/print/export events in the context of a calendar. They can use this command to set the calendar context. Note this means that the commands in the previous iteration only make sense when a calendar is in use (i.e. some calendar must be in use for them to work). Otherwise, they are invalid.
+This command is used to change/modify an existing property ( name or timezone ) of the calendar. The command is invalid if the property being changed is absent or the value is invalid in the context of the property.
 
 **Command Syntax:**
 
 ```bash
-use calendar --name <name-of-calendar>
+edit calendar --name <name-of-calendar> --property <property-name> <new-property-value>
 ```
 
 **Example:**
 
 ```bash
-use calendar --name "Hello"
+edit calendar --name "test" --property "name" "CS5010"
+edit calendar --name "test2" --property "time-zone" "America/New_York" 
 ```
+---
+
+## Notes on Formatting
+
+- **Mandatory Spaces:** There must be a space between each parameter as indicated in the command structure.
+- **Date and Time Formats:**
+  - `<dateString>` must follow `YYYY-MM-DD`.
+  - `<dateStringTtimeString>` must follow `YYYY-MM-DDThh:mm`.
+  - `<calendarname>`: Must be enclosed in double quotes.
+  - `<dateStringTtimeString>`: Format `YYYY-MM-DDThh:mm` (e.g., `2025-10-10T10:00`).
+  - '<property>' and '<new-property-value>' must be in quotes.
 
 
 
