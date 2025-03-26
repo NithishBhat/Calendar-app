@@ -4,7 +4,7 @@ This document outlines the commands used for creating, editing, printing, export
 
 ---
 
-## Table of Contents
+### Table of Contents
 
 - [Create Event Commands](#create-event-commands)
   - [Single Event](#single-event)
@@ -26,9 +26,9 @@ This document outlines the commands used for creating, editing, printing, export
 
 ---
 
-### Create Event Commands
+## Create Event Commands
 
-## Single Event
+### Single Event
 
 Creates a single event in the calendar. Note \<dateString> is a string of the form "YYYY-MM-DD" and \<timeString> is a string of the form "hh:mm".
 
@@ -53,7 +53,7 @@ create event --autoDecline "hello world" from 2025-10-10T10:00 to 2025-10-10T10:
 
 ---
 
-## Recurring Event for N Times
+### Recurring Event for N Times
 
 Creates a recurring event that repeats a specified number of times on specific weekdays.
 
@@ -80,7 +80,7 @@ create event "hello world" from 2025-10-10T10:00 to 2025-12-10T10:00 repeats MTW
 
 ---
 
-## Recurring All Day Event Until a Specific Date
+### Recurring All Day Event Until a Specific Date
 
 Creates a recurring event until a specific date (inclusive).
 
@@ -106,7 +106,7 @@ create event "hello world" from 2025-10-10T10:00 to 2025-12-10T10:00 repeats MTW
 ```
 
 ---
-## All Day Single Event
+### All Day Single Event
 Creates a single all day event
 
 **Command Syntax:**
@@ -129,7 +129,7 @@ create event --autoDecline "hello world" on 2025-12-10T10:00
 ```
 
 ---
-## Recurring All Day Event by Number of Occurrences
+### Recurring All Day Event by Number of Occurrences
 
 Creates a recurring all day event until a specific date (inclusive).
 
@@ -154,9 +154,9 @@ create event --autoDecline "hello world" on 2025-12-10T10:00 repeats MTW until  
 ```
 ---
 
-### Edit Event Commands
+## Edit Event Commands
 
-## Edit a Specific Event
+### Edit a Specific Event
 
 Change a property of a single event identified by its name and specific start and end date/time.
 
@@ -174,7 +174,7 @@ edit event "hello world" from 2025-10-10T12:00 to 2025-10-10T13:00 with "New Eve
 
 ---
 
-## Edit Multiple Events by Date/Time
+### Edit Multiple Events by Date/Time
 
 Changes the property (e.g., name) of all events starting at a specific date/time and have the same event name.
 
@@ -192,7 +192,7 @@ edit event eventName "hello world" from 2025-10-10T12:00 with "New Event Name"
 
 ---
 
-## Edit Multiple Events by Name
+### Edit Multiple Events by Name
 
 Change the property (e.g., name) of all events with the same event name.
 
@@ -213,7 +213,7 @@ edit events eventName "hello world"  "New Event Name"
 
 ### Print Events on Date
 
-Prints a bulleted list of all events on a specific date along with their start and end times and location (if available).
+Prints a bulleted list of all events on that day along with their start and end time and location (if any).
 
 **Command Syntax:**
 
@@ -225,6 +225,24 @@ print events on <dateString>
 
 ```bash
 print events on 2025-10-10
+```
+
+---
+
+### Print Events in a Given Interval
+
+Prints a bulleted list of all events on that day along with their start and end time and location (if any).
+
+**Command Syntax:**
+
+```bash
+print events from <dateStringTtimeString> to <dateStringTtimeString>
+```
+
+**Example:**
+
+```bash
+print events from 2025-10-10T12:00 to 2025-10-10T13:00 
 ```
 
 ---
