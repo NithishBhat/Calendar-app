@@ -29,7 +29,7 @@ public class EventController {
     eventHandler = new EventHandler();
   }
 
-  public EventHandler getEventHandler(){
+  public EventHandler getEventHandler() {
     return eventHandler;
   }
 
@@ -54,7 +54,8 @@ public class EventController {
       commandMap.put("useCalendar", () -> eventHandler.processUseCalendar(matcher));
       commandMap.put("processCopyEventOn", () -> eventHandler.processCopyEventOn(matcher));
       commandMap.put("copyEventsOn", () -> eventHandler.processCopyEventsOn(matcher));
-      commandMap.put("copyEventsBetween", () -> eventHandler.processCopyCalenderBetweenDates(matcher));
+      commandMap.put("copyEventsBetween", () -> eventHandler
+              .processCopyCalenderBetweenDates(matcher));
       commandMap.put("createEventPattern", () -> eventHandler.processCreateEvent(matcher));
       commandMap.put("createRecurringEventN", () -> eventHandler
               .processCreateRecurringEventN(matcher));

@@ -260,15 +260,19 @@ public class EventCollectionModelTest {
   public void testRecurringEventModelInitialization() {
     // Sample valid inputs
     String eventName = "Daily Standup";
-    LocalDateTime startDateTime = LocalDateTime.of(2025, 3, 25, 9, 0);
-    LocalDateTime endDateTime = LocalDateTime.of(2025, 3, 25, 9, 30);
+    LocalDateTime startDateTime =
+            LocalDateTime.of(2025, 3, 25, 9, 0);
+    LocalDateTime endDateTime =
+            LocalDateTime.of(2025, 3, 25, 9, 30);
     boolean autoDecline = false;
     List<Character> recurringDays = Arrays.asList('M', 'T', 'W', 'T', 'F'); // Weekdays
     Integer occurrences = 5;
-    LocalDateTime recurrenceEndDateTime = LocalDateTime.of(2025, 4, 1, 9, 0);
+    LocalDateTime recurrenceEndDateTime =
+            LocalDateTime.of(2025, 4, 1, 9, 0);
 
     RecurringEventModel event = new RecurringEventModel(
-            eventName, startDateTime, endDateTime, autoDecline, recurringDays, occurrences, recurrenceEndDateTime
+            eventName, startDateTime, endDateTime, autoDecline,
+            recurringDays, occurrences, recurrenceEndDateTime
     );
 
     // Assertions
@@ -291,29 +295,38 @@ public class EventCollectionModelTest {
     EventHandler eventHandler = eventController.getEventHandler();
 
     // Fixing the incorrect endDateTime (should be after startDateTime)
-    LocalDateTime startDateTime = LocalDateTime.of(2025, 3, 29, 10, 0);
-    LocalDateTime endDateTime = LocalDateTime.of(2025, 3, 29, 11, 0); // Fixed: End is after start
+    LocalDateTime startDateTime =
+            LocalDateTime.of(2025, 3, 29, 10, 0);
+    LocalDateTime endDateTime =
+            LocalDateTime.of(2025, 3, 29, 11, 0);
 
     boolean autoDecline = true;
     List<Character> recurringDays = Arrays.asList('M', 'W');
     Integer occurrences = 5;
-    LocalDateTime recurrenceEndDateTime = LocalDateTime.of(2025, 4, 5, 10, 0);
+    LocalDateTime recurrenceEndDateTime =
+            LocalDateTime.of(2025, 4, 5, 10, 0);
     String dateTimeString = "2025-03-31T10:00";
     LocalDateTime localDateTime = LocalDateTime.parse(dateTimeString);
     RecurringEventModel recurringEventModel = new RecurringEventModel(
-            eventName, startDateTime, endDateTime, autoDecline, recurringDays, occurrences, recurrenceEndDateTime
+            eventName, startDateTime, endDateTime, autoDecline,
+            recurringDays, occurrences, recurrenceEndDateTime
     );
 
     RecurringEventModel recurringEventModelX = new RecurringEventModel(
-            "X", startDateTime.plusHours(1), endDateTime.plusHours(1), autoDecline, recurringDays, occurrences, recurrenceEndDateTime
+            "X", startDateTime.plusHours(1), endDateTime.plusHours(1),
+            autoDecline, recurringDays, occurrences, recurrenceEndDateTime
     );
 
-    assertEquals(false,eventHandler.getEventCollection().checkForCollisionRecurringEvent(recurringEventModel, true));
-    assertEquals(true,eventHandler.getEventCollection().checkForCollisionRecurringEvent(recurringEventModelX, true));
+    assertEquals(false,eventHandler.getEventCollection()
+            .checkForCollisionRecurringEvent(recurringEventModel, true));
+    assertEquals(true,eventHandler.getEventCollection()
+            .checkForCollisionRecurringEvent(recurringEventModelX, true));
 
     assertEquals(2, eventHandler.getEventCollection().getEventList().size());
-    assertEquals(recurringEventModel.getEventName(), eventHandler.getEventCollection().getEventList().get(0).getEventName());
-    assertEquals(localDateTime, eventHandler.getEventCollection().getEventList().get(0).getStartDateTime());
+    assertEquals(recurringEventModel.getEventName(),
+            eventHandler.getEventCollection().getEventList().get(0).getEventName());
+    assertEquals(localDateTime, eventHandler.getEventCollection()
+            .getEventList().get(0).getStartDateTime());
   }
 
   @Test
@@ -330,10 +343,13 @@ public class EventCollectionModelTest {
             LocalDateTime.of(2025, 3, 25, 13, 30),
             false),false);
 
-    LocalDateTime searchStart = LocalDateTime.of(2025, 3, 25, 10, 0);
-    LocalDateTime searchEnd = LocalDateTime.of(2025, 3, 25, 13, 30);
+    LocalDateTime searchStart =
+            LocalDateTime.of(2025, 3, 25, 10, 0);
+    LocalDateTime searchEnd =
+            LocalDateTime.of(2025, 3, 25, 13, 30);
 
-    List<EventModel> result = eventHandler.getEventCollection().searchEventByTimeFrame(searchStart, searchEnd);
+    List<EventModel> result =
+            eventHandler.getEventCollection().searchEventByTimeFrame(searchStart, searchEnd);
 
     assertEquals(2, result.size());
     assertEquals("Meeting", result.get(0).getEventName());
@@ -361,7 +377,9 @@ public class EventCollectionModelTest {
   public void nullSearchEventByTimeFrame() {
     EventController eventController = new EventController();
     EventHandler eventHandler = eventController.getEventHandler();
-    assertEquals(null,eventHandler.getEventCollection().searchEventByStartTimeAndName("Meeting", LocalDateTime.of(2025, 3, 25, 10, 0)));
+    assertEquals(null,eventHandler.getEventCollection()
+            .searchEventByStartTimeAndName("Meeting",
+                    LocalDateTime.of(2025, 3, 25, 10, 0)));
   }
 
 }

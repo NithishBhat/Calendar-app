@@ -9,7 +9,7 @@ import java.time.LocalTime;
  * This class serves as a base model for different types of events.
  * It also provides getter and setter methods to access and modify event details.
  */
-public class EventModel implements Event{
+public class EventModel implements Event {
 
   private String eventName;
   private LocalDateTime startDateTime;
@@ -79,10 +79,10 @@ public class EventModel implements Event{
     this.eventName = event.getEventName();
     this.startDateTime = event.getStartDateTime();
     this.endDateTime = event.getEndDateTime();
-    this.description =event.getDescription();
+    this.description = event.getDescription();
     this.isPrivate = event.getIsPrivate();
     this.autoDecline = event.getAutoDecline();
-    this.location =event.getLocation();
+    this.location = event.getLocation();
   }
 
   /**
@@ -140,7 +140,7 @@ public class EventModel implements Event{
    * @return the end date and time of the event
    */
   public LocalDateTime getEndDateTime() {
-      return endDateTime;
+    return endDateTime;
   }
 
   /**
@@ -271,10 +271,10 @@ public class EventModel implements Event{
   /**
    * Checks if the event occurs completely within the specified date range.
    *
-   * @param  eventStartDateTime  The start of the date range.
-   * @param  eventEndDateTime    The end of the date range.
-   * @return  true if the event starts on or after eventStartDateTime and
-   *          ends on or before eventEndDateTime, false otherwise.
+   * @param eventStartDateTime The start of the date range.
+   * @param eventEndDateTime   The end of the date range.
+   * @return true if the event starts on or after eventStartDateTime and
+   *         ends on or before eventEndDateTime, false otherwise.
    */
   public boolean isEventBetweenDates(LocalDateTime eventStartDateTime,
                                      LocalDateTime eventEndDateTime) {
@@ -286,8 +286,8 @@ public class EventModel implements Event{
    * Checks if the given DateTime is after or before the time of the StartDateTime of the
    * current event. If it is after then it returns true else false.
    *
-   * @param  eventStartDateTime  The DateTime to compare against the event's start time.
-   * @return  Boolean indicating whether the given time is after the start time.
+   * @param eventStartDateTime The DateTime to compare against the event's start time.
+   * @return Boolean indicating whether the given time is after the start time.
    */
   public boolean isAfterDateTime(LocalDateTime eventStartDateTime) {
     return this.getStartDateTime().isAfter(eventStartDateTime);

@@ -1,8 +1,8 @@
 package controller;
 
 import java.time.ZoneId;
+
 import model.CalenderCollection;
-import model.CalenderModel;
 import model.EventCollectionModel;
 import model.EventModel;
 import model.RecurringEventModel;
@@ -13,7 +13,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.regex.Matcher;
 
@@ -29,18 +28,29 @@ public class EventHandler {
 
   /**
    * Constructor initializes the event collection model.
-   *
    */
   public EventHandler() {
-    calenderCollection= new CalenderCollection();
-    createCalender("\"default\"",ZoneId.of("UTC"));
-    eventCollection=calenderCollection.getEventCollection("default");
+    calenderCollection = new CalenderCollection();
+    createCalender("\"default\"", ZoneId.of("UTC"));
+    eventCollection = calenderCollection.getEventCollection("default");
   }
 
+  /**
+   * Sets the event collection for a specific calendar.
+   *
+   * @param calenderName the name of the calendar to use.
+   */
   public void useCalender(String calenderName) {
-    eventCollection= calenderCollection.getEventCollection(calenderName);
+    eventCollection = calenderCollection.getEventCollection(calenderName);
   }
 
+  /**
+   * Processes an event copy operation on a specific date, copying an event from one calendar
+   * to another at a specified time.
+   *
+   * @param matcher the matcher object containing the event details, including event name,
+   *                event date, target calendar, and target calendar date.
+   */
   public void processCopyEventOn(Matcher matcher) {
     String eventName = matcher.group(1);
     LocalDateTime eventDateTime = LocalDateTime.parse(matcher.group(2));
@@ -50,9 +60,14 @@ public class EventHandler {
     String sourceCalendar = calenderCollection.getCalendarName(eventCollection);
 
     calenderCollection.copyCalendarEventOn(sourceCalendar, eventName,
-            eventDateTime,tarCalName, tarCalDateTime );
+            eventDateTime, tarCalName, tarCalDateTime);
   }
 
+  /**
+   * Processes an operation to copy events between two specified dates from one calendar to another.
+   *
+   * @param matcher the matcher object containing the date range and target calendar details.
+   */
   public void processCopyCalenderBetweenDates(Matcher matcher) {
     LocalDate fromDate = LocalDate.parse(matcher.group(1));
     LocalDate toDate = LocalDate.parse(matcher.group(2));
@@ -65,6 +80,11 @@ public class EventHandler {
             targetStartDate, targetCalendarName);
   }
 
+  /**
+   * Processes an operation to copy all events from a specific day in one calendar to another.
+   *
+   * @param matcher the matcher object containing the event date and target calendar details.
+   */
   public void processCopyEventsOn(Matcher matcher) {
     LocalDate eventDateTime = LocalDate.parse(matcher.group(1));
     String targetCalendar = matcher.group(2);
@@ -72,40 +92,49 @@ public class EventHandler {
 
     String sourceCalendar = calenderCollection.getCalendarName(eventCollection);
 
-
     calenderCollection.copyCalenderEntireDay(eventDateTime, sourceCalendar,
             targetDateTime, targetCalendar);
   }
 
+  /**
+   * Processes an operation to copy events with the same name between specified date ranges
+   * from one calendar to another.
+   *
+   * @param eventName          the name of the event to copy.
+   * @param fromDate           the start date for event copying.
+   * @param toDate             the end date for event copying.
+   * @param sourceCalendarName the name of the source calendar.
+   * @param targetStartDate    the start date for the target calendar.
+   * @param targetCalendarName the name of the target calendar.
+   */
   public void processCopyCalendarBetweenDatesWithName(String eventName, LocalDateTime fromDate,
                                                       LocalDateTime toDate,
                                                       String sourceCalendarName,
                                                       LocalDateTime targetStartDate,
                                                       String targetCalendarName) {
-    calenderCollection.copyEventsWithSameNameBetweenDates(eventName,fromDate,toDate,
-            sourceCalendarName,targetStartDate,targetCalendarName);
+    calenderCollection.copyEventsWithSameNameBetweenDates(eventName, fromDate, toDate,
+            sourceCalendarName, targetStartDate, targetCalendarName);
   }
 
+  /**
+   * Processes an operation to edit a calendar's properties such as name or time zone.
+   *
+   * @param matcher the matcher object containing the calendar name,
+   *                property to edit, and new value.
+   */
   public void processEditCalendar(Matcher matcher) {
-    //calendar name
     String calName = matcher.group(1);
-
-    //prop name
     String property = matcher.group(2);
-
-    //get the new name or the timezone
     String propertyValue = matcher.group(3);
 
     switch (property) {
       case "name":
         calenderCollection.changeCalenderName(calName, propertyValue);
-        //System.out.println("Calendar name updated to: " + propertyValue);
         break;
 
       case "time-zone":
         ZoneId newZone = ZoneId.of(propertyValue);
         calenderCollection.changeCalendarTimeZone(calName, newZone);
-        //System.out.println("Calendar time zone updated to: " + propertyValue);
         break;
 
       default:
@@ -113,11 +142,18 @@ public class EventHandler {
     }
   }
 
+  /**
+   * Processes the operation to switch to a specified calendar.
+   *
+   * @param matcher the matcher object containing the calendar name to switch to.
+   */
   public void processUseCalendar(Matcher matcher) {
     String calName = matcher.group(1);
     useCalender(calName);
     System.out.println("Changed to calendar: " + calName);
+
   }
+
   /**
    * Retrieves the event collection managed by the controller.
    *
@@ -125,6 +161,10 @@ public class EventHandler {
    */
   public EventCollectionModel getEventCollection(String calenderName) {
     return calenderCollection.getEventCollection(calenderName);
+  }
+
+  public EventCollectionModel getEventCollection() {
+    return eventCollection;
   }
 
   public CalenderCollection getCalenderCollection() {
@@ -135,15 +175,23 @@ public class EventHandler {
     return calenderCollection.getCalenderCollectionSize();
   }
 
+
   /**
-   * creates a calendar
-   * create calendar --name <calName> --timezone area/location
+   * Creates a new calendar with the specified name and time zone.
    *
+   * @param calenderName the name of the new calendar.
+   * @param timezone     the time zone to associate with the calendar.
    */
-  void createCalender(String calenderName,ZoneId timezone ) {
-    calenderCollection.addCalender(calenderName,timezone);
+  void createCalender(String calenderName, ZoneId timezone) {
+    calenderCollection.addCalender(calenderName, timezone);
   }
 
+  /**
+   * Processes the creation of a new calendar by parsing the input matcher and
+   * handling the creation with the specified name and time zone.
+   *
+   * @param matcher the matcher object containing the calendar name and time zone as strings.
+   */
   void processCreateCalendar(Matcher matcher) {
     String calName = matcher.group(1);
     String timeZoneString = matcher.group(2);
@@ -165,10 +213,8 @@ public class EventHandler {
    * @param matcher The regex matcher containing event details.
    */
   void processCreateEvent(Matcher matcher) {
-
-
     String autoDeclineString = matcher.group(1);
-    Boolean autoDecline = autoDeclineString!=null;
+    Boolean autoDecline = autoDeclineString != null;
     String eventName = matcher.group(2);
     String startDateTime = matcher.group(3);
     String endDateTime = matcher.group(4);
@@ -180,7 +226,8 @@ public class EventHandler {
     LocalDateTime startDate = LocalDateTime.parse(startDateTime);
     LocalDateTime endDate = LocalDateTime.parse(endDateTime);
     if (isEndBeforeStart(startDate, endDate)) {
-      throw new IllegalArgumentException("End time cannot be before start time, Event was not created");
+      throw new IllegalArgumentException("End time cannot be before " +
+              "start time, Event was not created");
     }
 
     EventModel event = new EventModel(eventName, startDate, endDate, description,
@@ -188,9 +235,7 @@ public class EventHandler {
     eventCollection.checkForCollision(event, autoDecline);
   }
 
-  public EventCollectionModel getEventCollection() {
-    return eventCollection;
-  }
+
 
   /**
    * Processes the creation of a recurring event for a specified number of times.
@@ -202,7 +247,7 @@ public class EventHandler {
   void processCreateRecurringEventN(Matcher matcher) {
 
     String autoDeclineString = matcher.group(1);
-    Boolean autoDecline = autoDeclineString!=null;
+    Boolean autoDecline = autoDeclineString != null;
     String eventName = matcher.group(2);
     String startDateTime = matcher.group(3);
     String endDateTime = matcher.group(4);
@@ -216,7 +261,8 @@ public class EventHandler {
     LocalDateTime startDate = LocalDateTime.parse(startDateTime);
     LocalDateTime endDate = LocalDateTime.parse(endDateTime);
     if (isEndBeforeStart(startDate, endDate)) {
-      throw new IllegalArgumentException("End time cannot be before start time, Event was not created");
+      throw new IllegalArgumentException("End time cannot be before " +
+              "start time, Event was not created");
     }
 
     List<Character> recurringWeekDay = stringToDayOfWeek(weekDay);
@@ -258,7 +304,8 @@ public class EventHandler {
 
 
     if (isEndBeforeStart(startDate, endDate)) {
-      throw new IllegalArgumentException("End time cannot be before start time, Event was not created");
+      throw new IllegalArgumentException("End time cannot be before " +
+              "start time, Event was not created");
     }
 
     LocalDateTime recurrernceEndDateTime = LocalDateTime.parse(recurrernceEndDate);
@@ -340,7 +387,7 @@ public class EventHandler {
   void processCreateRecurringWholeDayEventEnd(Matcher matcher) {
 
     String autoDeclineString = matcher.group(1);
-    Boolean autoDecline = autoDeclineString !=null;
+    Boolean autoDecline = autoDeclineString != null;
     String eventName = matcher.group(2);
     String startDate = matcher.group(3);
 
@@ -382,7 +429,8 @@ public class EventHandler {
     LocalDateTime startDateTime = LocalDateTime.parse(startDate);
     LocalDateTime endDateTime = LocalDateTime.parse(endDate);
     if (isEndBeforeStart(startDateTime, endDateTime)) {
-      throw new IllegalArgumentException("End time cannot be before start time, Event was not created");
+      throw new IllegalArgumentException("End time cannot be before" +
+              " start time, Event was not created");
     }
     editEvents(property, newProperty, eventName, startDateTime, endDateTime);
   }
@@ -451,7 +499,8 @@ public class EventHandler {
     LocalDateTime endDateTime = LocalDateTime.parse(endDate);
 
     if (isEndBeforeStart(startDateTime, endDateTime)) {
-      throw new IllegalArgumentException("End time cannot be before start time, Event was not created");
+      throw new IllegalArgumentException("End time cannot be before" +
+              " start time, Event was not created");
     }
 
     List<EventModel> printList = new ArrayList<>();

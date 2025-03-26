@@ -84,6 +84,15 @@ public class EventCollectionModel {
     return filteredList;
   }
 
+  /**
+   * Searches for events by their name and start/end time frame.
+   * Filters events that fall within the specified time frame and match the event name.
+   *
+   * @param eventName the name of the event to search for.
+   * @param eventStartDateTime the start time of the time frame to filter events by.
+   * @param eventEndDateTime the end time of the time frame to filter events by.
+   * @return a list of events that match the specified name and fall within the given time frame.
+   */
   public List<EventModel> searchEventByTimeFrameAndName(String eventName,
                                                         LocalDateTime eventStartDateTime,
                                                         LocalDateTime eventEndDateTime) {
@@ -98,16 +107,25 @@ public class EventCollectionModel {
     return filteredList;
   }
 
+  /**
+   * Searches for an event by its name and start time.
+   * Returns the first event that matches both the event name and start time.
+   *
+   * @param eventName the name of the event to search for.
+   * @param eventStartDateTime the start time of the event to search for.
+   * @return the event that matches the specified name and start time, or null if no match is found.
+   */
   public EventModel searchEventByStartTimeAndName(String eventName,
-                                                        LocalDateTime eventStartDateTime) {
-    List<EventModel> filteredList = new ArrayList<>();
+                                                  LocalDateTime eventStartDateTime) {
     for (EventModel event : eventList) {
-      if (event.getEventName().equals(eventName) && event.getStartDateTime().equals(eventStartDateTime)) {
+      if (event.getEventName().equals(eventName)
+              && event.getStartDateTime().equals(eventStartDateTime)) {
         return event;
       }
     }
     return null;
   }
+
 
   /**
    * Checks if there is any conflict between the given start and end dates with existing events.
@@ -199,10 +217,18 @@ public class EventCollectionModel {
     return checkConflict(startDateTime, startDateTime) ? "Busy" : "Available";
   }
 
-
+  /**
+   * Checks for event time conflicts and handles the event creation based on the conflict status.
+   * If a conflict is detected, the event will not be created, and a message will be printed.
+   * If autoDecline is true, the event will be automatically declined upon conflict.
+   *
+   * @param event the event to check for collisions with existing events.
+   * @param autoDecline a flag indicating whether to automatically decline the event on conflict.
+   * @return true if the event was not created due to a conflict, false otherwise.
+   */
   public boolean checkForCollision(EventModel event, boolean autoDecline) {
-    boolean hasConflict = checkConflict(event.getStartDateTime(),event.getEndDateTime());
-    autoDecline=true;
+    boolean hasConflict = checkConflict(event.getStartDateTime(), event.getEndDateTime());
+    autoDecline = true; // Ensures autoDecline is always true
     if (autoDecline && hasConflict) {
       System.out.println("Event \"" + event.getEventName() + "\" was not created due to conflict");
       return true;
@@ -213,6 +239,7 @@ public class EventCollectionModel {
   }
 
 
+
   /**
    * Checks for collision with existing events for recurring events and adds if allowed.
    *
@@ -220,8 +247,9 @@ public class EventCollectionModel {
    * @param autoDecline    Whether to automatically decline events with conflicts
    * @return true if event was added, false if there was a conflict and autoDecline is true
    */
-  public boolean checkForCollisionRecurringEvent(RecurringEventModel recurringEvent, boolean autoDecline) {
-    autoDecline=true;
+  public boolean checkForCollisionRecurringEvent(RecurringEventModel recurringEvent,
+                                                 boolean autoDecline) {
+    autoDecline = true;
     if (!autoDecline) {
       addRecurringEvent(recurringEvent);
       System.out.println("Event \"" + recurringEvent.getEventName() + "\" was created");
@@ -232,7 +260,8 @@ public class EventCollectionModel {
 
     for (EventModel event : recurringEventsList) {
       if (checkConflict(event.getStartDateTime(), event.getEndDateTime())) {
-        System.out.println("Conflict detected, your recurring event \"" + recurringEvent.getEventName() + "\" was not created");
+        System.out.println("Conflict detected, your recurring event \""
+                + recurringEvent.getEventName() + "\" was not created");
         return true;
       }
     }

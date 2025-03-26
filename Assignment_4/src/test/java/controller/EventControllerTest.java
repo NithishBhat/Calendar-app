@@ -10,10 +10,11 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintStream;
-
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+/**
+ * This class tests the methods available in the event controller class.
+ */
 public class EventControllerTest {
 
   private final String testFilename = "test_commands.txt";
@@ -63,7 +64,8 @@ public class EventControllerTest {
 
     eventController.headlessMode(testFilename);
     String output = testOut.toString();
-    assertTrue(output.contains("File " + testFilename +" did not exist. A new file has been created"));
+    assertTrue(output.contains("File " + testFilename
+            + " did not exist. A new file has been created"));
   }
 
   @Test

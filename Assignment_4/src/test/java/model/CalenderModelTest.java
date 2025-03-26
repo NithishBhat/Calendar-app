@@ -9,6 +9,10 @@ import controller.EventController;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThrows;
 
+
+/**
+ * class to test calender model and its functionality.
+ */
 public class CalenderModelTest {
 
   @Test
@@ -18,7 +22,8 @@ public class CalenderModelTest {
     assertEquals(ZoneId.of("UTC"),
             eventController.getEventHandler().getCalenderCollection().getCalenderCollection()
                     .get("default").getTimeZone());
-    eventController.getEventHandler().getCalenderCollection().getCalenderCollection().get("default").setTimeZone(ZoneId.of("America/New_York"));
+    eventController.getEventHandler().getCalenderCollection().getCalenderCollection().get("default")
+            .setTimeZone(ZoneId.of("America/New_York"));
     assertEquals(ZoneId.of("America/New_York"),
             eventController.getEventHandler().getCalenderCollection().getCalenderCollection()
                     .get("default").getTimeZone());
@@ -44,7 +49,8 @@ public class CalenderModelTest {
   @Test public void calenderTimezone() {
     EventController eventController = new EventController();
 
-    assertEquals(ZoneId.of("UTC"),eventController.getEventHandler().getCalenderCollection().getCalenderCollection().get("default").getTimeZone());
+    assertEquals(ZoneId.of("UTC"),eventController.getEventHandler().getCalenderCollection()
+            .getCalenderCollection().get("default").getTimeZone());
   }
 
 

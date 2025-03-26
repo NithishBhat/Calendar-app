@@ -117,7 +117,7 @@ public class EventModelTest {
     LocalDateTime startDateTime = LocalDateTime
             .of(2025, 3, 1, 10, 0);
     EventModel event = new EventModel("hello", startDateTime);
-    assertEquals( LocalDateTime
+    assertEquals(LocalDateTime
             .of(2025, 3, 1, 23, 59), event.getEndDateTime());
 
     assertEquals(false, event.getAutoDecline());
@@ -128,7 +128,7 @@ public class EventModelTest {
     LocalDateTime startDateTime = LocalDateTime
             .of(2025, 3, 1, 0, 0);
     EventModel event = new EventModel("hello", startDateTime);
-    assertEquals( LocalDateTime
+    assertEquals(LocalDateTime
             .of(2025, 3, 1, 23, 59), event.getEndDateTime());
 
     assertEquals(true, event.isAllDayEvent());
@@ -139,7 +139,7 @@ public class EventModelTest {
     LocalDateTime startDateTime = LocalDateTime
             .of(2025, 3, 1, 10, 0);
     EventModel event = new EventModel("hello", startDateTime);
-    assertEquals( LocalDateTime
+    assertEquals(LocalDateTime
             .of(2025, 3, 1, 23, 59), event.getEndDateTime());
 
     assertEquals(false, event.isAllDayEvent());
@@ -155,6 +155,7 @@ public class EventModelTest {
 
     assertEquals(false, event.isAfterDateTime(dateTime));
   }
+
   @Test
   public void invalidAfterDateTime() {
     LocalDateTime startDateTime = LocalDateTime
@@ -191,14 +192,14 @@ public class EventModelTest {
     LocalDateTime dateTimeY = LocalDateTime
             .of(2025, 3, 1, 18, 0);
 
-    assertEquals(false, event.isEventBetweenDates(dateTimeX,dateTimeY));
+    assertEquals(false, event.isEventBetweenDates(dateTimeX, dateTimeY));
   }
 
   @Test
   public void autoDeclineTest() {
     LocalDateTime startDateTime = LocalDateTime
             .of(2025, 3, 1, 10, 0);
-    LocalDateTime EndDateTime = LocalDateTime
+    LocalDateTime endDateTime = LocalDateTime
             .of(2025, 3, 1, 11, 0);
 
     EventModel event = new EventModel("hello", startDateTime);

@@ -13,14 +13,12 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.assertTrue;
 
 
 /**
  * Testing class of event handler and Event controller and the command parser.
  * Test all possible commands and handles all event types and edge cases.
  */
-
 public class EventHandlerTest {
 
   @Test
@@ -32,8 +30,10 @@ public class EventHandlerTest {
             + "description:\"test HELLO\" location:\"MA\" privacy:\"true\"");
 
 
-    assertEquals(1, eventController.getEventHandler().getEventCollection("default").getEventList().size());
-    EventModel event = eventController.getEventHandler().getEventCollection("default").getEventList().get(0);
+    assertEquals(1, eventController.getEventHandler()
+            .getEventCollection("default").getEventList().size());
+    EventModel event = eventController.getEventHandler()
+            .getEventCollection("default").getEventList().get(0);
 
     assertEquals("hello world", event.getEventName());
     assertEquals("2025-10-10T10:00", event.getStartDateTime().toString());
@@ -51,14 +51,20 @@ public class EventHandlerTest {
             + "from 2025-10-10T10:00 to 2025-10-10T10:00 "
             + "description:\"test HELLO\" location:\"MA\" privacy:\"true\"");
 
-    eventController.getEventHandler().createCalender("Hello", ZoneId.of("America/New_York"));
-    eventController.filterCommand("copy event \"hello world\" on 2025-10-10T10:00 --target \"Hello\" to 2025-12-19T10:00");
+    eventController.getEventHandler()
+            .createCalender("Hello", ZoneId.of("America/New_York"));
+    eventController.filterCommand("copy event \"hello world\" " +
+            "on 2025-10-10T10:00 --target \"Hello\" to 2025-12-19T10:00");
 
-    assertEquals(1, eventController.getEventHandler().getEventCollection("default").getEventList().size());
-    assertEquals(1, eventController.getEventHandler().getEventCollection("Hello").getEventList().size());
+    assertEquals(1, eventController.getEventHandler()
+            .getEventCollection("default").getEventList().size());
+    assertEquals(1, eventController.getEventHandler()
+            .getEventCollection("Hello").getEventList().size());
 
-    EventModel event1 = eventController.getEventHandler().getEventCollection("default").getEventList().get(0);
-    EventModel event2 = eventController.getEventHandler().getEventCollection("Hello").getEventList().get(0);
+    EventModel event1 = eventController.getEventHandler()
+            .getEventCollection("default").getEventList().get(0);
+    EventModel event2 = eventController.getEventHandler()
+            .getEventCollection("Hello").getEventList().get(0);
 
     assertEquals("hello world", event1.getEventName());
     assertEquals("2025-10-10T10:00", event1.getStartDateTime().toString());
@@ -80,21 +86,29 @@ public class EventHandlerTest {
   public void copyCalEventCreationChangeTimeZone() {
 
     EventController eventController = new EventController();
-    eventController.filterCommand("create calendar --name \"test\" --timezone \"America/New_York\"");
+    eventController.filterCommand("create calendar --name \"test\"" +
+            " --timezone \"America/New_York\"");
     eventController.getEventHandler().processPrintCalendars();
     eventController.filterCommand("use calendar --name \"test\" ");
     eventController.filterCommand("create event \"hello world\" "
             + "from 2025-10-10T10:00 to 2025-10-10T10:00 "
             + "description:\"test HELLO\" location:\"MA\" privacy:\"true\"");
 
-    eventController.filterCommand("create calendar --name \"test1\" --timezone \"America/Chicago\"");
-    eventController.filterCommand("copy event \"hello world\" on 2025-10-10T10:00 --target \"test1\" to 2025-12-19T12:00");
+    eventController.filterCommand("create calendar --name \"test1\"" +
+            " --timezone \"America/Chicago\"");
+    eventController.filterCommand("copy event \"hello world\" on" +
+            " 2025-10-10T10:00 --target \"test1\" to 2025-12-19T12:00");
 
-    assertEquals(1, eventController.getEventHandler().getEventCollection("test").getEventList().size());
-    assertEquals(1, eventController.getEventHandler().getEventCollection("test1").getEventList().size());
+    assertEquals(1, eventController.getEventHandler()
+            .getEventCollection("test").getEventList().size());
+    assertEquals(1, eventController.getEventHandler()
+            .getEventCollection("test1").getEventList().size());
 
-    EventModel event1 = eventController.getEventHandler().getEventCollection("test").getEventList().get(0);
-    EventModel event2 = eventController.getEventHandler().getEventCollection("test1").getEventList().get(0);
+    EventModel event1 = eventController.getEventHandler()
+            .getEventCollection("test").getEventList().get(0);
+    EventModel event2 = eventController.getEventHandler()
+            .getEventCollection("test1").getEventList().get(0);
+
 
     assertEquals("hello world", event1.getEventName());
     assertEquals("2025-10-10T10:00", event1.getStartDateTime().toString());
@@ -115,7 +129,8 @@ public class EventHandlerTest {
   public void copyCalEventsOnSameDay() {
     EventController eventController = new EventController();
 
-    eventController.filterCommand("create calendar --name \"test\" --timezone \"America/New_York\"");
+    eventController.filterCommand("create calendar --name \"test\"" +
+            " --timezone \"America/New_York\"");
     eventController.filterCommand("use calendar --name \"test\" ");
 
     eventController.filterCommand("create event \"test\" "
@@ -130,23 +145,32 @@ public class EventHandlerTest {
             + "from 2025-09-05T14:00 to 2025-09-05T15:30 "
             + "description:\"test\" location:\"test\" privacy:\"true\"");
 
-    eventController.filterCommand("create calendar --name \"testCal\" --timezone \"America/Chicago\"");
+    eventController.filterCommand("create calendar --name \"testCal\"" +
+            " --timezone \"America/Chicago\"");
 
     eventController.filterCommand("copy events on 2025-09-05 --target \"testCal\" to 2026-01-08");
 
     //check number of events in both calendars
-    assertEquals(3, eventController.getEventHandler().getEventCollection("test").getEventList().size());
-    assertEquals(3, eventController.getEventHandler().getEventCollection("testCal").getEventList().size());
+    assertEquals(3, eventController.getEventHandler()
+            .getEventCollection("test").getEventList().size());
+    assertEquals(3, eventController.getEventHandler()
+            .getEventCollection("testCal").getEventList().size());
 
     //get copied events
-    EventModel originalEvent1 = eventController.getEventHandler().getEventCollection("test").getEventList().get(0);
-    EventModel copiedEvent1 = eventController.getEventHandler().getEventCollection("testCal").getEventList().get(0);
+    EventModel originalEvent1 = eventController.getEventHandler()
+            .getEventCollection("test").getEventList().get(0);
+    EventModel copiedEvent1 = eventController.getEventHandler()
+            .getEventCollection("testCal").getEventList().get(0);
 
-    EventModel originalEvent2 = eventController.getEventHandler().getEventCollection("test").getEventList().get(1);
-    EventModel copiedEvent2 = eventController.getEventHandler().getEventCollection("testCal").getEventList().get(1);
+    EventModel originalEvent2 = eventController.getEventHandler()
+            .getEventCollection("test").getEventList().get(1);
+    EventModel copiedEvent2 = eventController.getEventHandler()
+            .getEventCollection("testCal").getEventList().get(1);
 
-    EventModel originalEvent3 = eventController.getEventHandler().getEventCollection("test").getEventList().get(2);
-    EventModel copiedEvent3 = eventController.getEventHandler().getEventCollection("testCal").getEventList().get(2);
+    EventModel originalEvent3 = eventController.getEventHandler()
+            .getEventCollection("test").getEventList().get(2);
+    EventModel copiedEvent3 = eventController.getEventHandler()
+            .getEventCollection("testCal").getEventList().get(2);
 
     //check props
     assertEquals(originalEvent1.getEventName(), copiedEvent1.getEventName());
@@ -169,8 +193,8 @@ public class EventHandlerTest {
   public void copycalEntireDay() {
 
 
-
-    EventController eventController = new EventController();  eventController.filterCommand("create event \"hello world\" "
+    EventController eventController = new EventController();
+    eventController.filterCommand("create event \"hello world\" "
             + "from 2025-10-10T08:00 to 2025-10-10T09:00 "
             + "description:\"test HELLO\" location:\"MA\" privacy:\"true\"");
 
@@ -182,13 +206,18 @@ public class EventHandlerTest {
             + "from 2025-10-10T11:00 to 2025-10-10T12:00 "
             + "description:\"test HELLO\" location:\"MA\" privacy:\"true\"");
 
-    eventController.getEventHandler().createCalender("Hello", ZoneId.of("America/New_York"));
+    eventController.getEventHandler()
+            .createCalender("Hello", ZoneId.of("America/New_York"));
 
     eventController.filterCommand("copy events on 2025-10-10 --target \"Hello\" to 2025-12-19");
-    assertEquals(2, eventController.getEventHandler().getEventCollection("default").getEventList().size());
-    assertEquals(2, eventController.getEventHandler().getEventCollection("Hello").getEventList().size());
-    EventModel event1 = eventController.getEventHandler().getEventCollection("default").getEventList().get(0);
-    EventModel event2 = eventController.getEventHandler().getEventCollection("Hello").getEventList().get(0);
+    assertEquals(2, eventController.getEventHandler()
+            .getEventCollection("default").getEventList().size());
+    assertEquals(2, eventController.getEventHandler()
+            .getEventCollection("Hello").getEventList().size());
+    EventModel event1 = eventController.getEventHandler()
+            .getEventCollection("default").getEventList().get(0);
+    EventModel event2 = eventController.getEventHandler()
+            .getEventCollection("Hello").getEventList().get(0);
     assertEquals("hello world", event1.getEventName());
     assertEquals("2025-10-10T08:00", event1.getStartDateTime().toString());
     assertEquals("2025-10-10T09:00", event1.getEndDateTime().toString());
@@ -207,17 +236,23 @@ public class EventHandlerTest {
     assertEquals(true, event2.getIsPrivate());
 
 
-    System.out.println(eventController.getEventHandler().getEventCollection("default").printAssortments(
-            eventController.getEventHandler().getEventCollection("default").getEventList()));
+    System.out.println(eventController.getEventHandler()
+            .getEventCollection("default").printAssortments(
+                    eventController.getEventHandler()
+                            .getEventCollection("default").getEventList()));
 
-    System.out.println(eventController.getEventHandler().getEventCollection("Hello").printAssortments(
-            eventController.getEventHandler().getEventCollection("Hello").getEventList()));}
+    System.out.println(eventController.getEventHandler()
+            .getEventCollection("Hello").printAssortments(
+                    eventController.getEventHandler()
+                            .getEventCollection("Hello").getEventList()));
+  }
 
   @Test
   public void copyCalEventBetweenDates() {
     EventController eventController = new EventController();
 
-    eventController.filterCommand("create calendar --name \"test\" --timezone \"America/New_York\"");
+    eventController.filterCommand("create calendar --name \"test\"" +
+            " --timezone \"America/New_York\"");
 
 
     ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -247,23 +282,33 @@ public class EventHandlerTest {
             + "from 2025-09-12T14:00 to 2025-09-12T15:30 "
             + "description:\"test\" location:\"test\" privacy:\"true\"");
 
-    eventController.getEventHandler().createCalender("testCal", ZoneId.of("America/Los_Angeles"));
+    eventController.getEventHandler().createCalender("testCal",
+            ZoneId.of("America/Los_Angeles"));
 
-    eventController.filterCommand("copy events between 2025-09-05 and 2025-09-12 --target \"testCal\" to 2026-01-08");
+    eventController.filterCommand("copy events between 2025-09-05 and 2025-09-12" +
+            " --target \"testCal\" to 2026-01-08");
 
     //check number of events in both calendars
-    assertEquals(3, eventController.getEventHandler().getEventCollection("test").getEventList().size());
-    assertEquals(3, eventController.getEventHandler().getEventCollection("testCal").getEventList().size());
+    assertEquals(3, eventController.getEventHandler()
+            .getEventCollection("test").getEventList().size());
+    assertEquals(3, eventController.getEventHandler()
+            .getEventCollection("testCal").getEventList().size());
 
     //get copied events
-    EventModel originalEvent1 = eventController.getEventHandler().getEventCollection("test").getEventList().get(0);
-    EventModel copiedEvent1 = eventController.getEventHandler().getEventCollection("testCal").getEventList().get(0);
+    EventModel originalEvent1 = eventController.getEventHandler()
+            .getEventCollection("test").getEventList().get(0);
+    EventModel copiedEvent1 = eventController.getEventHandler()
+            .getEventCollection("testCal").getEventList().get(0);
 
-    EventModel originalEvent2 = eventController.getEventHandler().getEventCollection("test").getEventList().get(1);
-    EventModel copiedEvent2 = eventController.getEventHandler().getEventCollection("testCal").getEventList().get(1);
+    EventModel originalEvent2 = eventController.getEventHandler()
+            .getEventCollection("test").getEventList().get(1);
+    EventModel copiedEvent2 = eventController.getEventHandler()
+            .getEventCollection("testCal").getEventList().get(1);
 
-    EventModel originalEvent3 = eventController.getEventHandler().getEventCollection("test").getEventList().get(2);
-    EventModel copiedEvent3 = eventController.getEventHandler().getEventCollection("testCal").getEventList().get(2);
+    EventModel originalEvent3 = eventController.getEventHandler()
+            .getEventCollection("test").getEventList().get(2);
+    EventModel copiedEvent3 = eventController.getEventHandler()
+            .getEventCollection("testCal").getEventList().get(2);
 
     //check props
     assertEquals(originalEvent1.getEventName(), copiedEvent1.getEventName());
@@ -302,7 +347,8 @@ public class EventHandlerTest {
             + "from 2025-09-12T14:00 to 2025-09-12T15:30 "
             + "description:\"test\" location:\"test\" privacy:\"false\"");
 
-    eventController.getEventHandler().createCalender("testCal", ZoneId.of("America/New_York"));
+    eventController.getEventHandler()
+            .createCalender("testCal", ZoneId.of("America/New_York"));
 
     //Copy all events from September 5, 2025 - September 12, 2025, to start at January 8, 2026
     eventController.getEventHandler().processCopyCalendarBetweenDatesWithName(
@@ -315,18 +361,26 @@ public class EventHandlerTest {
     );
 
     //check number of events in both calendars
-    assertEquals(4, eventController.getEventHandler().getEventCollection("default").getEventList().size());
-    assertEquals(3, eventController.getEventHandler().getEventCollection("testCal").getEventList().size());
+    assertEquals(4, eventController.getEventHandler()
+            .getEventCollection("default").getEventList().size());
+    assertEquals(3, eventController.getEventHandler()
+            .getEventCollection("testCal").getEventList().size());
 
     //get copied events
-    EventModel originalEvent1 = eventController.getEventHandler().getEventCollection("default").getEventList().get(0);
-    EventModel copiedEvent1 = eventController.getEventHandler().getEventCollection("testCal").getEventList().get(0);
+    EventModel originalEvent1 = eventController.getEventHandler()
+            .getEventCollection("default").getEventList().get(0);
+    EventModel copiedEvent1 = eventController.getEventHandler()
+            .getEventCollection("testCal").getEventList().get(0);
 
-    EventModel originalEvent2 = eventController.getEventHandler().getEventCollection("default").getEventList().get(1);
-    EventModel copiedEvent2 = eventController.getEventHandler().getEventCollection("testCal").getEventList().get(1);
+    EventModel originalEvent2 = eventController.getEventHandler()
+            .getEventCollection("default").getEventList().get(1);
+    EventModel copiedEvent2 = eventController.getEventHandler()
+            .getEventCollection("testCal").getEventList().get(1);
 
-    EventModel originalEvent3 = eventController.getEventHandler().getEventCollection("default").getEventList().get(2);
-    EventModel copiedEvent3 = eventController.getEventHandler().getEventCollection("testCal").getEventList().get(2);
+    EventModel originalEvent3 = eventController.getEventHandler()
+            .getEventCollection("default").getEventList().get(2);
+    EventModel copiedEvent3 = eventController.getEventHandler()
+            .getEventCollection("testCal").getEventList().get(2);
 
     //check props
     assertEquals(originalEvent1.getEventName(), copiedEvent1.getEventName());
@@ -365,9 +419,10 @@ public class EventHandlerTest {
   @Test
   public void testUseCalendar() {
     EventController eventController = new EventController();
-    eventController.getEventHandler().createCalender("testCal1", ZoneId.of("America/New_York"));
+    eventController.getEventHandler()
+            .createCalender("testCal1", ZoneId.of("America/New_York"));
     //eventController.filterCommand("create calendar --name \"testCal1\" " +
-            //"--timezone \"America/New_York\"");
+    //"--timezone \"America/New_York\"");
     //eventController.getEventHandler().useCalender("testCal1");
     eventController.filterCommand("use calendar --name \"testCal1\" ");
     eventController.filterCommand("create event \"test\" "
@@ -378,7 +433,8 @@ public class EventHandlerTest {
             + "from 2025-10-10T10:00 to 2025-12-10T10:00 repeats MTW for 6 times  "
             + "description:\"test\" location:\"MA\" privacy:\"true\"");
 
-    eventController.getEventHandler().createCalender("testCal2", ZoneId.of("America/New_York"));
+    eventController.getEventHandler()
+            .createCalender("testCal2", ZoneId.of("America/New_York"));
 
     eventController.filterCommand("use calendar --name \"testCal2\" ");
 
@@ -400,8 +456,10 @@ public class EventHandlerTest {
 
     eventController.filterCommand("print events on 2025-09-05");
 
-    assertEquals(7, eventController.getEventHandler().getEventCollection("testCal1").getEventList().size());
-    assertEquals(4, eventController.getEventHandler().getEventCollection("testCal2").getEventList().size());
+    assertEquals(7, eventController.getEventHandler()
+            .getEventCollection("testCal1").getEventList().size());
+    assertEquals(4, eventController.getEventHandler()
+            .getEventCollection("testCal2").getEventList().size());
 
   }
 
@@ -417,8 +475,29 @@ public class EventHandlerTest {
             "--timezone \"America/Los_Angeles\"");
 
     eventController.filterCommand("edit calendar --name \"test\" --property \"name\" \"CS5010\"");
-    eventController.filterCommand("edit calendar --name \"test2\" --property \"time-zone\" \"America/New_York\" ");
-    eventController.getEventHandler().processPrintCalendars();
+    eventController.filterCommand("edit calendar --name \"test2\"" +
+            " --property \"time-zone\" \"America/New_York\" ");
+
+
+
+    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+    PrintStream originalOut = System.out;
+    System.setOut(new PrintStream(outputStream));
+
+    try {
+      eventController.getEventHandler().processPrintCalendars();
+      String output = outputStream.toString().trim(); // Capture output
+
+      // Assert output message
+      assertEquals("Available Calendars: \n" +
+              " - default\n" +
+              " - test2\n" +
+              " - CS5010", output);
+    } finally {
+
+      System.setOut(originalOut);
+    }
+
   }
 
   @Test
@@ -430,10 +509,12 @@ public class EventHandlerTest {
     eventController.filterCommand("create calendar --name \"test2\" " +
             "--timezone \"America/Los_Angeles\"");
 
+    assertEquals(3,eventController.getEventHandler().getCalenderCollectionSize());
 
-      Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-        eventController.filterCommand("edit calendar --name \"test\" --property \"nasdasdadame\" \"CS5010\"");
-      });
+    Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+      eventController.filterCommand("edit calendar --name \"test\" --property" +
+              " \"nasdasdadame\" \"CS5010\"");
+    });
   }
 
 
@@ -442,7 +523,8 @@ public class EventHandlerTest {
     EventController eventController = new EventController();
     eventController.filterCommand("create event \"hello world\" "
             + "from 2025-10-10T10:00 to 2025-10-10T10:00 location:\"MA\"");
-    EventModel event = eventController.getEventHandler().getEventCollection("default").getEventList().get(0);
+    EventModel event = eventController.getEventHandler()
+            .getEventCollection("default").getEventList().get(0);
 
     assertEquals("hello world", event.getEventName());
     assertEquals("2025-10-10T10:00", event.getStartDateTime().toString());
@@ -457,7 +539,8 @@ public class EventHandlerTest {
     EventController eventController = new EventController();
     eventController.filterCommand("create event \"hello world\" "
             + "from 2025-10-10T10:00 to 2025-10-10T10:00 description:\"test\"");
-    EventModel event = eventController.getEventHandler().getEventCollection("default").getEventList().get(0);
+    EventModel event = eventController.getEventHandler()
+            .getEventCollection("default").getEventList().get(0);
 
     assertEquals("hello world", event.getEventName());
     assertEquals("2025-10-10T10:00", event.getStartDateTime().toString());
@@ -472,7 +555,8 @@ public class EventHandlerTest {
     EventController eventController = new EventController();
     eventController.filterCommand("create event \"hello world\" "
             + "from 2025-10-10T10:00 to 2025-10-10T10:00 ");
-    EventModel event = eventController.getEventHandler().getEventCollection("default").getEventList().get(0);
+    EventModel event = eventController.getEventHandler()
+            .getEventCollection("default").getEventList().get(0);
 
     assertEquals("hello world", event.getEventName());
     assertEquals("2025-10-10T10:00", event.getStartDateTime().toString());
@@ -482,53 +566,16 @@ public class EventHandlerTest {
     assertEquals(false, event.getIsPrivate());
   }
 
-//  @Test
-//  public void eventCreationNoOptionalParams() {
-//    EventController eventController = new EventController();
-//    eventController.filterCommand("CREATE event \"hello world\" "
-//            + "from 2025-10-10T10:00 to 2025-10-10T10:00");
-//    assertEquals(1, eventController.getEventHandler().getEventCollection("default").getEventList().size());
-//    EventModel event = eventController.getEventHandler().getEventCollection("default").getEventList().get(0);
-//
-//    assertEquals("hello world", event.getEventName());
-//    assertEquals("2025-10-10T10:00", event.getStartDateTime().toString());
-//    assertEquals("2025-10-10T10:00", event.getEndDateTime().toString());
-//    assertEquals(null, event.getDescription());
-//    assertEquals(null, event.getLocation());
-//    assertEquals(false, event.getIsPrivate());
-//    eventController.filterCommand("create event \"hello world\" "
-//            + "from 2025-10-10T10:00 to 2025-10-10T10:00 "
-//            + "privacy:\"true\" description:\"test\" location:\"MA\" ");
-//    eventController.filterCommand("print events on 2025-10-10");
-//  }
-//
-//
-//  @Test
-//  public void invalidSpellingErrorCommand() {
-//
-//    EventController eventController = new EventController();
-//    eventController.filterCommand("createe event \"hello world\" "
-//            + "from 2025-10-10T10:00 to 2025-10-10T10:00");
-//    assertEquals(0, eventController.getEventHandler().getEventCollection("default").getEventList().size());
-//  }
-//
-//  @Test
-//  public void invalidNoCommand() {
-//
-//    EventController eventController = new EventController();
-//    eventController.filterCommand(" ");
-//    assertEquals(0, eventController.getEventHandler().getEventCollection("default").getEventList().size());
-//
-//  }
-
   @Test
   public void ValidCaseMixCommand() {
 
     EventController eventController = new EventController();
     eventController.filterCommand(" CREATE event \"hello world\" "
             + "from 2025-10-10T10:00 to 2025-10-10T10:00");
-    assertEquals(1, eventController.getEventHandler().getEventCollection("default").getEventList().size());
-    EventModel event = eventController.getEventHandler().getEventCollection("default").getEventList().get(0);
+    assertEquals(1, eventController.getEventHandler()
+            .getEventCollection("default").getEventList().size());
+    EventModel event = eventController.getEventHandler()
+            .getEventCollection("default").getEventList().get(0);
 
     assertEquals("hello world", event.getEventName());
     assertEquals("2025-10-10T10:00", event.getStartDateTime().toString());
@@ -544,8 +591,10 @@ public class EventHandlerTest {
     eventController.filterCommand("create event --autoDecline \"hello world\" "
             + "from 2025-10-10T10:00 to 2025-12-10T10:00 repeats MTW for 6 times  "
             + "description:\"test\" location:\"MA\" privacy:\"true\"");
-    assertEquals(6, eventController.getEventHandler().getEventCollection("default").getEventList().size());
-    EventModel eventOne = eventController.getEventHandler().getEventCollection("default").getEventList().get(0);
+    assertEquals(6, eventController.getEventHandler()
+            .getEventCollection("default").getEventList().size());
+    EventModel eventOne = eventController.getEventHandler()
+            .getEventCollection("default").getEventList().get(0);
 
     assertEquals("hello world", eventOne.getEventName());
     assertEquals("2025-10-13T10:00", eventOne.getStartDateTime().toString());
@@ -553,7 +602,7 @@ public class EventHandlerTest {
     assertEquals("test", eventOne.getDescription());
     assertEquals("MA", eventOne.getLocation());
     assertEquals(true, eventOne.getIsPrivate());
-    assertEquals(true,eventOne.getAutoDecline());
+    assertEquals(true, eventOne.getAutoDecline());
 
   }
 
@@ -563,8 +612,10 @@ public class EventHandlerTest {
     eventController.filterCommand("create event --autoDecline \"hello world\" "
             + "from 2025-10-10T10:00 to 2025-10-10T11:00 repeats MTW "
             + "until 2025-12-10T10:00 description:\"test\" location:\"MA\" privacy:\"true\" ");
-    assertEquals(27, eventController.getEventHandler().getEventCollection("default").getEventList().size());
-    EventModel eventOne = eventController.getEventHandler().getEventCollection("default").getEventList().get(0);
+    assertEquals(27, eventController.getEventHandler()
+            .getEventCollection("default").getEventList().size());
+    EventModel eventOne = eventController.getEventHandler()
+            .getEventCollection("default").getEventList().get(0);
 
     assertEquals("hello world", eventOne.getEventName());
     assertEquals("2025-10-13T10:00", eventOne.getStartDateTime().toString());
@@ -572,7 +623,7 @@ public class EventHandlerTest {
     assertEquals("test", eventOne.getDescription());
     assertEquals("MA", eventOne.getLocation());
     assertEquals(true, eventOne.getIsPrivate());
-    assertEquals(true,eventOne.getAutoDecline());
+    assertEquals(true, eventOne.getAutoDecline());
 
   }
 
@@ -582,8 +633,10 @@ public class EventHandlerTest {
     eventController.filterCommand("create event --autoDecline \"hello world\" "
             + "from 2025-10-10T10:00 to 2025-10-10T11:00 repeats MTW "
             + "until 2025-12-10T10:00 description:\"test\" location:\"MA\" privacy:\"true\" ");
-    assertEquals(27, eventController.getEventHandler().getEventCollection("default").getEventList().size());
-    EventModel eventOne = eventController.getEventHandler().getEventCollection("default").getEventList().get(26);
+    assertEquals(27, eventController.getEventHandler()
+            .getEventCollection("default").getEventList().size());
+    EventModel eventOne = eventController.getEventHandler()
+            .getEventCollection("default").getEventList().get(26);
 
     assertEquals("hello world", eventOne.getEventName());
     assertEquals("2025-12-10T10:00", eventOne.getStartDateTime().toString());
@@ -591,7 +644,7 @@ public class EventHandlerTest {
     assertEquals("test", eventOne.getDescription());
     assertEquals("MA", eventOne.getLocation());
     assertEquals(true, eventOne.getIsPrivate());
-    assertEquals(true,eventOne.getAutoDecline());
+    assertEquals(true, eventOne.getAutoDecline());
     //assertEquals(0, 1);
   }
 
@@ -601,8 +654,10 @@ public class EventHandlerTest {
     eventController.filterCommand("create event --autoDecline \"\" "
             + "from 2025-10-10T10:00 to 2025-10-10T11:00 repeats MTW "
             + "until 2025-12-10T10:00 description:\"test\" location:\"MA\" privacy:\"true\" ");
-    assertEquals(27, eventController.getEventHandler().getEventCollection("default").getEventList().size());
-    EventModel eventOne = eventController.getEventHandler().getEventCollection("default").getEventList().get(26);
+    assertEquals(27, eventController.getEventHandler()
+            .getEventCollection("default").getEventList().size());
+    EventModel eventOne = eventController.getEventHandler()
+            .getEventCollection("default").getEventList().get(26);
 
     assertEquals("", eventOne.getEventName());
     assertEquals("2025-12-10T10:00", eventOne.getStartDateTime().toString());
@@ -610,19 +665,22 @@ public class EventHandlerTest {
     assertEquals("test", eventOne.getDescription());
     assertEquals("MA", eventOne.getLocation());
     assertEquals(true, eventOne.getIsPrivate());
-    assertEquals(true,eventOne.getAutoDecline());
+    assertEquals(true, eventOne.getAutoDecline());
     eventController.filterCommand("print events from 2025-10-10T10:00 to 2025-12-10T10:00");
 
 
   }
-@Test
+
+  @Test
   public void processCreateAllDayEventRecurring() {
     EventController eventController = new EventController();
     eventController.filterCommand("create event --autoDecline \"hello world\" "
             + "from 2025-10-10T10:00 to 2025-10-10T11:00 repeats MTW until "
             + "2025-11-10T10:00  description:\"test\" location:\"MA\" privacy:\"true\" ");
-    assertEquals(13, eventController.getEventHandler().getEventCollection("default").getEventList().size());
-    EventModel eventOne = eventController.getEventHandler().getEventCollection("default").getEventList().get(0);
+    assertEquals(13, eventController.getEventHandler()
+            .getEventCollection("default").getEventList().size());
+    EventModel eventOne = eventController.getEventHandler()
+            .getEventCollection("default").getEventList().get(0);
 
     assertEquals("hello world", eventOne.getEventName());
     assertEquals("2025-10-13T10:00", eventOne.getStartDateTime().toString());
@@ -632,7 +690,8 @@ public class EventHandlerTest {
 
     assertEquals(true, eventOne.getIsPrivate());
   }
-@Test
+
+  @Test
   public void processCreateAllDayEventRecurringInvalid() {
     EventController eventController = new EventController();
 
@@ -643,7 +702,8 @@ public class EventHandlerTest {
     });
 
     // Optionally, check the exception message
-    assertEquals("End time cannot be before start time, Event was not created", exception.getMessage());
+    assertEquals("End time cannot be before start time, Event was not created",
+            exception.getMessage());
 
   }
 
@@ -659,7 +719,8 @@ public class EventHandlerTest {
     });
 
     // Optionally, check the exception message
-    assertEquals("End time cannot be before start time, Event was not created", exception.getMessage());
+    assertEquals("End time cannot be before start time, " +
+            "Event was not created", exception.getMessage());
 
   }
 
@@ -669,15 +730,17 @@ public class EventHandlerTest {
     EventController eventController = new EventController();
     eventController.filterCommand("create event --autoDecline \"hello world\" "
             + " on 2025-10-10T11:00  description:\"test\" location:\"MA\" privacy:\"true\" ");
-    assertEquals(1, eventController.getEventHandler().getEventCollection("default").getEventList().size());
-    EventModel eventOne = eventController.getEventHandler().getEventCollection("default").getEventList().get(0);
+    assertEquals(1, eventController.getEventHandler()
+            .getEventCollection("default").getEventList().size());
+    EventModel eventOne = eventController.getEventHandler()
+            .getEventCollection("default").getEventList().get(0);
 
     assertEquals("hello world", eventOne.getEventName());
     assertEquals("2025-10-10T11:00", eventOne.getStartDateTime().toString());
     assertEquals("2025-10-10T23:59", eventOne.getEndDateTime().toString());
     assertEquals("test", eventOne.getDescription());
     assertEquals("MA", eventOne.getLocation());
-    assertEquals(true,eventOne.getAutoDecline());
+    assertEquals(true, eventOne.getAutoDecline());
     assertEquals(true, eventOne.getIsPrivate());
 
   }
@@ -687,15 +750,17 @@ public class EventHandlerTest {
     EventController eventController = new EventController();
     eventController.filterCommand("create event  \"hello world\" "
             + " on 2025-10-10T11:00  description:\"test\" location:\"MA\" privacy:\"true\" ");
-    assertEquals(1, eventController.getEventHandler().getEventCollection("default").getEventList().size());
-    EventModel eventOne = eventController.getEventHandler().getEventCollection("default").getEventList().get(0);
+    assertEquals(1, eventController.getEventHandler()
+            .getEventCollection("default").getEventList().size());
+    EventModel eventOne = eventController.getEventHandler()
+            .getEventCollection("default").getEventList().get(0);
 
     assertEquals("hello world", eventOne.getEventName());
     assertEquals("2025-10-10T11:00", eventOne.getStartDateTime().toString());
     assertEquals("2025-10-10T23:59", eventOne.getEndDateTime().toString());
     assertEquals("test", eventOne.getDescription());
     assertEquals("MA", eventOne.getLocation());
-    assertEquals(false,eventOne.getAutoDecline());
+    assertEquals(false, eventOne.getAutoDecline());
     assertEquals(true, eventOne.getIsPrivate());
 
   }
@@ -706,8 +771,10 @@ public class EventHandlerTest {
     eventController.filterCommand("create event --autoDecline \"hello world\" "
             + "on 2025-10-10 repeats MTW for 6 times description:\"test\" "
             + "location:\"MA\" privacy:\"true\"");
-    assertEquals(6, eventController.getEventHandler().getEventCollection("default").getEventList().size());
-    EventModel eventOne = eventController.getEventHandler().getEventCollection("default").getEventList().get(0);
+    assertEquals(6, eventController.getEventHandler()
+            .getEventCollection("default").getEventList().size());
+    EventModel eventOne = eventController.getEventHandler()
+            .getEventCollection("default").getEventList().get(0);
 
     assertEquals("hello world", eventOne.getEventName());
     assertEquals("2025-10-13T00:00", eventOne.getStartDateTime().toString());
@@ -715,7 +782,7 @@ public class EventHandlerTest {
     assertEquals("test", eventOne.getDescription());
     assertEquals("MA", eventOne.getLocation());
     assertEquals(true, eventOne.getIsPrivate());
-    assertEquals(true,eventOne.getAutoDecline());
+    assertEquals(true, eventOne.getAutoDecline());
 
   }
 
@@ -724,8 +791,10 @@ public class EventHandlerTest {
     EventController eventController = new EventController();
     eventController.filterCommand("create event --autoDecline \"hello world\" on 2025-10-10 "
             + "repeats MTW until 2025-12-10 description:\"test\" location:\"MA\" privacy:\"true\"");
-    EventModel eventOne = eventController.getEventHandler().getEventCollection("default").getEventList().get(0);
-    assertEquals(27, eventController.getEventHandler().getEventCollection("default").getEventList().size());
+    EventModel eventOne = eventController.getEventHandler()
+            .getEventCollection("default").getEventList().get(0);
+    assertEquals(27, eventController.getEventHandler()
+            .getEventCollection("default").getEventList().size());
 
     assertEquals("hello world", eventOne.getEventName());
     assertEquals("2025-10-13T00:00", eventOne.getStartDateTime().toString());
@@ -733,7 +802,7 @@ public class EventHandlerTest {
     assertEquals("test", eventOne.getDescription());
     assertEquals("MA", eventOne.getLocation());
     assertEquals(true, eventOne.getIsPrivate());
-    assertEquals(true,eventOne.getAutoDecline());
+    assertEquals(true, eventOne.getAutoDecline());
   }
 
   @Test
@@ -741,8 +810,10 @@ public class EventHandlerTest {
     EventController eventController = new EventController();
     eventController.filterCommand("create event \"hello world\" on 2025-10-10 "
             + "repeats MTW until 2025-12-10 description:\"test\" location:\"MA\" privacy:\"true\"");
-    EventModel eventOne = eventController.getEventHandler().getEventCollection("default").getEventList().get(0);
-    assertEquals(27, eventController.getEventHandler().getEventCollection("default").getEventList().size());
+    EventModel eventOne = eventController.getEventHandler()
+            .getEventCollection("default").getEventList().get(0);
+    assertEquals(27, eventController.getEventHandler()
+            .getEventCollection("default").getEventList().size());
 
     assertEquals("hello world", eventOne.getEventName());
     assertEquals("2025-10-13T00:00", eventOne.getStartDateTime().toString());
@@ -750,7 +821,7 @@ public class EventHandlerTest {
     assertEquals("test", eventOne.getDescription());
     assertEquals("MA", eventOne.getLocation());
     assertEquals(true, eventOne.getIsPrivate());
-    assertEquals(false,eventOne.getAutoDecline());
+    assertEquals(false, eventOne.getAutoDecline());
   }
 
   @Test
@@ -761,8 +832,10 @@ public class EventHandlerTest {
 
     eventController.filterCommand("create event --autoDecline \"hello world2\" on 2025-10-10 "
             + "repeats MTW until 2025-12-10 description:\"test\" location:\"MA\" privacy:\"true\"");
-    EventModel eventOne = eventController.getEventHandler().getEventCollection("default").getEventList().get(0);
-    assertEquals(27, eventController.getEventHandler().getEventCollection("default").getEventList().size());
+    EventModel eventOne = eventController.getEventHandler()
+            .getEventCollection("default").getEventList().get(0);
+    assertEquals(27, eventController.getEventHandler()
+            .getEventCollection("default").getEventList().size());
 
     assertEquals("hello world", eventOne.getEventName());
     assertEquals("2025-10-13T00:00", eventOne.getStartDateTime().toString());
@@ -770,7 +843,7 @@ public class EventHandlerTest {
     assertEquals("test", eventOne.getDescription());
     assertEquals("MA", eventOne.getLocation());
     assertEquals(true, eventOne.getIsPrivate());
-    assertEquals(true,eventOne.getAutoDecline());
+    assertEquals(true, eventOne.getAutoDecline());
   }
 
   @Test
@@ -780,8 +853,10 @@ public class EventHandlerTest {
     eventController.filterCommand("create event --autoDecline \"hello world\" "
             + "on 2025-10-10 repeats MTW until 2026-01-10 "
             + "description:\"test\" location:\"MA\" privacy:\"true\"");
-    assertEquals(39, eventController.getEventHandler().getEventCollection("default").getEventList().size());
-    EventModel eventOne = eventController.getEventHandler().getEventCollection("default").getEventList().get(38);
+    assertEquals(39, eventController.getEventHandler().
+            getEventCollection("default").getEventList().size());
+    EventModel eventOne = eventController.getEventHandler()
+            .getEventCollection("default").getEventList().get(38);
 
     assertEquals("hello world", eventOne.getEventName());
     assertEquals("2026-01-07T00:00", eventOne.getStartDateTime().toString());
@@ -789,7 +864,7 @@ public class EventHandlerTest {
     assertEquals("test", eventOne.getDescription());
     assertEquals("MA", eventOne.getLocation());
     assertEquals(true, eventOne.getIsPrivate());
-    assertEquals(true,eventOne.getAutoDecline());
+    assertEquals(true, eventOne.getAutoDecline());
 
   }
 
@@ -805,8 +880,10 @@ public class EventHandlerTest {
 
     eventController.filterCommand("edit event eventName \"hello world\" "
             + "from 2025-10-10T10:00 to 2025-10-10T14:00 with \"hazarrrrr\"");
-    EventModel eventOne = eventController.getEventHandler().getEventCollection("default").getEventList().get(0);
-    assertEquals(3, eventController.getEventHandler().getEventCollection("default").getEventList().size());
+    EventModel eventOne = eventController.getEventHandler().
+            getEventCollection("default").getEventList().get(0);
+    assertEquals(3, eventController.getEventHandler().
+            getEventCollection("default").getEventList().size());
 
     assertEquals("hazarrrrr", eventOne.getEventName());
     assertEquals("2025-10-10T12:00", eventOne.getStartDateTime().toString());
@@ -830,9 +907,12 @@ public class EventHandlerTest {
     eventController.filterCommand("edit event eventName \"hello world\" "
             + "from 2025-10-10T10:00 to 2025-10-11T12:00 with \"hazarrrrr\"");
     eventController.filterCommand("print events from 2025-10-10T10:00 to 2025-11-10T10:00");
-    EventModel eventOne = eventController.getEventHandler().getEventCollection("default").getEventList().get(0);
-    EventModel eventTwo = eventController.getEventHandler().getEventCollection("default").getEventList().get(1);
-    assertEquals(3, eventController.getEventHandler().getEventCollection("default").getEventList().size());
+    EventModel eventOne = eventController.getEventHandler()
+            .getEventCollection("default").getEventList().get(0);
+    EventModel eventTwo = eventController.getEventHandler()
+            .getEventCollection("default").getEventList().get(1);
+    assertEquals(3, eventController.getEventHandler()
+            .getEventCollection("default").getEventList().size());
 
     assertEquals("hazarrrrr", eventOne.getEventName());
     assertEquals("2025-10-10T12:00", eventOne.getStartDateTime().toString());
@@ -864,10 +944,14 @@ public class EventHandlerTest {
             + "from 2025-10-10T10:00 to 2025-10-13T10:00 with \"2025-10-19T10:00\"");
     eventController.filterCommand("print events from 2025-10-10T10:00 to 2025-11-10T10:00");
 
-    assertEquals(3, eventController.getEventHandler().getEventCollection("default").getEventList().size());
-    EventModel eventOne = eventController.getEventHandler().getEventCollection("default").getEventList().get(0);
-    EventModel eventTwo = eventController.getEventHandler().getEventCollection("default").getEventList().get(1);
-    EventModel eventThree = eventController.getEventHandler().getEventCollection("default").getEventList().get(2);
+    assertEquals(3, eventController.getEventHandler().
+            getEventCollection("default").getEventList().size());
+    EventModel eventOne = eventController.getEventHandler()
+            .getEventCollection("default").getEventList().get(0);
+    EventModel eventTwo = eventController.getEventHandler()
+            .getEventCollection("default").getEventList().get(1);
+    EventModel eventThree = eventController.getEventHandler()
+            .getEventCollection("default").getEventList().get(2);
 
     assertEquals("hello world", eventOne.getEventName());
     assertEquals("2025-10-19T10:00", eventOne.getStartDateTime().toString());
@@ -906,10 +990,14 @@ public class EventHandlerTest {
 
     eventController.filterCommand("edit event endDateTime \"hello world\" "
             + "from 2025-10-10T10:00 to 2025-10-13T10:00 with \"2025-10-19T10:00\"");
-    assertEquals(3, eventController.getEventHandler().getEventCollection("default").getEventList().size());
-    EventModel eventOne = eventController.getEventHandler().getEventCollection("default").getEventList().get(0);
-    EventModel eventTwo = eventController.getEventHandler().getEventCollection("default").getEventList().get(1);
-    EventModel eventThree = eventController.getEventHandler().getEventCollection("default").getEventList().get(2);
+    assertEquals(3, eventController.getEventHandler()
+            .getEventCollection("default").getEventList().size());
+    EventModel eventOne = eventController.getEventHandler()
+            .getEventCollection("default").getEventList().get(0);
+    EventModel eventTwo = eventController.getEventHandler()
+            .getEventCollection("default").getEventList().get(1);
+    EventModel eventThree = eventController.getEventHandler()
+            .getEventCollection("default").getEventList().get(2);
 
     assertEquals("hello world", eventOne.getEventName());
     assertEquals("2025-10-10T12:00", eventOne.getStartDateTime().toString());
@@ -945,8 +1033,10 @@ public class EventHandlerTest {
     eventController.filterCommand("create event \"hello world\" "
             + "from 2025-10-12T10:00 to 2025-10-12T11:00");
 
-    EventModel eventOne = eventController.getEventHandler().getEventCollection("default").getEventList().get(0);
-    assertEquals(3, eventController.getEventHandler().getEventCollection("default").getEventList().size());
+    EventModel eventOne = eventController.getEventHandler()
+            .getEventCollection("default").getEventList().get(0);
+    assertEquals(3, eventController.getEventHandler()
+            .getEventCollection("default").getEventList().size());
 
     assertEquals("hello world", eventOne.getEventName());
     assertEquals("2025-10-10T12:00", eventOne.getStartDateTime().toString());
@@ -980,8 +1070,10 @@ public class EventHandlerTest {
     eventController.filterCommand("create event \"hello world\" "
             + "from 2025-10-12T10:00 to 2025-10-12T11:00");
 
-    EventModel eventOne = eventController.getEventHandler().getEventCollection("default").getEventList().get(0);
-    assertEquals(3, eventController.getEventHandler().getEventCollection("default").getEventList().size());
+    EventModel eventOne = eventController.getEventHandler()
+            .getEventCollection("default").getEventList().get(0);
+    assertEquals(3, eventController.getEventHandler()
+            .getEventCollection("default").getEventList().size());
 
     assertEquals("hello world", eventOne.getEventName());
     assertEquals("2025-10-10T12:00", eventOne.getStartDateTime().toString());
@@ -991,13 +1083,12 @@ public class EventHandlerTest {
     assertEquals(false, eventOne.getIsPrivate());
 
 
-
-
     Exception exception = assertThrows(IllegalArgumentException.class, () -> {
       eventController.filterCommand("edit event location \"hello world\" "
               + "from 2025-10-10T10:00 to 2025-10-09T10:00 with \"USAAAAAAAA\"");
     });
-    assertEquals("End time cannot be before start time, Event was not created", exception.getMessage());
+    assertEquals("End time cannot be before start time, Event was not created",
+            exception.getMessage());
 
   }
 
@@ -1011,8 +1102,10 @@ public class EventHandlerTest {
     eventController.filterCommand("create event \"hello world\" "
             + "from 2025-10-12T10:00 to 2025-10-12T11:00");
 
-    EventModel eventOne = eventController.getEventHandler().getEventCollection("default").getEventList().get(0);
-    assertEquals(3, eventController.getEventHandler().getEventCollection("default").getEventList().size());
+    EventModel eventOne = eventController.getEventHandler()
+            .getEventCollection("default").getEventList().get(0);
+    assertEquals(3, eventController.getEventHandler()
+            .getEventCollection("default").getEventList().size());
 
     assertEquals("hello world", eventOne.getEventName());
     assertEquals("2025-10-10T12:00", eventOne.getStartDateTime().toString());
@@ -1044,8 +1137,10 @@ public class EventHandlerTest {
     eventController.filterCommand("create event \"hello world\" "
             + "from 2025-10-12T10:00 to 2025-10-12T11:00");
 
-    EventModel eventOne = eventController.getEventHandler().getEventCollection("default").getEventList().get(0);
-    assertEquals(3, eventController.getEventHandler().getEventCollection("default").getEventList().size());
+    EventModel eventOne = eventController.getEventHandler()
+            .getEventCollection("default").getEventList().get(0);
+    assertEquals(3, eventController.getEventHandler()
+            .getEventCollection("default").getEventList().size());
 
     assertEquals("hello world", eventOne.getEventName());
     assertEquals("2025-10-10T12:00", eventOne.getStartDateTime().toString());
@@ -1073,12 +1168,14 @@ public class EventHandlerTest {
     eventController.filterCommand("create event \"hello world\" "
             + "from 2025-10-10T12:00 to 2025-10-10T13:00 privacy:\"true\"");
     eventController.filterCommand("create event \"hello world\" "
-            + "from 2025-10-11T10:00 to 2025-10-11T11:00 privacy:\"true\"" );
+            + "from 2025-10-11T10:00 to 2025-10-11T11:00 privacy:\"true\"");
     eventController.filterCommand("create event \"hello world\" "
             + "from 2025-10-12T10:00 to 2025-10-12T11:00 privacy:\"true\"");
 
-    EventModel eventOne = eventController.getEventHandler().getEventCollection("default").getEventList().get(0);
-    assertEquals(3, eventController.getEventHandler().getEventCollection("default").getEventList().size());
+    EventModel eventOne = eventController.getEventHandler()
+            .getEventCollection("default").getEventList().get(0);
+    assertEquals(3, eventController.getEventHandler()
+            .getEventCollection("default").getEventList().size());
 
     assertEquals("hello world", eventOne.getEventName());
     assertEquals("2025-10-10T12:00", eventOne.getStartDateTime().toString());
@@ -1110,8 +1207,10 @@ public class EventHandlerTest {
     eventController.filterCommand("create event \"hello world\" "
             + "from 2025-10-12T10:00 to 2025-10-12T11:00");
 
-    EventModel eventOne = eventController.getEventHandler().getEventCollection("default").getEventList().get(0);
-    assertEquals(3, eventController.getEventHandler().getEventCollection("default").getEventList().size());
+    EventModel eventOne = eventController.getEventHandler()
+            .getEventCollection("default").getEventList().get(0);
+    assertEquals(3, eventController.getEventHandler()
+            .getEventCollection("default").getEventList().size());
 
     assertEquals("hello world", eventOne.getEventName());
     assertEquals("2025-10-10T12:00", eventOne.getStartDateTime().toString());
@@ -1141,9 +1240,12 @@ public class EventHandlerTest {
             + "from 2025-10-10T12:00 to 2025-10-10T13:00");
     eventController.filterCommand("create event \"hello world\" "
             + "from 2025-10-11T12:00 to 2025-10-11T13:00");
-    EventModel eventOne = eventController.getEventHandler().getEventCollection("default").getEventList().get(0);
-    EventModel eventTwo = eventController.getEventHandler().getEventCollection("default").getEventList().get(1);
-    assertEquals(2, eventController.getEventHandler().getEventCollection("default").getEventList().size());
+    EventModel eventOne = eventController.getEventHandler()
+            .getEventCollection("default").getEventList().get(0);
+    EventModel eventTwo = eventController.getEventHandler()
+            .getEventCollection("default").getEventList().get(1);
+    assertEquals(2, eventController.getEventHandler()
+            .getEventCollection("default").getEventList().size());
 
     assertEquals("hello world", eventOne.getEventName());
     assertEquals("2025-10-10T12:00", eventOne.getStartDateTime().toString());
@@ -1186,8 +1288,10 @@ public class EventHandlerTest {
     EventController eventController = new EventController();
     eventController.filterCommand("create event \"hello world\" "
             + "from 2025-10-10T12:00 to 2025-10-10T13:00");
-    EventModel eventOne = eventController.getEventHandler().getEventCollection("default").getEventList().get(0);
-    assertEquals(1, eventController.getEventHandler().getEventCollection("default").getEventList().size());
+    EventModel eventOne = eventController.getEventHandler()
+            .getEventCollection("default").getEventList().get(0);
+    assertEquals(1, eventController.getEventHandler()
+            .getEventCollection("default").getEventList().size());
 
     assertEquals("hello world", eventOne.getEventName());
     assertEquals("2025-10-10T12:00", eventOne.getStartDateTime().toString());
@@ -1218,7 +1322,8 @@ public class EventHandlerTest {
     eventController.filterCommand("create event \"hello world\" "
             + "from 2025-10-12T10:00 to 2025-12-10T11:00");
     eventController.filterCommand("print events on 2025-10-10");
-    EventModel eventOne = eventController.getEventHandler().getEventCollection("default").getEventList().get(0);
+    EventModel eventOne = eventController.getEventHandler()
+            .getEventCollection("default").getEventList().get(0);
 
     LocalDateTime startDateTime = LocalDateTime
             .of(2025, 10, 10, 12, 00);
@@ -1233,7 +1338,8 @@ public class EventHandlerTest {
     assertEquals("\n*  eventName=hello world,  Start=2025-10-10T12:00, "
                     + " End=2025-10-10T13:00,  description=null,  "
                     + "isPrivate=false,  location=null,  autoDecline=false\n",
-            eventController.getEventHandler().getEventCollection("default").printAssortments(printList));
+            eventController.getEventHandler()
+                    .getEventCollection("default").printAssortments(printList));
 
     eventController.filterCommand("print events on 2025-10-10");
   }
@@ -1280,7 +1386,8 @@ public class EventHandlerTest {
             + "from 2025-10-12T10:00 to 2025-10-12T11:00");
 
     eventController.filterCommand("print events from 2025-10-11T10:00 to 2025-11-10T10:00");
-    EventModel eventOne = eventController.getEventHandler().getEventCollection("default").getEventList().get(2);
+    EventModel eventOne = eventController.getEventHandler()
+            .getEventCollection("default").getEventList().get(2);
 
 
     LocalDateTime startDateTime = LocalDateTime
@@ -1289,8 +1396,9 @@ public class EventHandlerTest {
             .of(2025, 11, 10, 10, 00);
 
     List<EventModel> printList = new ArrayList<>();
-    printList = eventController.getEventHandler().getEventCollection("default").searchEventByTimeFrame(
-        startDateTime, endDateTime);
+    printList = eventController.getEventHandler()
+            .getEventCollection("default").searchEventByTimeFrame(
+            startDateTime, endDateTime);
 
     assertEquals(
             "\n"
@@ -1300,7 +1408,8 @@ public class EventHandlerTest {
                     + "*  eventName=hello world,  "
                     + "Start=2025-10-12T10:00,  End=2025-10-12T11:00,  "
                     + "description=null,  isPrivate=false,  location=null,  autoDecline=false\n",
-            eventController.getEventHandler().getEventCollection("default").printAssortments(printList));
+            eventController.getEventHandler()
+                    .getEventCollection("default").printAssortments(printList));
   }
 
   @Test
@@ -1324,8 +1433,11 @@ public class EventHandlerTest {
       eventController.filterCommand("print events from 2025-10-11T10:00 to 2025-11-10T10:00");
       String output = outputStream.toString().trim(); // Capture output
 
-      assertEquals("*  eventName=hello world,  Start=2025-10-11T10:00,  End=2025-10-11T11:00,  description=null,  isPrivate=false,  location=null,  autoDecline=false\n" +
-              "*  eventName=hello world,  Start=2025-10-12T10:00,  End=2025-10-12T11:00,  description=null,  isPrivate=false,  location=null,  autoDecline=false", output);
+      assertEquals("*  eventName=hello world,  Start=2025-10-11T10:00," +
+              "  End=2025-10-11T11:00,  description=null,  isPrivate=false," +
+              "  location=null,  autoDecline=false\n" +
+              "*  eventName=hello world,  Start=2025-10-12T10:00,  End=2025-10-12T11:00," +
+              "  description=null,  isPrivate=false,  location=null,  autoDecline=false", output);
     } finally {
       System.setOut(originalOut);
     }
@@ -1349,7 +1461,8 @@ public class EventHandlerTest {
     });
 
     // Optionally, check the exception message
-    assertEquals("End time cannot be before start time, Event was not created", exception.getMessage());
+    assertEquals("End time cannot be before" +
+            " start time, Event was not created", exception.getMessage());
   }
 
 
@@ -1360,7 +1473,8 @@ public class EventHandlerTest {
     LocalDateTime startDateTime = LocalDateTime
             .of(2025, 01, 10, 10, 00);
     assertEquals("Available", eventController
-            .getEventHandler().getEventCollection("default").checkStatus(startDateTime, startDateTime));
+            .getEventHandler().getEventCollection("default")
+            .checkStatus(startDateTime, startDateTime));
   }
 
   @Test
@@ -1371,7 +1485,8 @@ public class EventHandlerTest {
     eventController.filterCommand("show status on 2025-10-10T10:30");
     LocalDateTime startDateTime = LocalDateTime
             .of(2025, 10, 10, 10, 00);
-    assertEquals("Busy", eventController.getEventHandler().getEventCollection("default")
+    assertEquals("Busy", eventController.getEventHandler()
+            .getEventCollection("default")
             .checkStatus(startDateTime, startDateTime));
   }
 
@@ -1383,12 +1498,16 @@ public class EventHandlerTest {
             + "from 2025-10-10T10:00 to 2025-10-10T10:00 "
             + "description:\"test HELLO\" location:\"MA\" privacy:\"true\"");
 
-    eventController.getEventHandler().createCalender("Hello", ZoneId.of("America/New_York"));
-    eventController.filterCommand("copy event \"hello world\" on 2025-10-10T10:00 --target \"Hello\" to 2025-12-19T10:00");
+    eventController.getEventHandler()
+            .createCalender("Hello", ZoneId.of("America/New_York"));
+    eventController.filterCommand("copy event \"hello world\" on 2025-10-10T10:00" +
+            " --target \"Hello\" to 2025-12-19T10:00");
 
-    assertEquals(2,eventController.getEventHandler().getCalenderCollection().getCalenderCollectionSize());
+    assertEquals(2, eventController.getEventHandler()
+            .getCalenderCollection().getCalenderCollectionSize());
     eventController.getEventHandler().getCalenderCollection().removeCalenderByName("Hello");
-    assertEquals(1,eventController.getEventHandler().getCalenderCollection().getCalenderCollectionSize());
+    assertEquals(1, eventController.getEventHandler()
+            .getCalenderCollection().getCalenderCollectionSize());
   }
 
   //edit calendar --name <calName> --property <property-name> <property-value>
@@ -1407,45 +1526,50 @@ public class EventHandlerTest {
             "--timezone \"America/Los_Angeles\"");
 
     eventController.filterCommand("edit calendar --name \"test\" --property \"name\" \"CS5010\"");
-    eventController.filterCommand("edit calendar --name \"test2\" --property \"time-zone\" \"America/New_York\" ");
+    eventController.filterCommand("edit calendar --name \"test2\" --property" +
+            " \"time-zone\" \"America/New_York\" ");
     assertEquals(print, eventController.getEventHandler().getCalenderCollection().printCalendars());
 
   }
-    @Test
-    public void printCalendersTestOutput() {
-      String print =
-              "\nAvailable Calendars: \n" +
-                      " - default\n" +
-                      " - test2\n" +
-                      " - CS5010\n";
-      EventController eventController = new EventController();
-      eventController.filterCommand("create calendar --name \"test\" " +
-              "--timezone \"America/New_York\"");
 
-      eventController.filterCommand("create calendar --name \"test2\" " +
-              "--timezone \"America/Los_Angeles\"");
+  @Test
+  public void printCalendersTestOutput() {
+    String print =
+            "\nAvailable Calendars: \n" +
+                    " - default\n" +
+                    " - test2\n" +
+                    " - CS5010\n";
+    EventController eventController = new EventController();
+    eventController.filterCommand("create calendar --name \"test\" " +
+            "--timezone \"America/New_York\"");
 
-      eventController.filterCommand("edit calendar --name \"test\" --property \"name\" \"CS5010\"");
-      eventController.filterCommand("edit calendar --name \"test2\" --property \"time-zone\" \"America/New_York\" ");
-      assertEquals(print,eventController.getEventHandler().getCalenderCollection().printCalendars());
+    eventController.filterCommand("create calendar --name \"test2\" " +
+            "--timezone \"America/Los_Angeles\"");
 
-      ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-      PrintStream originalOut = System.out;
-      System.setOut(new PrintStream(outputStream));
+    eventController.filterCommand("edit calendar --name \"test\"" +
+            " --property \"name\" \"CS5010\"");
+    eventController.filterCommand("edit calendar --name \"test2\" " +
+            "--property \"time-zone\" \"America/New_York\" ");
+    assertEquals(print, eventController.getEventHandler()
+            .getCalenderCollection().printCalendars());
 
-      try {
-        eventController.getEventHandler().processPrintCalendars();
-        String output = outputStream.toString().trim();
+    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+    PrintStream originalOut = System.out;
+    System.setOut(new PrintStream(outputStream));
 
-        // Assert output message
-        assertEquals("Available Calendars: \n" +
-                " - default\n" +
-                " - test2\n" +
-                " - CS5010", output);
-      } finally {
-        // Restore System.out
-        System.setOut(originalOut);
-      }
+    try {
+      eventController.getEventHandler().processPrintCalendars();
+      String output = outputStream.toString().trim();
+
+      // Assert output message
+      assertEquals("Available Calendars: \n" +
+              " - default\n" +
+              " - test2\n" +
+              " - CS5010", output);
+    } finally {
+      // Restore System.out
+      System.setOut(originalOut);
+    }
 
   }
 
@@ -1464,27 +1588,32 @@ public class EventHandlerTest {
             "--timezone \"America/Los_Angeles\"");
 
     eventController.filterCommand("edit calendar --name \"test\" --property \"name\" \"CS5010\"");
-    eventController.filterCommand("edit calendar --name \"test2\" --property \"time-zone\" \"America/New_York\" ");
-    assertEquals(print,eventController.getEventHandler().getCalenderCollection().printCalendars());
+    eventController.filterCommand("edit calendar --name \"test2\"" +
+            " --property \"time-zone\" \"America/New_York\" ");
+    assertEquals(print, eventController.getEventHandler().getCalenderCollection().printCalendars());
     assertEquals(ZoneId.of("America/New_York"),
             eventController.getEventHandler().getCalenderCollection().getCalenderCollection()
                     .get("test2").getTimeZone());
 
   }
+
   @Test
-public void TestGetCalenderName() {
+  public void TestGetCalenderName() {
     EventController eventController = new EventController();
-  assertEquals("default", eventController.getEventHandler().getCalenderCollection().
-          getCalendarName(eventController.getEventHandler().getEventCollection("default")));
+    assertEquals("default", eventController.getEventHandler().getCalenderCollection().
+            getCalendarName(eventController.getEventHandler().
+                    getEventCollection("default")));
   }
 
   @Test
   public void TestGetCalenderNameInvalid() {
-      EventController eventController = new EventController();
-      Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-        eventController.getEventHandler().getCalenderCollection().getCalendarName(null);
-      });
-      assertEquals("event collection does not belong to a calender collection", exception.getMessage());
+    EventController eventController = new EventController();
+    Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+      eventController.getEventHandler().getCalenderCollection()
+              .getCalendarName(null);
+    });
+    assertEquals("Event collection does not belong to a calendar collection",
+            exception.getMessage());
   }
 
   @Test
@@ -1508,11 +1637,14 @@ public void TestGetCalenderName() {
     eventController.filterCommand("create event \"hello world\" "
             + "from 2025-10-11T10:00 to 2025-10-11T11:00");
 
-    EventModel eventOne = eventController.getEventHandler().getEventCollection("default").getEventList().get(0);
-    EventModel eventTwo = eventController.getEventHandler().getEventCollection("default").getEventList().get(1);
+    EventModel eventOne = eventController.getEventHandler()
+            .getEventCollection("default").getEventList().get(0);
+    EventModel eventTwo = eventController.getEventHandler()
+            .getEventCollection("default").getEventList().get(1);
 
-//edit events <property> <eventName> from <dateStringTtimeString> with <NewPropertyValue>
-    eventController.filterCommand("edit events eventName \"hello world\" from 2025-10-10T09:00 with  \"New Event Name\"\n");
+
+    eventController.filterCommand("edit events eventName \"hello world\" " +
+            "from 2025-10-10T09:00 with  \"New Event Name\"\n");
 
     assertEquals("New Event Name", eventOne.getEventName());
     assertEquals("New Event Name", eventTwo.getEventName());
@@ -1529,10 +1661,13 @@ public void TestGetCalenderName() {
     eventController.filterCommand("create event \"hello world\" "
             + "from 2025-10-11T10:00 to 2025-10-11T11:00");
 
-    EventModel eventOne = eventController.getEventHandler().getEventCollection("default").getEventList().get(0);
-    EventModel eventTwo = eventController.getEventHandler().getEventCollection("default").getEventList().get(1);
-//edit events <property> <eventName> from <dateStringTtimeString> with <NewPropertyValue>
-    eventController.filterCommand("edit events eventName \"hello world\" from 2025-10-10T11:00 with  \"New Event Name\"\n");
+    EventModel eventOne = eventController.getEventHandler()
+            .getEventCollection("default").getEventList().get(0);
+    EventModel eventTwo = eventController.getEventHandler()
+            .getEventCollection("default").getEventList().get(1);
+
+    eventController.filterCommand("edit events eventName \"hello world\"" +
+            " from 2025-10-10T11:00 with  \"New Event Name\"\n");
 
     assertEquals("hello world", eventOne.getEventName());
     assertEquals("New Event Name", eventTwo.getEventName());
@@ -1550,17 +1685,19 @@ public void TestGetCalenderName() {
     eventController.filterCommand("create event \"hello world\" "
             + "from 2025-10-11T10:00 to 2025-10-11T11:00");
 
-    EventModel eventOne = eventController.getEventHandler().getEventCollection("default").getEventList().get(0);
-    EventModel eventTwo = eventController.getEventHandler().getEventCollection("default").getEventList().get(1);
+    EventModel eventOne = eventController.getEventHandler()
+            .getEventCollection("default").getEventList().get(0);
+    EventModel eventTwo = eventController.getEventHandler()
+            .getEventCollection("default").getEventList().get(1);
 
-//dit event <property> "<eventName>" from <dateStringTtimeString> to <dateStringTtimeString> with "<NewPropertyValue>"
-    eventController.filterCommand("edit event eventName \"hello world\" from 2025-10-10T11:00 to  2025-10-10T12:00 with  \"New Event Name\"\n");
+
+    eventController.filterCommand("edit event eventName \"hello world\"" +
+            " from 2025-10-10T11:00 to  2025-10-10T12:00 with  \"New Event Name\"\n");
 
     assertEquals("hello world", eventOne.getEventName());
     assertEquals("hello world", eventTwo.getEventName());
 
   }
-
 
 
 }

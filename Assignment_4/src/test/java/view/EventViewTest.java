@@ -12,12 +12,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
 
-import controller.EventController;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+
 
 /**
  * This class tests various functionalities of the EventView interactive mode,
@@ -140,22 +138,6 @@ public class EventViewTest {
     //System.out.println("Captured Output: " + output);
   }
 
-//  @Test
-//  public void testCreateOverlappingEvents() {
-//    String input =
-//            "create event \"Meeting\" from 2025-10-10T10:00 to 2025-10-10T11:00\n"
-//                    + "create event \"Overlap\" from 2025-10-10T10:30 to 2025-10-10T11:30\n"
-//                    + "exit\n";
-//    testIn = new ByteArrayInputStream(input.getBytes());
-//    System.setIn(testIn);
-//
-//    EventView eventView = new EventView();
-//    eventView.runInteractiveMode();
-//
-//    String output = testOut.toString();
-//    assertTrue(output.contains("Event \"Meeting\" was created"));
-//    assertTrue(output.contains("Event \"Overlap\" was created"));
-//  }
 
   @Test
   public void testCreateEventOnLeapDay() {
@@ -200,28 +182,6 @@ public class EventViewTest {
     String output = testOut.toString();
     assertTrue(output.contains("Event \"Past Event\" was created"));
   }
-
-
-//  @Test
-//  public void testManyEventsCreation() {
-//    StringBuilder input = new StringBuilder();
-//    for (int i = 0; i < 105; i++) {
-//      input.append("create event \"Event")
-//              .append(i)
-//              .append("\" from 2025-10-10T10:00 to 2025-10-10T11:00\n");
-//    }
-//    input.append("exit\n");
-//
-//    testIn = new ByteArrayInputStream(input.toString().getBytes());
-//    System.setIn(testIn);
-//
-//    EventView eventView = new EventView();
-//    eventView.runInteractiveMode();
-//
-//    String output = testOut.toString();
-//
-//    assertTrue(output.contains("Event \"Event104\" was created"));
-//  }
 
   @Test
   public void testRecurringEventUntilInvalidDate() {
@@ -310,8 +270,11 @@ public class EventViewTest {
   public void testCreateConflictingRecurringEvent() {
     String input =
             "create event --autodecline \"test1\" from 2025-10-10T10:00 to 2025-10-10T11:00\n" +
-                    "create event --autodecline \"test2\" from 2025-10-10T10:30 to 2025-10-10T11:30\n" +
-                    "create event --autodecline \"test3\" from 2025-10-10T09:00 to 2025-10-10T11:00 repeats FS until 2025-12-01T10:00\n" +
+                    "create event --autodecline \"test2\" " +
+                    "from 2025-10-10T10:30 to 2025-10-10T11:30\n" +
+                    "create event --autodecline \"test3\" from" +
+                    " 2025-10-10T09:00 to 2025-10-10T11:00 " +
+                    "repeats FS until 2025-12-01T10:00\n" +
                     "exit\n";
     testIn = new ByteArrayInputStream(input.getBytes());
     System.setIn(testIn);
@@ -322,7 +285,8 @@ public class EventViewTest {
     String output = testOut.toString();
     assertTrue(output.contains("Event \"test1\" was created"));
     assertTrue(output.contains("Event \"test2\" was not created"));
-    assertTrue(output.contains("Conflict detected, your recurring event \"test3\" was not created"));
+    assertTrue(output.contains("Conflict detected, your recurring event" +
+            " \"test3\" was not created"));
   }
 
   @Test
@@ -336,7 +300,8 @@ public class EventViewTest {
     eventView.runInteractiveMode();
 
     String output = testOut.toString();
-    assertTrue(output.contains("Invalid weekday format after 'repeats'. Use M (Monday), T (Tuesday), W (Wednesday), etc."));
+    assertTrue(output.contains("Invalid weekday format after 'repeats'." +
+            " Use M (Monday), T (Tuesday), W (Wednesday), etc."));
   }
 
   @Test

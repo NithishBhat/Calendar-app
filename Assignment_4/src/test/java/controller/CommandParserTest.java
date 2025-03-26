@@ -1,16 +1,13 @@
 package controller;
 
-
-
-
-
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 
+/**
+ * Tests the command parser class tests the command parser class methods.
+ */
 
 public class CommandParserTest {
 
@@ -18,7 +15,8 @@ public class CommandParserTest {
 
   @Test
   public void testGetDiagnosticMessage_EmptyCommand() {
-    assertEquals("Unknown command ''. Available commands are: create, edit, print, export, show", parser.getDiagnosticMessage(" "));
+    assertEquals("Unknown command ''. Available commands are: create, edit," +
+            " print, export, show", parser.getDiagnosticMessage(" "));
   }
 
   @Test
@@ -28,71 +26,84 @@ public class CommandParserTest {
 
   @Test
   public void testDiagnoseCreateCommand_MissingEventKeyword() {
-    assertEquals("Missing 'event' keyword in create command", parser.getDiagnosticMessage("create something"));
+    assertEquals("Missing 'event' keyword in create command",
+            parser.getDiagnosticMessage("create something"));
   }
 
   @Test
   public void testDiagnoseCreateCommand_MissingToKeyword() {
-    assertEquals("Missing 'to' keyword in time range Command", parser.getDiagnosticMessage("create event \"Meeting\" from 2025-03-31T10:00"));
+    assertEquals("Missing 'to' keyword in time range Command",
+            parser.getDiagnosticMessage("create event \"Meeting\" from 2025-03-31T10:00"));
   }
 
   @Test
   public void testDiagnoseCreateCommand_MissingFromOrOn() {
-    assertEquals("Missing 'from' or 'on' in event Command", parser.getDiagnosticMessage("create event \"Meeting\""));
+    assertEquals("Missing 'from' or 'on' in event Command",
+            parser.getDiagnosticMessage("create event \"Meeting\""));
   }
 
   @Test
   public void testDiagnoseEditCommand_MissingEventKeyword() {
-    assertEquals("Missing 'event' or 'events' keyword in edit command", parser.getDiagnosticMessage("edit something"));
+    assertEquals("Missing 'event' or 'events' keyword in edit command",
+            parser.getDiagnosticMessage("edit something"));
   }
 
   @Test
   public void testDiagnosePrintCommand_MissingEventsKeyword() {
-    assertEquals("Missing 'events' keyword in print command", parser.getDiagnosticMessage("print something"));
+    assertEquals("Missing 'events' keyword in print command",
+            parser.getDiagnosticMessage("print something"));
   }
 
   @Test
   public void testDiagnosePrintCommand_InvalidDateFormat() {
-    assertEquals("Invalid date format after 'on'. Use YYYY-MM-DD", parser.getDiagnosticMessage("print events on 20250331"));
+    assertEquals("Invalid date format after 'on'. Use YYYY-MM-DD",
+            parser.getDiagnosticMessage("print events on 20250331"));
   }
 
   @Test
   public void testDiagnoseExportCommand_MissingCalKeyword() {
-    assertEquals("Missing 'cal' keyword in export command", parser.getDiagnosticMessage("export something.csv"));
+    assertEquals("Missing 'cal' keyword in export command",
+            parser.getDiagnosticMessage("export something.csv"));
   }
 
   @Test
   public void testDiagnoseExportCommand_InvalidFileExtension() {
-    assertEquals("Missing CSV filename or invalid file extension (must end with .csv)", parser.getDiagnosticMessage("export cal calendar.txt"));
+    assertEquals("Missing CSV filename or invalid file extension (must end with .csv)",
+            parser.getDiagnosticMessage("export cal calendar.txt"));
   }
 
   @Test
   public void testDiagnoseShowCommand_MissingStatusKeyword() {
-    assertEquals("Missing 'status' keyword in show command", parser.getDiagnosticMessage("show something"));
+    assertEquals("Missing 'status' keyword in show command",
+            parser.getDiagnosticMessage("show something"));
   }
 
   @Test
   public void testDiagnoseShowCommand_InvalidDateTimeFormat() {
-    assertEquals("Invalid date/time format after 'on'. Use YYYY-MM-DDThh:mm", parser.getDiagnosticMessage("show status on 20250331"));
+    assertEquals("Invalid date/time format after 'on'. Use YYYY-MM-DDThh:mm",
+            parser.getDiagnosticMessage("show status on 20250331"));
   }
 
 
   @Test
   public void testDiagnoseCreateCommand_InvalidWeekday() {
-    String invalidCommand = "create event \"Weekly Meeting\" from 2025-03-31T14:00 to 2025-03-31T15:00 repeats XY for 10 times";
+    String invalidCommand = "create event \"Weekly Meeting\" " +
+            "from 2025-03-31T14:00 to 2025-03-31T15:00 repeats XY for 10 times";
     assertTrue(parser.getDiagnosticMessage(invalidCommand).contains("Invalid weekday format"));
   }
 
   @Test
   public void testDiagnoseEditCommand_InvalidProperty() {
-    String invalidCommand = "edit event invalidProperty \"Meeting\" from 2025-03-31T10:00 to 2025-03-31T11:00 with \"New Value\"";
+    String invalidCommand = "edit event invalidProperty \"Meeting\" " +
+            "from 2025-03-31T10:00 to 2025-03-31T11:00 with \"New Value\"";
     assertTrue(parser.getDiagnosticMessage(invalidCommand).contains("Invalid property"));
   }
 
   @Test
   public void testDiagnoseCreateCommand_MissingQuotes() {
     String invalidCommand = "create event Meeting from 2025-03-31T10:00 to 2025-03-31T11:00";
-    assertTrue(parser.getDiagnosticMessage(invalidCommand).contains("Missing event name in quotes"));
+    assertTrue(parser.getDiagnosticMessage(invalidCommand)
+            .contains("Missing event name in quotes"));
   }
 
   @Test
@@ -131,14 +142,13 @@ public class CommandParserTest {
   }
 
 
-
   @Test
   public void testDiagnoseEditEvent_MissingWithKeyword() {
-    String command = "edit event \"Meeting\" from 2025-03-31T14:00 to 2025-03-31T15:00 \"New Meeting\"";
+    String command = "edit event \"Meeting\" from" +
+            " 2025-03-31T14:00 to 2025-03-31T15:00 \"New Meeting\"";
     assertEquals("Missing 'with' keyword for new property value in edit event command",
             parser.getDiagnosticMessage(command));
   }
-
 
 
   @Test
@@ -181,6 +191,7 @@ public class CommandParserTest {
             parser.getDiagnosticMessage(command));
 
   }
+
   @Test
   public void showMissingOn() {
     String command = "show status  2025-03-31T10:00";
@@ -188,6 +199,7 @@ public class CommandParserTest {
             parser.getDiagnosticMessage(command));
 
   }
+
   @Test
   public void showInvalid() {
     String command = "show status on 2025-03-31T10:00asdhjkadsjkls";
@@ -248,22 +260,15 @@ public class CommandParserTest {
     String command = "export abc";
     assertEquals("Missing 'cal' keyword in export command",
             parser.getDiagnosticMessage(command));
-
-
-
   }
+
   @Test
   public void invalidexport() {
     String command = "export hello cal abc.csv";
     assertEquals("Invalid export command format. Example:\n" +
                     "  export cal calendar.csv",
             parser.getDiagnosticMessage(command).trim());
-
-
-
   }
-
-
 
 
 }

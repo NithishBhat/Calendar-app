@@ -14,23 +14,34 @@ import java.util.List;
 
 import model.EventModel;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
+/**
+ * class test the functionality and the methods of the export csv class.
+ */
 public class ExportToCSVTest {
   private List<EventModel> events;
 
   @Before
   public void setUp() {
     events = new ArrayList<>();
-    events.add(new EventModel("test", LocalDateTime.of(2025, 10, 13, 7, 0),
-            LocalDateTime.of(2025, 10, 13, 8, 0), "testDesc", true, false, "MA"));
+    events.add(new EventModel("test",
+            LocalDateTime.of(2025, 10, 13, 7, 0),
+            LocalDateTime.of(2025, 10, 13, 8, 0),
+            "testDesc", true, false, "MA"));
 
     //eventName, startDateTime, endDateTime, autoDecline
-    events.add(new EventModel("test2", LocalDateTime.of(2025, 10, 14, 9, 0),
-            LocalDateTime.of(2025, 10, 14, 10, 0), false));
+    events.add(new EventModel("test2",
+            LocalDateTime.of(2025, 10, 14, 9, 0),
+            LocalDateTime.of(2025, 10, 14, 10, 0),
+            false));
 
     //eventName, startDateTime, endDateTime
-    events.add(new EventModel("test3", LocalDateTime.of(2025, 11, 15, 10, 0),
+    events.add(new EventModel("test3",
+            LocalDateTime.of(2025, 11, 15, 10, 0),
             LocalDateTime.of(2025, 11, 15, 12, 0)));
   }
 
@@ -71,7 +82,8 @@ public class ExportToCSVTest {
       String line = reader.readLine();
       assertNotNull(line);
 
-      assertEquals("Subject,Start Date,Start Time,End Date,End Time,All Day Event,Description,Location,Private", line);
+      assertEquals("Subject,Start Date,Start Time,End Date," +
+              "End Time,All Day Event,Description,Location,Private", line);
 
       line = reader.readLine();
       assertNotNull(line);
@@ -132,8 +144,11 @@ public class ExportToCSVTest {
   public void testGenerateCSVWithLargeNumberOfEvents() {
     List<EventModel> events = new ArrayList<>();
     for (int i = 0; i < 1000; i++) {
-      events.add(new EventModel("Event " + i, LocalDateTime.of(2025, 10, 13, 7, 0),
-              LocalDateTime.of(2025, 10, 13, 8, 0), "Description " + i, true, false, "Location " + i));
+      events.add(new EventModel("Event " + i,
+              LocalDateTime.of(2025, 10, 13, 7, 0),
+              LocalDateTime.of(2025, 10, 13, 8, 0),
+              "Description " + i, true, false,
+              "Location " + i));
     }
 
     String filePath = "test_large_output.csv";
@@ -159,8 +174,10 @@ public class ExportToCSVTest {
   @Test
   public void testEventModelWithNullValues() {
     List<EventModel> nullValueEvents = new ArrayList<>();
-    nullValueEvents.add(new EventModel("Event with Null Description", LocalDateTime.of(2025, 10, 13, 7, 0),
-            LocalDateTime.of(2025, 10, 13, 8, 0), null, true, false, null));
+    nullValueEvents.add(new EventModel("Event with Null Description",
+            LocalDateTime.of(2025, 10, 13, 7, 0),
+            LocalDateTime.of(2025, 10, 13, 8, 0),
+            null, true, false, null));
 
     String filePath = "test_null_values_output.csv";
     ExportToCSV.generateCSV(filePath, nullValueEvents);

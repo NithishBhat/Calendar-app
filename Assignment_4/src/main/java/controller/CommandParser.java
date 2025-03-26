@@ -51,10 +51,10 @@ public class CommandParser {
     patterns.put("processCopyEventOn", Pattern.compile(
             "\\s*copy\\s+"
             + "event\\s+\"(.*?)\"\\s"
-            + "+on\\s+"+ dateTimeString
+            + "+on\\s+" + dateTimeString
             + "\\s+--target\\s+\"(.*?)\"\\s"
             + "+to\\s+"
-            + dateTimeString +"\\s*$", Pattern.CASE_INSENSITIVE));
+            + dateTimeString + "\\s*$", Pattern.CASE_INSENSITIVE));
 
     //copy events on <dateString> --target <calName> to <dateString>
     patterns.put("copyEventsOn", Pattern.compile(
