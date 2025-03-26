@@ -30,7 +30,7 @@ This document outlines the commands used for creating, editing, printing, export
 
 ### Single Event
 
-Creates a single event in the calendar.
+Creates a single event in the calendar. Note \<dateString> is a string of the form "YYYY-MM-DD" and \<timeString> is a string of the form "hh:mm".
 
 **Command Syntax:**
 
@@ -66,6 +66,10 @@ create event [--autoDecline] "<eventName>" from <dateStringTtimeString> to <date
 - **Parameters:**
   - `<weekdays>`: Sequence of characters representing days (M, T, W, R, F, S, U).
   - `<N>`: Number of occurrences.
+  - `--autoDecline` (optional): Rejects creation if there is a conflict.
+  - `<eventName>`: Must be enclosed in double quotes.
+  - `<dateStringTtimeString>`: Format `YYYY-MM-DDThh:mm` (e.g., `2025-10-10T10:00`).
+  - `[description:"..."], [location:"..."], [privacy:"true" or "false"]` (optional): Must be in the order shown.
 
 **Examples:**
 
@@ -76,7 +80,99 @@ create event "hello world" from 2025-10-10T10:00 to 2025-12-10T10:00 repeats MTW
 
 ---
 
+### Recurring All Day Event Until a Specific Date
+
+Creates a recurring event until a specific date (inclusive).
+
+**Command Syntax:**
+
+```bash
+create event --autoDecline <eventName> from <dateStringTtimeString> to <dateStringTtimeString> repeats <weekdays> until <dateStringTtimeString> [description:"Values and Values"] [location:"Values and Values"] [privacy:"(true OR false)"]
+```
+
+- **Parameters:**
+  - `<weekdays>`: Sequence of characters representing days (M, T, W, R, F, S, U).
+  - `<N>`: Number of occurrences.
+  - `--autoDecline` (optional): Rejects creation if there is a conflict.
+  - `<eventName>`: Must be enclosed in double quotes.
+  - `<dateStringTtimeString>`: Format `YYYY-MM-DDThh:mm` (e.g., `2025-10-10T10:00`).
+  - `[description:"..."], [location:"..."], [privacy:"true" or "false"]` (optional): Must be in the order shown.
+
+**Examples:**
+
+```bash
+create event --autoDecline "hello world" from 2025-10-10T10:00 to 2025-12-10T10:00 repeats MTW until  2025-10-10T10:00 description:"test" location:"MA" privacy:"true"
+create event "hello world" from 2025-10-10T10:00 to 2025-12-10T10:00 repeats MTW until 2025-10-10T10:00
+```
+
+---
+### All Day Single Event
+Creates a single all day event
+
+**Command Syntax:**
+
+```bash
+create event --autoDecline <eventName> on <dateStringTtimeString> [description:"Values and Values"] [location:"Values and Values"] [privacy:"(true OR false)"]
+```
+
+- **Parameters:**
+  - `--autoDecline` (optional): Rejects creation if there is a conflict.
+  - `<eventName>`: Must be enclosed in double quotes.
+  - `<dateStringTtimeString>`: Format `YYYY-MM-DDThh:mm` (e.g., `2025-10-10T10:00`).
+  - `[description:"..."], [location:"..."], [privacy:"true" or "false"]` (optional): Must be in the order shown.
+
+**Examples:**
+
+```bash
+create event --autoDecline "hello world" on 2025-12-10T10:00  description:"test" location:"MA" privacy:"true"
+create event --autoDecline "hello world" on 2025-12-10T10:00
+```
+
+---
+### Recurring All Day Event by Number of Occurrences
+
+Creates a recurring all day event until a specific date (inclusive).
+
+**Command Syntax:**
+
+```bash
+create event <eventName> on <dateString> repeats <weekdays> until <dateString> [description:"Values and Values"] [location:"Values and Values"] [privacy:"(true OR false)"]
+```
+
+- **Parameters:**
+  - `--autoDecline` (optional): Rejects creation if there is a conflict.
+  -  `<weekdays>`: Sequence of characters representing days (M, T, W, R, F, S, U).
+  - `<eventName>`: Must be enclosed in double quotes.
+  - `<dateStringTtimeString>`: Format `YYYY-MM-DDThh:mm` (e.g., `2025-10-10T10:00`).
+  - `[description:"..."], [location:"..."], [privacy:"true" or "false"]` (optional): Must be in the order shown.
+
+**Examples:**
+
+```bash
+create event --autoDecline "hello world" on 2025-12-10T10:00  repeats MTW until  2025-10-10T10:00  description:"test" location:"MA" privacy:"true"
+create event --autoDecline "hello world" on 2025-12-10T10:00 repeats MTW until  2025-10-10T10:00
+```
+---
+
 ## Edit Event Commands
+
+### Edit a Specific Event
+
+Change a property of a single event identified by its name and specific start and end date/time.
+
+**Command Syntax:**
+
+```bash
+edit event <property> "<eventName>" from <dateStringTtimeString> to <dateStringTtimeString> with "<NewPropertyValue>"
+```
+
+**Example:**
+
+```bash
+edit event "hello world" from 2025-10-10T12:00 to 2025-10-10T13:00 with "New Event Name"
+```
+
+---
 
 ### Edit a Specific Event
 
