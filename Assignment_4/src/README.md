@@ -372,6 +372,19 @@ All Features work as intended in the readme.
 
 ## Distribution of Work
 Phillip did:
+- 50% of assignment 5
+- EventView Test strength and mutation coverage
+- ExportToCSV tests
+- Add new commands to command parser
+- Add process commands in event handler
+- Event Collection Model Tests
+- CalendarModelCollection
 
 Nithish did:
+- 50% of assignment 5
+- CalenderModel
+- Partial CalenderModelCollection
+- CalenderModel Tests, EventHandlerTests
+- Refactoring Event Handler
+- Model , controller test Strength and mutation coverage 
     
