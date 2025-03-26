@@ -285,5 +285,66 @@ public class EventViewTest {
     assertEquals(12, eventCount);
 
   }
+
+  @Test
+  public void testRunInteractiveModeMissingEventName() {
+    String input = "create event from 2025-10-10T10:00 to 2025-10-10T11:00\nexit\n";
+    testIn = new ByteArrayInputStream(input.getBytes());
+    System.setIn(testIn);
+
+    EventView eventView = new EventView();
+    eventView.runInteractiveMode();
+
+    String output = testOut.toString();
+    assertTrue(output.contains("Invalid command: Missing event name in quotes"));
+  }
+
+  @Test
+  public void testCreateConflictingRecurringEvent() {
+    String input =
+            "create event --autodecline \"test1\" from 2025-10-10T10:00 to 2025-10-10T11:00\n" +
+                    "create event --autodecline \"test2\" from 2025-10-10T10:30 to 2025-10-10T11:30\n" +
+                    "create event --autodecline \"test3\" from 2025-10-10T09:00 to 2025-10-10T11:00 repeats FS until 2025-12-01T10:00\n" +
+                    "exit\n";
+    testIn = new ByteArrayInputStream(input.getBytes());
+    System.setIn(testIn);
+
+    EventView eventView = new EventView();
+    eventView.runInteractiveMode();
+
+    String output = testOut.toString();
+    assertTrue(output.contains("Event \"test1\" was created"));
+    assertTrue(output.contains("Event \"test2\" was not created"));
+    assertTrue(output.contains("Conflict detected, your recurring event \"test3\" was not created"));
+  }
+
+  @Test
+  public void testRecurringEventEdgeCase() {
+    String input = "create event \"Test Recurring\" from 2025-10-10T10:00 to 2025-10-10T11:00 " +
+            "repeats XXX until 2025-12-10T10:00\nexit\n";
+    testIn = new ByteArrayInputStream(input.getBytes());
+    System.setIn(testIn);
+
+    EventView eventView = new EventView();
+    eventView.runInteractiveMode();
+
+    String output = testOut.toString();
+    assertTrue(output.contains("Invalid weekday format after 'repeats'. Use M (Monday), T (Tuesday), W (Wednesday), etc."));
+  }
+
+  @Test
+  public void testExportEmptyCalendar() {
+    String input = "export cal empty.csv\nexit\n";
+    testIn = new ByteArrayInputStream(input.getBytes());
+    System.setIn(testIn);
+
+    EventView eventView = new EventView();
+    eventView.runInteractiveMode();
+
+    String output = testOut.toString();
+    assertTrue(output.contains("No Events in Calendar"));
+  }
+
+  
 }
 

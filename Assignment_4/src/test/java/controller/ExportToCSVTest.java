@@ -138,4 +138,58 @@ public class ExportToCSVTest {
     String result = ExportToCSV.removeRegex("null");
     assertEquals("", result);
   }
+
+  @Test
+  public void testGenerateCSVWithLargeNumberOfEvents() {
+    List<EventModel> events = new ArrayList<>();
+    for (int i = 0; i < 1000; i++) {
+      events.add(new EventModel("Event " + i, LocalDateTime.of(2025, 10, 13, 7, 0),
+              LocalDateTime.of(2025, 10, 13, 8, 0), "Description " + i, true, false, "Location " + i));
+    }
+
+    String filePath = "test_large_output.csv";
+    ExportToCSV.generateCSV(filePath, events);
+
+    File file = new File(filePath);
+    assertTrue(file.exists());
+
+    int expectedNumberOfLines = events.size() + 1;
+    try (BufferedReader reader = Files.newBufferedReader(Paths.get(filePath))) {
+      int actualNumberOfLines = 0;
+      while (reader.readLine() != null) {
+        actualNumberOfLines++;
+      }
+      assertEquals(expectedNumberOfLines, actualNumberOfLines);
+    } catch (IOException e) {
+      fail("Error reading the generated CSV file: " + e.getMessage());
+    }
+
+    file.delete();
+  }
+
+  @Test
+  public void testEventModelWithNullValues() {
+    List<EventModel> nullValueEvents = new ArrayList<>();
+    nullValueEvents.add(new EventModel("Event with Null Description", LocalDateTime.of(2025, 10, 13, 7, 0),
+            LocalDateTime.of(2025, 10, 13, 8, 0), null, true, false, null));
+
+    String filePath = "test_null_values_output.csv";
+    ExportToCSV.generateCSV(filePath, nullValueEvents);
+
+    File file = new File(filePath);
+    assertTrue(file.exists());
+
+    try (BufferedReader reader = Files.newBufferedReader(Paths.get(filePath))) {
+      String line = reader.readLine();
+      assertNotNull(line);
+
+      line = reader.readLine();
+      assertTrue(line.contains("Event with Null Description"));
+      assertTrue(line.contains("\"No Description\""));
+      assertTrue(line.contains("\"No Location\""));
+    } catch (IOException e) {
+      fail("Error reading the generated CSV file: " + e.getMessage());
+    }
+    file.delete();
+  }
 }

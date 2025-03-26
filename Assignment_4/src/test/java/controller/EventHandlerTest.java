@@ -754,6 +754,26 @@ public class EventHandlerTest {
   }
 
   @Test
+  public void processCreateRecurringAllDayEventEndAutoDecline() {
+    EventController eventController = new EventController();
+    eventController.filterCommand("create event --autoDecline \"hello world\" on 2025-10-10 "
+            + "repeats MTW until 2025-12-10 description:\"test\" location:\"MA\" privacy:\"true\"");
+
+    eventController.filterCommand("create event --autoDecline \"hello world2\" on 2025-10-10 "
+            + "repeats MTW until 2025-12-10 description:\"test\" location:\"MA\" privacy:\"true\"");
+    EventModel eventOne = eventController.getEventHandler().getEventCollection("default").getEventList().get(0);
+    assertEquals(27, eventController.getEventHandler().getEventCollection("default").getEventList().size());
+
+    assertEquals("hello world", eventOne.getEventName());
+    assertEquals("2025-10-13T00:00", eventOne.getStartDateTime().toString());
+    assertEquals("2025-10-13T23:59", eventOne.getEndDateTime().toString());
+    assertEquals("test", eventOne.getDescription());
+    assertEquals("MA", eventOne.getLocation());
+    assertEquals(true, eventOne.getIsPrivate());
+    assertEquals(true,eventOne.getAutoDecline());
+  }
+
+  @Test
   public void recurringEventLoopAround() {
     EventController eventController = new EventController();
 
