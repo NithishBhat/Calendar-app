@@ -18,10 +18,10 @@ public interface Event {
   void setDescription(String description);
 
   Boolean getIsPrivate();
-  void setIsPrivate(boolean isPrivate);
+  void setIsPrivate(Boolean isPrivate);
 
   Boolean getAutoDecline();
-  void setAutoDecline(boolean autoDecline);
+  void setAutoDecline(Boolean autoDecline);
 
   String getLocation();
   void setLocation(String location);

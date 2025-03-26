@@ -170,6 +170,7 @@ public class EventModel implements Event{
     return autoDecline;
   }
 
+
   /**
    * Gets whether the event is private.
    *
@@ -177,11 +178,6 @@ public class EventModel implements Event{
    */
   public Boolean getIsPrivate() {
     return isPrivate;
-  }
-
-  @Override
-  public void setIsPrivate(boolean isPrivate) {
-
   }
 
   /**
@@ -226,6 +222,7 @@ public class EventModel implements Event{
    *
    * @param type the privacy status to set for the event
    */
+  @Override
   public void setIsPrivate(Boolean type) {
     this.isPrivate = type;
   }
@@ -244,7 +241,7 @@ public class EventModel implements Event{
    *
    * @param autoDecline the value to set for auto decline
    */
-  public void setAutoDecline(boolean autoDecline) {
+  public void setAutoDecline(Boolean autoDecline) {
     this.autoDecline = autoDecline;
   }
 
