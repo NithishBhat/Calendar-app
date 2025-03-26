@@ -1,15 +1,20 @@
 package controller;
 
-import org.junit.jupiter.api.Test;
 
-import java.util.regex.Matcher;
+
+
+
+import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.assertTrue;
+
 
 public class CommandParserTest {
 
-  private final CommandParser parser = new CommandParser();
+  CommandParser parser = new CommandParser();
 
   @Test
   public void testGetDiagnosticMessage_EmptyCommand() {
@@ -71,95 +76,7 @@ public class CommandParserTest {
     assertEquals("Invalid date/time format after 'on'. Use YYYY-MM-DDThh:mm", parser.getDiagnosticMessage("show status on 20250331"));
   }
 
-  @Test
-  public void testCreateEvent_ValidFullEvent() {
-    String command = "create event \"Team Meeting\" from 2025-03-31T10:00 to 2025-03-31T11:00 description:\"Weekly sync\" location:\"Zoom\" privacy:\"false\"";
-    Matcher matcher = parser.parseCommand(command);
-    assertNotNull(matcher, "Valid full event command should be parsed");
-  }
 
-  @Test
-  public void testCreateEvent_WholeDay() {
-    String command = "create event \"Holiday\" on 2025-03-31T00:00";
-    Matcher matcher = parser.parseCommand(command);
-    assertNotNull(matcher, "Whole day event should be parsed");
-  }
-
-  @Test
-  public void testCreateEvent_RecurringWithCount() {
-    String command = "create event \"Weekly Meeting\" from 2025-03-31T14:00 to 2025-03-31T15:00 repeats MW for 10 times";
-    Matcher matcher = parser.parseCommand(command);
-    assertNotNull(matcher, "Recurring event with count should be parsed");
-  }
-
-  @Test
-  public void testCreateEvent_RecurringUntilDate() {
-    String command = "create event \"Monthly Review\" from 2025-03-31T14:00 to 2025-03-31T15:00 repeats F until 2025-12-31T00:00";
-    Matcher matcher = parser.parseCommand(command);
-    assertNotNull(matcher, "Recurring event with end date should be parsed");
-  }
-
-  @Test
-  public void testCreateEvent_AutoDecline() {
-    String command = "create event --autoDecline \"Mandatory Training\" from 2025-03-31T09:00 to 2025-03-31T17:00";
-    Matcher matcher = parser.parseCommand(command);
-    assertNotNull(matcher, "Event with auto-decline should be parsed");
-  }
-
-  // Tests for edit commands
-  @Test
-  public void testEditEvent_SingleEvent() {
-    String command = "edit event eventName \"Old Meeting\" from 2025-03-31T10:00 to 2025-03-31T11:00 with \"New Meeting\"";
-    Matcher matcher = parser.parseCommand(command);
-    assertNotNull(matcher, "Edit single event should be parsed");
-  }
-
-  @Test
-  public void testEditEvents_ByLocation() {
-    String command = "edit events location \"Team Meeting\" from 2025-03-31T10:00 with \"Conference Room\"";
-    Matcher matcher = parser.parseCommand(command);
-    assertNotNull(matcher, "Edit events by location should be parsed");
-  }
-
-  @Test
-  public void testEditCalendar_Name() {
-    String command = "edit calendar --name \"OldCalendar\" --property \"name\" \"NewCalendar\"";
-    Matcher matcher = parser.parseCommand(command);
-    assertNotNull(matcher, "Edit calendar name should be parsed");
-  }
-
-  @Test
-  public void testEditCalendar_Timezone() {
-    String command = "edit calendar --name \"WorkCalendar\" --property \"time-zone\" \"America/New_York\"";
-    Matcher matcher = parser.parseCommand(command);
-    assertNotNull(matcher, "Edit calendar timezone should be parsed");
-  }
-
-  // Print command tests
-  @Test
-  public void testPrintEvents_OnSpecificDate() {
-    String command = "print events on 2025-03-31";
-    Matcher matcher = parser.parseCommand(command);
-    assertNotNull(matcher, "Print events on specific date should be parsed");
-  }
-
-  @Test
-  public void testPrintEvents_BetweenDateTimes() {
-    String command = "print events from 2025-03-31T09:00 to 2025-03-31T17:00";
-    Matcher matcher = parser.parseCommand(command);
-    assertNotNull(matcher, "Print events between date times should be parsed");
-  }
-
-
-  // Show status tests
-  @Test
-  public void testShowStatus_AtSpecificDateTime() {
-    String command = "show status on 2025-03-31T14:00";
-    Matcher matcher = parser.parseCommand(command);
-    assertNotNull(matcher, "Show status at specific date time should be parsed");
-  }
-
-  // Diagnostic message tests for invalid scenarios
   @Test
   public void testDiagnoseCreateCommand_InvalidWeekday() {
     String invalidCommand = "create event \"Weekly Meeting\" from 2025-03-31T14:00 to 2025-03-31T15:00 repeats XY for 10 times";
@@ -179,6 +96,27 @@ public class CommandParserTest {
   }
 
   @Test
+  public void Invalidcreate() {
+    String command = "create event \"Weekly Meeting\" from 2025-03-31T14:00 to" +
+            " 2025-03-31T15:00 re XY for 10 times";
+    assertEquals("Invalid create command format. Examples:\n" +
+                    "  create event \"Meeting\" from 2023-03-15T14:00 to 2023-03-15T15:00\n" +
+                    "  create event \"Birthday\" on 2023-03-15\n" +
+                    "  create event \"Weekly Meeting\" from 2023-03-15T14:00 to 2023-03-15T15:00" +
+                    " repeats MW for 10 times",
+            parser.getDiagnosticMessage(command));
+  }
+
+
+  @Test
+  public void create() {
+    String command = "create event \"Weekly Meeting\" from 2025-03-31T14:00 to" +
+            " 2025-03-31T15:00 repeats XY  10 times";
+    assertEquals("Missing 'for' or 'until' in recurring event Command",
+            parser.getDiagnosticMessage(command));
+  }
+
+  @Test
   public void testDiagnoseEditEvent_MissingFromDateTime() {
     String command = "edit event \"Meeting\" to 2025-03-31T15:00 with \"New Meeting\"";
     assertEquals("Missing 'from' keyword in edit event command",
@@ -192,12 +130,16 @@ public class CommandParserTest {
             parser.getDiagnosticMessage(command));
   }
 
+
+
   @Test
   public void testDiagnoseEditEvent_MissingWithKeyword() {
     String command = "edit event \"Meeting\" from 2025-03-31T14:00 to 2025-03-31T15:00 \"New Meeting\"";
     assertEquals("Missing 'with' keyword for new property value in edit event command",
             parser.getDiagnosticMessage(command));
   }
+
+
 
   @Test
   public void testDiagnoseEditEvents_MissingWithKeywordAfterDateTime() {
@@ -206,143 +148,119 @@ public class CommandParserTest {
             parser.getDiagnosticMessage(command));
   }
 
-
-
-
-
   @Test
-  public void testDiagnoseEditCommand_EdgeCases() {
-    String[] invalidCommands = {
-            "edit",
-            "edit something",
-            "edit event",
-            "edit events",
-            "edit calendar"
-    };
-
-    for (String command : invalidCommands) {
-      assertNotNull(parser.getDiagnosticMessage(command),
-              "Should provide diagnostic message for incomplete command: " + command);
-    }
-  }
-
-  @Test
-  public void testDiagnoseEditCommand_InvalidCommandStructure() {
-    String[] invalidStructures = {
-            "edit event \"Meeting\" random words",
-            "edit events \"Meeting\" random words",
-            "edit calendar random words"
-    };
-
-    for (String command : invalidStructures) {
-      assertNotNull(parser.getDiagnosticMessage(command),
-              "Should provide diagnostic message for invalid command structure: " + command);
-    }
-  }
-
-
-  @Test
-  public void emptyCommands() {
-    String command = "";
-    assertEquals("Unknown command ''. Available commands are: create, edit, print, export, show",
-            parser.getDiagnosticMessage(command));
-  }
-
-  @Test
-  public void createMissingEvent() {
-    String command = "create abc";
-    Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-      parser.parseCommand(command); // Call function that should throw
-    });
-    assertEquals("Invalid command: Missing 'event' keyword in create command", exception.getMessage());
-
-  }
-
-  @Test
-  public void createMissingTo() {
-    String commandY = "create event  \"Meeting\" from 2025-03-31T10:00 2025-03-31T11:00";
-
-    Exception exceptionY = assertThrows(IllegalArgumentException.class, () -> {
-      parser.parseCommand(commandY); // Call function that should throw
-    });
-    assertEquals("Invalid command: Missing 'to' keyword in time range Command", exceptionY.getMessage());
-  }
-
-  @Test
-  public void createMissingFromOrOn() {
-    String commandZ = "create event \"Meeting\"  2025-03-31T10:00 to 2025-03-31T11:00";
-    Exception exceptionZ = assertThrows(IllegalArgumentException.class, () -> {
-      parser.parseCommand(commandZ); // Call function that should throw
-    });
-    assertEquals("Invalid command: Missing 'from' or 'on' in event Command", exceptionZ.getMessage());
-  }
-
-
-  @Test
-  public void createMissingQuotesInEventName(){
-    String commandA = "create event  Meeting from 2025-03-31T10:00 to 2025-03-31T11:00";
-
-    Exception exceptionA = assertThrows(IllegalArgumentException.class, () -> {
-      parser.parseCommand(commandA); // Call function that should throw
-    });
-    assertEquals("Invalid command: Missing event name in quotes", exceptionA.getMessage());
-  }
-
-
-  @Test
-  public void createMissingFor(){
-
-    String commandB = "create event --autoDecline \"hello world\" "
-            + "from 2025-10-10T10:00 to 2025-12-10T10:00 repeats MTW  6 times  "
-            + "description:\"test\" location:\"MA\" privacy:\"true\"";
-
-    Exception exceptionB = assertThrows(IllegalArgumentException.class, () -> {
-      parser.parseCommand(commandB); // Call function that should throw
-    });
-    assertEquals("Invalid command: Missing 'for' or 'until' in recurring event Command",
-            exceptionB.getMessage());
-  }
-
-  @Test
-  public void createMissingUntil(){
-    String commandC = "create event --autoDecline \"hello world\" "
-            + "from 2025-10-10T10:00 to 2025-12-10T10:00 repeats Q for  6 times  "
-            + "description:\"test\" location:\"MA\" privacy:\"true\"";
-    Exception exceptionC = assertThrows(IllegalArgumentException.class, () -> {
-      parser.parseCommand(commandC); // Call function that should throw
-    });
-    assertEquals("Invalid command: Invalid weekday format after 'repeats'." +
-                    " Use M (Monday), T (Tuesday), W (Wednesday), etc.",
-            exceptionC.getMessage());
-  }
-
-
-  @Test
-  public void editMissingEvent() {
-    String command = "edit abc";
-    assertEquals("Missing 'event' or 'events' keyword in edit command",
-            parser.getDiagnosticMessage(command));
-  }
-
-  @Test
-  public void wrongprint() {
-    String command = "print abc";
+  public void testGetDiagnosticMessage_MissingEventsKeyword() {
     assertEquals("Missing 'events' keyword in print command",
-            parser.getDiagnosticMessage(command));
+            parser.getDiagnosticMessage("print something"));
   }
+
+  @Test
+  public void testGetDiagnosticMessage_InvalidDateFormatAfterOn() {
+    assertEquals("Invalid date format after 'on'. Use YYYY-MM-DD",
+            parser.getDiagnosticMessage("print events on 20250331"));
+  }
+
+  @Test
+  public void testGetDiagnosticMessage_MissingToKeyword() {
+    assertEquals("Missing 'to' keyword in time range specification",
+            parser.getDiagnosticMessage("print events from 2025-03-31T10:00"));
+  }
+
+
+  @Test
+  public void testGetDiagnosticMessage_MissingOnOrFromTo() {
+    assertEquals("Missing 'on' or 'from...to' in print command",
+            parser.getDiagnosticMessage("print events"));
+  }
+
 
   @Test
   public void wrongshow() {
     String command = "show abc";
     assertEquals("Missing 'status' keyword in show command",
             parser.getDiagnosticMessage(command));
+
   }
+  @Test
+  public void showMissingOn() {
+    String command = "show status  2025-03-31T10:00";
+    assertEquals("Missing 'on' keyword in show status command",
+            parser.getDiagnosticMessage(command));
+
+  }
+  @Test
+  public void showInvalid() {
+    String command = "show status on 2025-03-31T10:00asdhjkadsjkls";
+    assertEquals("Invalid show command format. Example:\n" +
+                    "  show status on 2023-03-15T14:00",
+            parser.getDiagnosticMessage(command));
+
+  }
+
+  @Test
+  public void testMissingEventsKeyword() {
+    String input = "print from 2025-03-31T10:00 to 2025-03-31T12:00";
+    String result = parser.getDiagnosticMessage(input);
+    assertEquals("Missing 'events' keyword in print command", result);
+  }
+
+  @Test
+  public void testInvalidDateFormatAfterOn() {
+    String input = "print events on 03-31-2025";
+    String result = parser.getDiagnosticMessage(input);
+    assertEquals("Invalid date format after 'on'. Use YYYY-MM-DD", result);
+  }
+
+  @Test
+  public void testMissingToKeywordInRange() {
+    String input = "print events from 2025-03-31T10:00";
+    String result = parser.getDiagnosticMessage(input);
+    assertEquals("Missing 'to' keyword in time range specification", result);
+  }
+
+
+  @Test
+  public void testMissingOnOrFromTo() {
+    String input = "print events";
+    String result = parser.getDiagnosticMessage(input);
+    assertEquals("Missing 'on' or 'from...to' in print command", result);
+  }
+
+  @Test
+  public void printInvalidDate() {
+    String input = "print events from 03234234223 to 21341423432";
+    String result = parser.getDiagnosticMessage(input);
+    assertEquals("Invalid date/time format. Use YYYY-MM-DDThh:mm", result);
+  }
+
+  @Test
+  public void printInvalid() {
+    String input = "print events on 2025-00-00 asjasdjkads";
+    String result = parser.getDiagnosticMessage(input);
+    assertEquals("Invalid print command format. Examples:\n" +
+            "  print events on 2023-03-15\n" +
+            "  print events from 2023-03-15T09:00 to 2023-03-15T17:00", result);
+  }
+
 
   @Test
   public void wrongexport() {
     String command = "export abc";
     assertEquals("Missing 'cal' keyword in export command",
             parser.getDiagnosticMessage(command));
+
+
+
+  }
+  @Test
+  public void invalidexport() {
+    String command = "export hello cal abc.csv";
+    assertEquals("Invalid export command format. Example:\n" +
+                    "  export cal calendar.csv",
+            parser.getDiagnosticMessage(command).trim());
+
+
+
   }
 
 

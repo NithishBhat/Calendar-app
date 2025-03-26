@@ -265,30 +265,6 @@ public class CommandParser {
     if (!input.contains("event") && !input.contains("events")) {
       return ("Missing 'event' or 'events' keyword in edit command");
     }
-    //Calendar edit
-    if (input.matches("\\s*edit\\s+calendar\\s+.*")) {
-      if (!input.contains("--name")) {
-        return "Missing '--name' argument to specify the calendar name in edit calendar command";
-      }
-
-      if (!input.contains("--property")) {
-        return "Missing '--property' argument to specify the property to edit in edit calendar command";
-      }
-
-      if (!input.contains("\"")) {
-        return "Missing value for property in edit calendar command";
-      }
-
-      // Validate the property being edited (name or time-zone)
-      if (!(input.contains("--property \"name\"") || input.contains("--property \"time-zone\""))) {
-        return "Invalid property for calendar. Valid properties are: name, time-zone";
-      }
-
-      // Check if a value is provided after the property
-      if (!input.matches(".*\"([^\"]+)\".*")) {
-        return "Missing value for the property in edit calendar command";
-      }
-    }
 
     else if (input.matches("\\s*edit\\s+event\\s+.*")) {
       if (!input.contains("from")) {
