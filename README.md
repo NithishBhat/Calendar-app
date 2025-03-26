@@ -26,9 +26,9 @@ This document outlines the commands used for creating, editing, printing, export
 
 ---
 
-## Create Event Commands
+### Create Event Commands
 
-### Single Event
+## Single Event
 
 Creates a single event in the calendar. Note \<dateString> is a string of the form "YYYY-MM-DD" and \<timeString> is a string of the form "hh:mm".
 
@@ -53,7 +53,7 @@ create event --autoDecline "hello world" from 2025-10-10T10:00 to 2025-10-10T10:
 
 ---
 
-### Recurring Event for N Times
+## Recurring Event for N Times
 
 Creates a recurring event that repeats a specified number of times on specific weekdays.
 
@@ -80,14 +80,14 @@ create event "hello world" from 2025-10-10T10:00 to 2025-12-10T10:00 repeats MTW
 
 ---
 
-### Recurring All Day Event Until a Specific Date
+## Recurring All Day Event Until a Specific Date
 
 Creates a recurring event until a specific date (inclusive).
 
 **Command Syntax:**
 
 ```bash
-create event --autoDecline <eventName> from <dateStringTtimeString> to <dateStringTtimeString> repeats <weekdays> until <dateStringTtimeString> [description:"Values and Values"] [location:"Values and Values"] [privacy:"(true OR false)"]
+create event --autoDecline "<eventName>" from <dateStringTtimeString> to <dateStringTtimeString> repeats <weekdays> until <dateStringTtimeString> [description:"Values and Values"] [location:"Values and Values"] [privacy:"(true OR false)"]
 ```
 
 - **Parameters:**
@@ -106,13 +106,13 @@ create event "hello world" from 2025-10-10T10:00 to 2025-12-10T10:00 repeats MTW
 ```
 
 ---
-### All Day Single Event
+## All Day Single Event
 Creates a single all day event
 
 **Command Syntax:**
 
 ```bash
-create event --autoDecline <eventName> on <dateStringTtimeString> [description:"Values and Values"] [location:"Values and Values"] [privacy:"(true OR false)"]
+create event --autoDecline "<eventName>" on <dateStringTtimeString> [description:"Values and Values"] [location:"Values and Values"] [privacy:"(true OR false)"]
 ```
 
 - **Parameters:**
@@ -129,14 +129,14 @@ create event --autoDecline "hello world" on 2025-12-10T10:00
 ```
 
 ---
-### Recurring All Day Event by Number of Occurrences
+## Recurring All Day Event by Number of Occurrences
 
 Creates a recurring all day event until a specific date (inclusive).
 
 **Command Syntax:**
 
 ```bash
-create event <eventName> on <dateString> repeats <weekdays> until <dateString> [description:"Values and Values"] [location:"Values and Values"] [privacy:"(true OR false)"]
+create event "<eventName>" on <dateString> repeats <weekdays> until <dateString> [description:"Values and Values"] [location:"Values and Values"] [privacy:"(true OR false)"]
 ```
 
 - **Parameters:**
@@ -154,9 +154,9 @@ create event --autoDecline "hello world" on 2025-12-10T10:00 repeats MTW until  
 ```
 ---
 
-## Edit Event Commands
+### Edit Event Commands
 
-### Edit a Specific Event
+## Edit a Specific Event
 
 Change a property of a single event identified by its name and specific start and end date/time.
 
@@ -174,22 +174,39 @@ edit event "hello world" from 2025-10-10T12:00 to 2025-10-10T13:00 with "New Eve
 
 ---
 
-### Edit a Specific Event
+## Edit Multiple Events by Date/Time
 
-Change a property of a single event identified by its name and specific start and end date/time.
+Changes the property (e.g., name) of all events starting at a specific date/time and have the same event name.
 
 **Command Syntax:**
 
 ```bash
-edit event <property> "<eventName>" from <dateStringTtimeString> to <dateStringTtimeString> with "<NewPropertyValue>"
+edit events <property> <eventName> from <dateStringTtimeString> with <NewPropertyValue>
 ```
 
 **Example:**
 
 ```bash
-edit event "hello world" from 2025-10-10T12:00 to 2025-10-10T13:00 with "New Event Name"
+edit event eventName "hello world" from 2025-10-10T12:00 with "New Event Name"
 ```
 
+---
+
+## Edit Multiple Events by Name
+
+Change the property (e.g., name) of all events with the same event name.
+
+**Command Syntax:**
+
+```bash
+edit events <property> <eventName> <NewPropertyValue>
+```
+
+**Example:**
+
+```bash
+edit events eventName "hello world"  "New Event Name"
+```
 ---
 
 ## Print Event Commands
@@ -258,6 +275,11 @@ show status on 2025-01-10T10:00
 - **Weekdays Format:** For recurring events, `<weekdays>` is a sequence of characters where:
   - `M` = Monday, `T` = Tuesday, `W` = Wednesday, `R` = Thursday, `F` = Friday, `S` = Saturday, `U` = Sunday.
 - **Privacy:** Can only be either `true` or `false`.
+  - `--autoDecline` (optional): Rejects creation if there is a conflict.
+  -  `<weekdays>`: Sequence of characters representing days (M, T, W, R, F, S, U).
+  - `<eventName>`: Must be enclosed in double quotes.
+  - `<dateStringTtimeString>`: Format `YYYY-MM-DDThh:mm` (e.g., `2025-10-10T10:00`).
+  - `[description:"..."], [location:"..."], [privacy:"true" or "false"]` (optional): Must be in the order shown.
 
 ---
 ## Modes of Interaction
