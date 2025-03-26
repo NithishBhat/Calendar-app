@@ -1,5 +1,6 @@
 package controller;
 
+import model.CalenderModel;
 import model.EventModel;
 
 import org.junit.Test;
@@ -419,6 +420,11 @@ public class EventHandlerTest {
     eventController.filterCommand("edit calendar --name \"test\" --property \"name\" \"CS5010\"");
     eventController.filterCommand("edit calendar --name \"test2\" --property \"time-zone\" \"America/New_York\" ");
     eventController.getEventHandler().processPrintCalendars();
+    assertEquals(3, eventController.getEventHandler().getCalenderCollectionSize());
+    assertEquals("CS5010", eventController.getEventHandler().getCalenderCollection()
+            .getCalendarName(eventController.getEventHandler()
+                    .getEventCollection("CS5010")));
+
   }
 
   @Test
@@ -558,6 +564,56 @@ public class EventHandlerTest {
   }
 
   @Test
+  public void testRecurringEventConflict() {
+    EventController eventController = new EventController();
+
+    eventController.filterCommand("create event \"Event 1\" "
+            + "from 2025-10-10T10:00 to 2025-12-10T10:00 repeats MTW for 6 times "
+            + "description:\"test\" location:\"MA\" privacy:\"true\"");
+
+    assertEquals(6, eventController.getEventHandler().getEventCollection("default").getEventList().size());
+    EventModel eventOne = eventController.getEventHandler().getEventCollection("default").getEventList().get(0);
+
+    assertEquals("Event 1", eventOne.getEventName());
+    assertEquals("2025-10-13T10:00", eventOne.getStartDateTime().toString());
+    assertEquals("2025-10-13T10:00", eventOne.getEndDateTime().toString());
+    assertEquals("test", eventOne.getDescription());
+    assertEquals("MA", eventOne.getLocation());
+    assertEquals(true, eventOne.getIsPrivate());
+
+    eventController.filterCommand("create event \"Event 2\" "
+            + "from 2025-10-10T10:00 to 2025-12-10T10:00 repeats MTW for 6 times "
+            + "description:\"test\" location:\"MA\" privacy:\"true\"");
+
+    assertEquals(6, eventController.getEventHandler().getEventCollection("default").getEventList().size());
+  }
+
+  @Test
+  public void testRecurringEventConflictWithDifferentTypes() {
+    EventController eventController = new EventController();
+
+    eventController.filterCommand("create event \"event 1\" "
+            + "from 2025-10-10T10:00 to 2025-12-10T12:00 repeats MTW for 6 times "
+            + "description:\"test\" location:\"MA\" privacy:\"true\"");
+
+    assertEquals(6, eventController.getEventHandler().getEventCollection("default").getEventList().size());
+    EventModel eventOne = eventController.getEventHandler().getEventCollection("default").getEventList().get(0);
+
+    assertEquals("event 1", eventOne.getEventName());
+    assertEquals("2025-10-13T10:00", eventOne.getStartDateTime().toString());
+    assertEquals("2025-10-13T12:00", eventOne.getEndDateTime().toString());
+    assertEquals("test", eventOne.getDescription());
+    assertEquals("MA", eventOne.getLocation());
+    assertEquals(true, eventOne.getIsPrivate());
+
+    eventController.filterCommand("create event \"event 2\" "
+            + "from 2025-10-10T10:00 to 2025-10-10T11:00 repeats MTW until 2025-11-10T10:00 "
+            + "description:\"test\" location:\"MA\" privacy:\"true\"");
+
+    assertEquals(6, eventController.getEventHandler().getEventCollection("default").getEventList().size());
+  }
+
+  @Test
   public void processRecurringEnddateCreation() {
     EventController eventController = new EventController();
     eventController.filterCommand("create event --autoDecline \"hello world\" "
@@ -612,8 +668,6 @@ public class EventHandlerTest {
     assertEquals(true, eventOne.getIsPrivate());
     assertEquals(true,eventOne.getAutoDecline());
     eventController.filterCommand("print events from 2025-10-10T10:00 to 2025-12-10T10:00");
-
-
   }
 @Test
   public void processCreateAllDayEventRecurring() {

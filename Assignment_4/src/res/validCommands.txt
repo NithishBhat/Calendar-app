@@ -1,13 +1,20 @@
-create event <"eventName"> from <dateStringTTimeString> to <dateStringTTimeString> <description:"value"> <location:"value"> <privacy:"true|false">
-create event [--autoDecline] <"eventName"> from <dateStringTtimeString> to <dateStringTtimeString> repeats <weekdays> for <N> times <description:"value"> <location:"value"> <privacy:"true|false">
-edit event <property> <"eventName"> from <dateStringTtimeString> to <dateStringTtimeString> with "<NewPropertyValue>"
-print events from <dateStringTtimeString> to <dateStringTtimeString>
-edit events <property> <"eventName"> from <dateStringTtimeString> with <NewPropertyValue>
-edit event <property> <"eventName"> from <dateStringTtimeString> to <dateStringTtimeString> with <NewPropertyValue>
-create event <"eventName"> on <dateString> repeats <weekdays> until <dateString> <description:"value"> <location:"value"> <privacy:"true|false">
-create event --autoDecline <"eventName"> on <dateStringTtimeString> <description:"value"> <location:"value"> <privacy:"true|false">
-create event --autoDecline <"eventName"> from <dateStringTtimeString> to <dateStringTtimeString> repeats <weekdays> until <dateStringTtimeString> <description:"value"> <location:"value"> <privacy:"true|false">
-print events on <dateString>
-export cal <fileName.csv>
-show status on <dateStringTtimeString>
+create calendar --name "testCalendar" --timezone "America/New_York"
+edit calendar --name "testCalendar" --property "time-zone" "America/Los_Angeles"
+create calendar --name "testCalendar2" --timezone "America/New_York"
+use calendar --name "testCalendar"
+create event "singleEvent" from 2025-10-10T10:00 to 2025-10-10T11:00 description:"test Description" location:"MA" privacy:"true"
+copy event "singleEvent" on 2025-10-10T10:00 --target "testCalendar2" to 2025-10-07T15:00
+create event "recurringEventN" from 2025-10-10T12:00 to 2025-10-10T13:00 repeats MTW for 4 times description:"test Description" location:"MA" privacy:"false"
+copy events on 2025-10-10 --target "testCalendar2" to 2025-11-16
+copy events between 2025-10-10 and 2025-10-31 --target "testCalendar2" to 2025-10-10
+edit event location "test1" from 2025-10-10T10:00 to 2025-10-10T11:00 with "MA"
+print events from 2025-10-01T00:00 to 2025-10-31T23:59
+edit events description "test2" from 2025-10-12T10:00 with "test Description"
+edit event location "test1" from 2025-10-10T10:00 to 2025-10-10T11:00 with "MA"
+create event "recurringEventsUntil" from 2025-10-15T09:00 to 2025-10-15T09:01 repeats MTW until 2025-12-10T10:00 description:"test" location:"MA" privacy:"true"
+print events from 2025-10-01T00:00 to 2025-10-31T23:59
+create event "AllDayEvent" on 2025-10-06T00:00 description:"test Description" location:"MA" privacy:"false"
+print events on 2025-10-15
+export cal october2025Test.csv
+show status on 2025-10-10T10:30
 exit
