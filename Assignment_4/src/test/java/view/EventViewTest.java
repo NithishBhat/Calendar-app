@@ -9,6 +9,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.PrintStream;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -274,6 +275,30 @@ public class EventViewTest {
     assertTrue(output.contains("Invalid value for HourOfDay (valid values 0 - 23): 24"));
     //System.setOut(originalSystemOut);
     //System.out.println("Captured Output: " + output);
+  }
+
+  @Test
+  public void testRecurringEvent() {
+    String input = "create event \"test\" from 2025-10-10T07:00 to 2025-10-10T08:00 " +
+            "repeats MTW until 2025-11-10T07:00\n" +
+            "print events from 2025-10-10T07:00 to 2025-11-10T07:00\n" +
+            "exit\n";
+    testIn = new ByteArrayInputStream(input.getBytes());
+    System.setIn(testIn);
+
+    EventView eventView = new EventView();
+    eventView.runInteractiveMode();
+
+    String output = testOut.toString();
+
+    System.setOut(originalSystemOut);
+    System.out.println("Captured Output: " + output);
+
+    assertTrue(output.contains("Event \"test\" was created"));
+
+    int eventCount = output.split("\\*  eventName=test").length - 1;
+    assertEquals(12, eventCount);
+
   }
 }
 

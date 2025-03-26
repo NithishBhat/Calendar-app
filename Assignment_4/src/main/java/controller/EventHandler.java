@@ -32,11 +32,9 @@ public class EventHandler {
    *
    */
   public EventHandler() {
-
     calenderCollection= new CalenderCollection();
     createCalender("\"default\"",ZoneId.of("UTC"));
     eventCollection=calenderCollection.getEventCollection("default");
-
   }
 
   public void useCalender(String calenderName) {
