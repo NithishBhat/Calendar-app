@@ -260,7 +260,45 @@ show status on 2025-01-10T10:00
 - **Privacy:** Can only be either `true` or `false`.
 
 ---
-
-## MODEs of Interaction
+## Modes of Interaction
+In order to run the application the user must specify whether to use the interactive CLI 
+or the headless application. Before running any modes the user must compile the files from the 
+/java directory. You must be in the /java directory when running commands.
+**Command Syntax:**
+```bash
+javac -d . */*.java
+```
 ## HeadlessMode
+Allows users to input commands from a .txt file. Users must specify the name of the file and 
+follow it with the .txt filetype. Users must end the list of commands with "exit" 
+in order to finish the session.
+
+**Command Syntax:**
+
+```bash
+java view.EventView.java --mode headless <filename>.txt 
+```
 ## interactive Mode
+Allows users to enter an interactive command line interface where commands are input line by line
+and users get instant feedback from their actions.
+
+**Command Syntax:**
+
+```bash
+java view.EventView.java --mode interactive 
+```
+
+## Distribution
+Nithish did the 
+  - Event handler
+  - Recurring events model, events model
+  - Model tests
+  - 
+
+Phillip did 
+  - Command parser
+  - event controller
+  - export to csv
+  - event collection model
+  - event view
+  - view test
