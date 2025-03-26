@@ -305,8 +305,12 @@ show status on 2025-01-10T10:00
   - `<eventName>`: Must be enclosed in double quotes.
   - `<dateStringTtimeString>`: Format `YYYY-MM-DDThh:mm` (e.g., `2025-10-10T10:00`).
   - `[description:"..."], [location:"..."], [privacy:"true" or "false"]` (optional): Must be in the order shown.
+  - `<new-property-value>` must be in double quotes.
+  - `<property>` can only be startDateTime,startDateTime,location,description and privacyType Only , no double quotes !
 
 ---
+
+## Calendar Commands
 
 
 ### Create Calendar
@@ -324,6 +328,7 @@ create calendar --name <calName> --timezone area/location
 ```bash
 create calendar --name "default" --timezone "Africa/Cairo"
 ```
+---
 
 ### Use Calendar
 
@@ -340,6 +345,7 @@ use calendar --name <name-of-calendar>
 ```bash
 use calendar --name "Hello"
 ```
+---
 
 ### Copy Specific Event
 
@@ -356,6 +362,7 @@ copy event <eventName> on <dateStringTtimeString> --target <calendarName> to <da
 ```bash
 copy event "Hello" on 2025-10-10T13:00  --target "Hello" to 2025-10-10T13:00 
 ```
+---
 
 ### Copy All Events On A Day
 
@@ -372,6 +379,8 @@ copy events on <dateString> --target <calendarName> to <dateString>
 ```
 copy events on 2025-10-10 --target "hello" to 2025-10-10
 ```
+
+---
 ### Copy All Events In Interval
 
 The command has the same behavior as the other copy commands, except it copies all events scheduled in the specified date interval. The date string in the target calendar corresponds to the start of the interval. The endpoint dates of the interval are inclusive.
@@ -387,6 +396,7 @@ copy events between <dateString> and <dateString> --target <calendarName> to <da
 ```bash
 copy events between 2025-10-10 and 2025-11-10 --target "Hello" to 2025-10-10
 ```
+---
 
 ### Edit Calendar
 
@@ -414,7 +424,8 @@ edit calendar --name "test2" --property "time-zone" "America/New_York"
   - `<dateStringTtimeString>` must follow `YYYY-MM-DDThh:mm`.
   - `<calendarname>`: Must be enclosed in double quotes.
   - `<dateStringTtimeString>`: Format `YYYY-MM-DDThh:mm` (e.g., `2025-10-10T10:00`).
-  - '<property>' and '<new-property-value>' must be in quotes.
+  - `<property>` and `<new-property-value>` must be in double quotes.
+  - `<property>` can be  "name" or "time-zone" ONLY!
 
 
 
