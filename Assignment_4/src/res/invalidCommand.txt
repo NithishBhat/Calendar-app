@@ -1,9 +1,0 @@
-create event "hello world" from 2025-10-10T10:00 to 2025-10-10T11:00
-show status on 2025-10-10T10:30
-create event "test4" from 2025-10-10T12:00 to 2025-10-10T13:00
-create  event "test6" from 2021-10-13T10:00 to 2021-10-13T11:00
-create event --autoDecline "test7 on 2020-10-10T10:00
-create event --autoDecline \"test7\ from 2025-3-10T10:00 to 2021-4-10T11:00 repeats MTW for 10 times
-edit event location "hello world" from 2025-10-10T10:00 to 2025-10-10T11:00 with "United States"
-edfr event location "hello world" from 2025-10-10T10:00 to 2025-10-10T11:00 with "United States"
-exit
