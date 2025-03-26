@@ -164,7 +164,6 @@ public class CommandParser {
    */
   public Matcher parseCommand(String input) {
     for (Map.Entry<String, Pattern> entry : patterns.entrySet()) {
-      //System.out.println(entry.getKey());
       Matcher matcher = entry.getValue().matcher(input);
       if (matcher.matches()) {
         return matcher;
@@ -172,8 +171,7 @@ public class CommandParser {
     }
 
     String diagnosticMessage = getDiagnosticMessage(input);
-    System.out.println("Invalid command: " + diagnosticMessage);
-    return null;
+    throw new IllegalArgumentException("Invalid command: " + diagnosticMessage);
   }
 
   /**
@@ -194,9 +192,6 @@ public class CommandParser {
    */
   public String getDiagnosticMessage(String input) {
     String[] words = input.trim().split("\\s+");
-    if (words.length == 0) {
-      return "Empty command";
-    }
 
     String firstWord = words[0].toLowerCase();
     switch (firstWord) {

@@ -54,7 +54,7 @@ public class CalenderCollection {
         return entry.getKey();
       }
     }
-    throw new IllegalArgumentException("event collection not attached to a calender collection");
+    throw new IllegalArgumentException("event collection does not belong to a calender collection");
   }
 
   public void changeCalendarTimeZone(String calName, ZoneId timeZone) {

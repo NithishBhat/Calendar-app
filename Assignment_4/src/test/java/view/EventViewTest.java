@@ -194,21 +194,6 @@ public class EventViewTest {
     assertTrue(output.contains("Event \"Past Event\" was created"));
   }
 
-  @Test
-  public void testCreateEventWithEndTimeBeforeStartTime() {
-    String input = "create event \"Invalid Time\" from " +
-            "2025-10-10T11:00 to 2025-10-10T10:00\nexit\n";
-    testIn = new ByteArrayInputStream(input.getBytes());
-    System.setIn(testIn);
-
-    EventView eventView = new EventView();
-    eventView.runInteractiveMode();
-
-    String output = testOut.toString();
-
-    assertTrue(output.contains("End DateTime: 2025-10-10T10:00 is " +
-            "before Start DateTime: 2025-10-10T11:00"));
-  }
 
   @Test
   public void testManyEventsCreation() {

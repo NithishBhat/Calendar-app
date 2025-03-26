@@ -178,16 +178,6 @@ public class CommandParserTest {
     assertTrue(parser.getDiagnosticMessage(invalidCommand).contains("Missing event name in quotes"));
   }
 
-
-  @Test
-  public void testParseCommand_InvalidCommand() {
-    String invalidCommand = "random gibberish that makes no sense";
-    Matcher matcher = parser.parseCommand(invalidCommand);
-    assertNull(matcher, "Invalid command should return null matcher");
-  }
-
-
-
   @Test
   public void testDiagnoseEditEvent_MissingFromDateTime() {
     String command = "edit event \"Meeting\" to 2025-03-31T15:00 with \"New Meeting\"";
@@ -249,4 +239,113 @@ public class CommandParserTest {
               "Should provide diagnostic message for invalid command structure: " + command);
     }
   }
+
+
+  @Test
+  public void emptyCommands() {
+    String command = "";
+    assertEquals("Unknown command ''. Available commands are: create, edit, print, export, show",
+            parser.getDiagnosticMessage(command));
+  }
+
+  @Test
+  public void createMissingEvent() {
+    String command = "create abc";
+    Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+      parser.parseCommand(command); // Call function that should throw
+    });
+    assertEquals("Invalid command: Missing 'event' keyword in create command", exception.getMessage());
+
+  }
+
+  @Test
+  public void createMissingTo() {
+    String commandY = "create event  \"Meeting\" from 2025-03-31T10:00 2025-03-31T11:00";
+
+    Exception exceptionY = assertThrows(IllegalArgumentException.class, () -> {
+      parser.parseCommand(commandY); // Call function that should throw
+    });
+    assertEquals("Invalid command: Missing 'to' keyword in time range Command", exceptionY.getMessage());
+  }
+
+  @Test
+  public void createMissingFromOrOn() {
+    String commandZ = "create event \"Meeting\"  2025-03-31T10:00 to 2025-03-31T11:00";
+    Exception exceptionZ = assertThrows(IllegalArgumentException.class, () -> {
+      parser.parseCommand(commandZ); // Call function that should throw
+    });
+    assertEquals("Invalid command: Missing 'from' or 'on' in event Command", exceptionZ.getMessage());
+  }
+
+
+  @Test
+  public void createMissingQuotesInEventName(){
+    String commandA = "create event  Meeting from 2025-03-31T10:00 to 2025-03-31T11:00";
+
+    Exception exceptionA = assertThrows(IllegalArgumentException.class, () -> {
+      parser.parseCommand(commandA); // Call function that should throw
+    });
+    assertEquals("Invalid command: Missing event name in quotes", exceptionA.getMessage());
+  }
+
+
+  @Test
+  public void createMissingFor(){
+
+    String commandB = "create event --autoDecline \"hello world\" "
+            + "from 2025-10-10T10:00 to 2025-12-10T10:00 repeats MTW  6 times  "
+            + "description:\"test\" location:\"MA\" privacy:\"true\"";
+
+    Exception exceptionB = assertThrows(IllegalArgumentException.class, () -> {
+      parser.parseCommand(commandB); // Call function that should throw
+    });
+    assertEquals("Invalid command: Missing 'for' or 'until' in recurring event Command",
+            exceptionB.getMessage());
+  }
+
+  @Test
+  public void createMissingUntil(){
+    String commandC = "create event --autoDecline \"hello world\" "
+            + "from 2025-10-10T10:00 to 2025-12-10T10:00 repeats Q for  6 times  "
+            + "description:\"test\" location:\"MA\" privacy:\"true\"";
+    Exception exceptionC = assertThrows(IllegalArgumentException.class, () -> {
+      parser.parseCommand(commandC); // Call function that should throw
+    });
+    assertEquals("Invalid command: Invalid weekday format after 'repeats'." +
+                    " Use M (Monday), T (Tuesday), W (Wednesday), etc.",
+            exceptionC.getMessage());
+  }
+
+
+  @Test
+  public void editMissingEvent() {
+    String command = "edit abc";
+    assertEquals("Missing 'event' or 'events' keyword in edit command",
+            parser.getDiagnosticMessage(command));
+  }
+
+  @Test
+  public void wrongprint() {
+    String command = "print abc";
+    assertEquals("Missing 'events' keyword in print command",
+            parser.getDiagnosticMessage(command));
+  }
+
+  @Test
+  public void wrongshow() {
+    String command = "show abc";
+    assertEquals("Missing 'status' keyword in show command",
+            parser.getDiagnosticMessage(command));
+  }
+
+  @Test
+  public void wrongexport() {
+    String command = "export abc";
+    assertEquals("Missing 'cal' keyword in export command",
+            parser.getDiagnosticMessage(command));
+  }
+
+
+
+
 }
