@@ -182,9 +182,7 @@ public class EventHandler {
     LocalDateTime startDate = LocalDateTime.parse(startDateTime);
     LocalDateTime endDate = LocalDateTime.parse(endDateTime);
     if (isEndBeforeStart(startDate, endDate)) {
-      System.out.println("End DateTime: " + endDate + " is before Start DateTime: " + startDate);
-      System.out.println("Hence Event was not created");
-      return;
+      throw new IllegalArgumentException("End time cannot be before start time, Event was not created");
     }
 
     EventModel event = new EventModel(eventName, startDate, endDate, description,
