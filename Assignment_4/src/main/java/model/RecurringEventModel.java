@@ -21,11 +21,10 @@ public class RecurringEventModel extends EventModel {
           'M', "MONDAY",
           'T', "TUESDAY",
           'W', "WEDNESDAY",
-          'H', "THURSDAY",
+          'R', "THURSDAY",
           'F', "FRIDAY",
           'S', "SATURDAY",
           'U', "SUNDAY");
-
 
   /**
    * Constructor to initialize a recurring event with all necessary parameters.
