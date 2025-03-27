@@ -4,8 +4,7 @@ This document outlines the commands used for creating, editing, printing, export
 
 ---
 
-## Table of Contents
-
+### Table of Contents
 - [Create Event Commands](#create-event-commands)
   - [Single Event](#single-event)
   - [Recurring Event by Number of Occurrences](#recurring-event-for-n-times)
@@ -23,10 +22,14 @@ This document outlines the commands used for creating, editing, printing, export
 - [Export Command](#export-command)
 - [Status Command](#status-command)
 - [Notes on Formatting](#notes-on-formatting)
-- [Modes of Interaction](#modes-of-interaction)
-- [Changelog](#changelog)
-- [Features](#features)
-- [Distribution of Work](#distribution-of-work)
+
+- [Calender Commands](#create-event-commands)
+  - [Create calendar](#create-event-commands)
+  - [Use calendar](#create-event-commands)
+  - [Copy Specific Event](#create-event-commands)
+  - [Copy All Events On A Day](#create-event-commands)
+  - [Copy All Events In Interval](#create-event-commands)
+  - [Edit Calendar](#create-event-commands)
 
 ---
 
@@ -34,7 +37,7 @@ This document outlines the commands used for creating, editing, printing, export
 
 ### Single Event
 
-Creates a single event in the calendar.
+Creates a single event in the calendar. Note \<dateString> is a string of the form "YYYY-MM-DD" and \<timeString> is a string of the form "hh:mm".
 
 **Command Syntax:**
 
@@ -70,6 +73,10 @@ create event [--autoDecline] "<eventName>" from <dateStringTtimeString> to <date
 - **Parameters:**
   - `<weekdays>`: Sequence of characters representing days (M, T, W, R, F, S, U).
   - `<N>`: Number of occurrences.
+  - `--autoDecline` (optional): Rejects creation if there is a conflict.
+  - `<eventName>`: Must be enclosed in double quotes.
+  - `<dateStringTtimeString>`: Format `YYYY-MM-DDThh:mm` (e.g., `2025-10-10T10:00`).
+  - `[description:"..."], [location:"..."], [privacy:"true" or "false"]` (optional): Must be in the order shown.
 
 **Examples:**
 
@@ -78,6 +85,80 @@ create event --autoDecline "hello world" from 2025-10-10T10:00 to 2025-12-10T10:
 create event "hello world" from 2025-10-10T10:00 to 2025-12-10T10:00 repeats MTW for 6 times
 ```
 
+---
+
+### Recurring All Day Event Until a Specific Date
+
+Creates a recurring event until a specific date (inclusive).
+
+**Command Syntax:**
+
+```bash
+create event --autoDecline "<eventName>" from <dateStringTtimeString> to <dateStringTtimeString> repeats <weekdays> until <dateStringTtimeString> [description:"Values and Values"] [location:"Values and Values"] [privacy:"(true OR false)"]
+```
+
+- **Parameters:**
+  - `<weekdays>`: Sequence of characters representing days (M, T, W, R, F, S, U).
+  - `<N>`: Number of occurrences.
+  - `--autoDecline` (optional): Rejects creation if there is a conflict.
+  - `<eventName>`: Must be enclosed in double quotes.
+  - `<dateStringTtimeString>`: Format `YYYY-MM-DDThh:mm` (e.g., `2025-10-10T10:00`).
+  - `[description:"..."], [location:"..."], [privacy:"true" or "false"]` (optional): Must be in the order shown.
+
+**Examples:**
+
+```bash
+create event --autoDecline "hello world" from 2025-10-10T10:00 to 2025-12-10T10:00 repeats MTW until  2025-10-10T10:00 description:"test" location:"MA" privacy:"true"
+create event "hello world" from 2025-10-10T10:00 to 2025-12-10T10:00 repeats MTW until 2025-10-10T10:00
+```
+
+---
+### All Day Single Event
+Creates a single all day event
+
+**Command Syntax:**
+
+```bash
+create event --autoDecline "<eventName>" on <dateStringTtimeString> [description:"Values and Values"] [location:"Values and Values"] [privacy:"(true OR false)"]
+```
+
+- **Parameters:**
+  - `--autoDecline` (optional): Rejects creation if there is a conflict.
+  - `<eventName>`: Must be enclosed in double quotes.
+  - `<dateStringTtimeString>`: Format `YYYY-MM-DDThh:mm` (e.g., `2025-10-10T10:00`).
+  - `[description:"..."], [location:"..."], [privacy:"true" or "false"]` (optional): Must be in the order shown.
+
+**Examples:**
+
+```bash
+create event --autoDecline "hello world" on 2025-12-10T10:00  description:"test" location:"MA" privacy:"true"
+create event --autoDecline "hello world" on 2025-12-10T10:00
+```
+
+---
+### Recurring All Day Event by Number of Occurrences
+
+Creates a recurring all day event until a specific date (inclusive).
+
+**Command Syntax:**
+
+```bash
+create event "<eventName>" on <dateString> repeats <weekdays> until <dateString> [description:"Values and Values"] [location:"Values and Values"] [privacy:"(true OR false)"]
+```
+
+- **Parameters:**
+  - `--autoDecline` (optional): Rejects creation if there is a conflict.
+  -  `<weekdays>`: Sequence of characters representing days (M, T, W, R, F, S, U).
+  - `<eventName>`: Must be enclosed in double quotes.
+  - `<dateStringTtimeString>`: Format `YYYY-MM-DDThh:mm` (e.g., `2025-10-10T10:00`).
+  - `[description:"..."], [location:"..."], [privacy:"true" or "false"]` (optional): Must be in the order shown.
+
+**Examples:**
+
+```bash
+create event --autoDecline "hello world" on 2025-12-10T10:00  repeats MTW until  2025-10-10T10:00  description:"test" location:"MA" privacy:"true"
+create event --autoDecline "hello world" on 2025-12-10T10:00 repeats MTW until  2025-10-10T10:00
+```
 ---
 
 ## Edit Event Commands
@@ -100,11 +181,46 @@ edit event "hello world" from 2025-10-10T12:00 to 2025-10-10T13:00 with "New Eve
 
 ---
 
+### Edit Multiple Events by Date/Time
+
+Changes the property (e.g., name) of all events starting at a specific date/time and have the same event name.
+
+**Command Syntax:**
+
+```bash
+edit events <property> <eventName> from <dateStringTtimeString> with <NewPropertyValue>
+```
+
+**Example:**
+
+```bash
+edit event eventName "hello world" from 2025-10-10T12:00 with "New Event Name"
+```
+
+---
+
+### Edit Multiple Events by Name
+
+Change the property (e.g., name) of all events with the same event name.
+
+**Command Syntax:**
+
+```bash
+edit events <property> <eventName> <NewPropertyValue>
+```
+
+**Example:**
+
+```bash
+edit events eventName "hello world"  "New Event Name"
+```
+---
+
 ## Print Event Commands
 
 ### Print Events on Date
 
-Prints a bulleted list of all events on a specific date along with their start and end times and location (if available).
+Prints a bulleted list of all events on that day along with their start and end time and location (if any).
 
 **Command Syntax:**
 
@@ -116,6 +232,24 @@ print events on <dateString>
 
 ```bash
 print events on 2025-10-10
+```
+
+---
+
+### Print Events in a Given Interval
+
+Prints a bulleted list of all events on that day along with their start and end time and location (if any).
+
+**Command Syntax:**
+
+```bash
+print events from <dateStringTtimeString> to <dateStringTtimeString>
+```
+
+**Example:**
+
+```bash
+print events from 2025-10-10T12:00 to 2025-10-10T13:00 
 ```
 
 ---
@@ -166,8 +300,134 @@ show status on 2025-01-10T10:00
 - **Weekdays Format:** For recurring events, `<weekdays>` is a sequence of characters where:
   - `M` = Monday, `T` = Tuesday, `W` = Wednesday, `R` = Thursday, `F` = Friday, `S` = Saturday, `U` = Sunday.
 - **Privacy:** Can only be either `true` or `false`.
+  - `--autoDecline` (optional): Rejects creation if there is a conflict.
+  -  `<weekdays>`: Sequence of characters representing days (M, T, W, R, F, S, U).
+  - `<eventName>`: Must be enclosed in double quotes.
+  - `<dateStringTtimeString>`: Format `YYYY-MM-DDThh:mm` (e.g., `2025-10-10T10:00`).
+  - `[description:"..."], [location:"..."], [privacy:"true" or "false"]` (optional): Must be in the order shown.
+  - `<new-property-value>` must be in double quotes.
+  - `<property>` can only be startDateTime,startDateTime,location,description and privacyType Only , no double quotes !
 
 ---
+
+## Calendar Commands
+
+
+### Create Calendar
+
+This command will create a new calendar with a unique name and timezone as specified by the user. The expected timezone format is the IANA Time Zone Database format Links to an external site. . In this format the timezone is specified as "area/location". Few examples include "America/New_York", "Europe/Paris", "Asia/Kolkata", "Australia/Sydney", "Africa/Cairo", etc. The command is invalid if the user provides a non-unique calendar name or an unsupported timezone.
+
+**Command Syntax:**
+
+```bash
+create calendar --name <calName> --timezone area/location
+```
+
+**Example:**
+
+```bash
+create calendar --name "default" --timezone "Africa/Cairo"
+```
+---
+
+### Use Calendar
+
+A user can create/edit/print/export events in the context of a calendar. They can use this command to set the calendar context. Note this means that the commands in the previous iteration only make sense when a calendar is in use (i.e. some calendar must be in use for them to work). Otherwise, they are invalid.
+
+**Command Syntax:**
+
+```bash
+use calendar --name <name-of-calendar>
+```
+
+**Example:**
+
+```bash
+use calendar --name "Hello"
+```
+---
+
+### Copy Specific Event
+
+A user can create/edit/print/export events in the context of a calendar. They can use this command to set the calendar context. Note this means that the commands in the previous iteration only make sense when a calendar is in use (i.e. some calendar must be in use for them to work). Otherwise, they are invalid.
+
+**Command Syntax:**
+
+```bash
+copy event <eventName> on <dateStringTtimeString> --target <calendarName> to <dateStringTtimeString>
+```
+
+**Example:**
+
+```bash
+copy event "Hello" on 2025-10-10T13:00  --target "Hello" to 2025-10-10T13:00 
+```
+---
+
+### Copy All Events On A Day
+
+The command is used to copy a specific event with the given name and start date/time from the current calendar to the target calendar to start at the specified date/time. The "to" date/time is assumed to be specified in the timezone of the target calendar. The copied event must be in the same timezone as the target calendar.
+
+**Command Syntax:**
+
+```bash
+copy events on <dateString> --target <calendarName> to <dateString>
+```
+
+**Example:**
+
+```
+copy events on 2025-10-10 --target "hello" to 2025-10-10
+```
+
+---
+### Copy All Events In Interval
+
+The command has the same behavior as the other copy commands, except it copies all events scheduled in the specified date interval. The date string in the target calendar corresponds to the start of the interval. The endpoint dates of the interval are inclusive.
+
+**Command Syntax:**
+
+```bash
+copy events between <dateString> and <dateString> --target <calendarName> to <dateString>
+```
+
+**Example:**
+
+```bash
+copy events between 2025-10-10 and 2025-11-10 --target "Hello" to 2025-10-10
+```
+---
+
+### Edit Calendar
+
+This command is used to change/modify an existing property ( name or timezone ) of the calendar. The command is invalid if the property being changed is absent or the value is invalid in the context of the property.
+
+**Command Syntax:**
+
+```bash
+edit calendar --name <name-of-calendar> --property <property-name> <new-property-value>
+```
+
+**Example:**
+
+```bash
+edit calendar --name "test" --property "name" "CS5010"
+edit calendar --name "test2" --property "time-zone" "America/New_York" 
+```
+---
+
+## Notes on Formatting
+
+- **Mandatory Spaces:** There must be a space between each parameter as indicated in the command structure.
+- **Date and Time Formats:**
+  - `<dateString>` must follow `YYYY-MM-DD`.
+  - `<dateStringTtimeString>` must follow `YYYY-MM-DDThh:mm`.
+  - `<calendarname>`: Must be enclosed in double quotes.
+  - `<dateStringTtimeString>`: Format `YYYY-MM-DDThh:mm` (e.g., `2025-10-10T10:00`).
+  - `<property>` and `<new-property-value>` must be in double quotes.
+  - `<property>` can be  "name" or "time-zone" ONLY!
+
+------
 
 ## Modes of Interaction
 In order to run the application the user must specify whether to use the interactive CLI 
@@ -234,20 +494,64 @@ Here is a list of changes we made to previous code:
 - EventCollectionModel:
   - Added two new methods to handle search queries for calendar functions.
     ```bash 
-      public List<EventModel> searchEventByTimeFrameAndName(String eventName, LocalDateTime eventStartDateTime, LocalDateTime eventEndDateTime)
+    public List<EventModel> searchEventByTimeFrameAndName(String eventName, LocalDateTime eventStartDateTime, LocalDateTime eventEndDateTime)
     ```
-    Allows for events to be queried by name, start datetime, and end datetime. 
-    Returns a list of events with the same name from a certain start dateTime until a certain 
-    end dateTime. 
+    Allows for events to be queried by name, start datetime, and end datetime.
+    Returns a list of events with the same name from a certain start dateTime until a certain
+    end dateTime.
     ```bash
-      public EventModel searchEventByStartTimeAndName(String eventName,LocalDateTime eventStartDateTime)
+    public EventModel searchEventByStartTimeAndName(String eventName,LocalDateTime eventStartDateTime)
     ```
     Returns the first event with a certain name and start dateTime. These methods are necessary for
-    getting recurring events. 
-  - Moved CheckConflict method to EventCollectionModel class since checking for conflicts 
+    getting recurring events.
+  - Moved CheckConflict method to EventCollectionModel class since checking for conflicts
     is a part of event management in a calendar. EventModel handles the logic for a single event,
     this migration better accommodates Separation of Concerns and Encapsulation.
+  - Added colored statements and tags to increase readability. This increases user-friendliness.
+    ```bash
+    successText + "Event " + ANSI_RESET + recurringEvent.getEventName() + successText + " was created" + ANSI_RESET
+    ```
+- ExportToCSV
+  - Added Success, Warning, and Info tags before console outputs to increase readability of console.
+    ```bash
+    private static final String ANSI_RESET = "\u001B[0m";
+    private static final String ANSI_RED = "\u001B[31m";
+    private static final String ANSI_GREEN = "\u001B[32m";
+    private static final String ANSI_YELLOW = "\u001B[33m";
 
+    private static final String infoString = ANSI_YELLOW + "[INFO] " + ANSI_RESET;
+    private static final String warningString = ANSI_RED + "[WARNING] " + ANSI_RESET;
+    private static final String successString = ANSI_GREEN + "[SUCCESS] " + ANSI_RESET;
+    ```
+- RecurringEventModel
+  - Fixed a bug where events created on Thursdays (R) would return null. Abbreviation in dayMap for Thursday was incorrectly mapped to "H" instead of "R"
+    ```bash
+    private static final Map<Character, String> dayMap = Map.of(
+        'M', "MONDAY",
+        'T', "TUESDAY",
+        'W', "WEDNESDAY",
+        'R', "THURSDAY",
+        'F', "FRIDAY",
+        'S', "SATURDAY",
+        'U', "SUNDAY");
+    ```
+
+- Event Model
+  - Modified bulletString() to set the description and location to "No Description" or "No Location" respectively.
+    Removed printing the autoDecline property since all created events now automatically decline if conflicting with another event. Changed the tag isPrivate to Privacy.
+    Updated styling to provide a more organized and readable output. These changes were necessary improve user-friendliness and readability.
+    ```bash
+      public String bulletString() {
+      String printDescription = description == null ? "No Description" : description;
+      String printLocation = location == null ? "No Location" : location;
+      return "*" + " Event Name = " + eventName + "," +
+            "  Start = " + startDateTime + "," +
+            "  End = " + endDateTime + "," +
+            "  Description = " + printDescription + "," +
+            "  Privacy = " + isPrivate + "," +
+            "  Location = " + printLocation;
+      }
+    ```
 - Command Parser:
   - Update Regex Patterns to accommodate new Calendar Commands, necessary for parsing and executing new calendar commands.
     ```bash
@@ -316,7 +620,11 @@ Here is a list of changes we made to previous code:
         }
     }
     ```
-  
+  - Added Warning tag when error occurs to increase readability.
+    ```bash
+    throw new IllegalArgumentException(warningString + "Invalid command: " + diagnosticMessage);
+    ```
+
 - Event Controller:
   - Update commandMap with new calendar commands.
     ```bash
@@ -330,7 +638,7 @@ Here is a list of changes we made to previous code:
     Added these 6 commands to the commandMap hashmap, so that after a command is parsed the correct
     method in the eventHandler is called.
 
-- Event Handler: 
+- Event Handler:
   - Update with new calendar commands.
     ```bash
       public void useCalender(String calName)
@@ -349,13 +657,13 @@ Here is a list of changes we made to previous code:
       public EventCollectionModel getEventCollection()
       void processPrintCalendars()
     ```
-    These methods were added to the eventHandler to allow for the creating, managing, and editing of 
+    These methods were added to the eventHandler to allow for the creating, managing, and editing of
     calendars as well as the copying of individual events. These methods are necessary for the eventHandler to
-    delegate the correct responsibilities to the Model package. 
-  
+    delegate the correct responsibilities to the Model package.
+
   - EventHandler now constructs a default calendar so that if a user tried to create an event without using a
-    specific calendar it would be added to the default calendar. The default calendar prevents 
-  errors when users create events without specifying a calendar, improving usability and user-friendliness.
+    specific calendar it would be added to the default calendar. The default calendar prevents
+    errors when users create events without specifying a calendar, improving usability and user-friendliness.
     ```bash
       public EventHandler() {
         calenderCollection= new CalenderCollection();
@@ -363,12 +671,17 @@ Here is a list of changes we made to previous code:
         eventCollection=calenderCollection.getEventCollection("default");
       }
     ```
-  - Methods now throw new IllegalArgumentException when an error occurs. Previously the program will 
+  - Methods now throw new IllegalArgumentException when an error occurs. Previously the program will
     System.out.println() the error message. This is necessary for improved and robust
-  error handling, the program now cannot ignore the error.
+    error handling, the program now cannot ignore the error.
+  - Print methods and edit methods for events now output the status of the print/edit call. This increases the readability of the console output.
+    ```bash
+    System.out.println("Event " + eventName + " has been edited");
+    System.out.println("Printing events on " + startDate + "...");
+    ```
 
 ## Features
-All Features work as intended in the readme.
+All Features work as intended in the assignment.
 
 ## Distribution of Work
 Phillip did:
@@ -379,6 +692,7 @@ Phillip did:
 - Add process commands in event handler
 - Event Collection Model Tests
 - CalendarModelCollection
+- Success, Warning, Info tags
 
 Nithish did:
 - 50% of assignment 5

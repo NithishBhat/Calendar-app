@@ -10,6 +10,14 @@ import java.util.ArrayList;
  */
 public class EventCollectionModel {
   private List<EventModel> eventList;
+  private static final String ANSI_RESET = "\u001B[0m";
+  private static final String ANSI_RED = "\u001B[31m";
+  private static final String ANSI_GREEN = "\u001B[32m";
+  private static final String ANSI_YELLOW = "\u001B[33m";
+
+  private static final String infoString = ANSI_YELLOW + "[INFO] " + ANSI_RESET;
+  private static final String warningString = ANSI_RED + "[WARNING] " + ANSI_RESET;
+  private static final String successString = ANSI_GREEN + "[SUCCESS] " + ANSI_RESET;
 
   /**
    * Constructor to initialize the event list.
@@ -230,11 +238,12 @@ public class EventCollectionModel {
     boolean hasConflict = checkConflict(event.getStartDateTime(), event.getEndDateTime());
     autoDecline = true; // Ensures autoDecline is always true
     if (autoDecline && hasConflict) {
-      System.out.println("Event \"" + event.getEventName() + "\" was not created due to conflict");
+      System.out.println(warningString + "Event \""
+              + event.getEventName() + "\" was not created due to conflict");
       return true;
     }
     addEvent(event);
-    System.out.println("Event \"" + event.getEventName() + "\" was created");
+    System.out.println(successString + event.getEventName() + " was created");
     return false;
   }
 
@@ -252,7 +261,7 @@ public class EventCollectionModel {
     autoDecline = true;
     if (!autoDecline) {
       addRecurringEvent(recurringEvent);
-      System.out.println("Event \"" + recurringEvent.getEventName() + "\" was created");
+      System.out.println("Event " + recurringEvent.getEventName() + " was created");
       return false;
     }
 
@@ -260,14 +269,16 @@ public class EventCollectionModel {
 
     for (EventModel event : recurringEventsList) {
       if (checkConflict(event.getStartDateTime(), event.getEndDateTime())) {
-        System.out.println("Conflict detected, your recurring event \""
+        System.out.println(warningString + " Conflict detected, " +
+                "your recurring event \""
                 + recurringEvent.getEventName() + "\" was not created");
         return true;
       }
     }
 
     addRecurringEvent(recurringEvent);
-    System.out.println("Event \"" + recurringEvent.getEventName() + "\" was created");
+    System.out.println(successString + recurringEvent.getEventName()
+             + " was created");
     return false;
   }
 

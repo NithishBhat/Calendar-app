@@ -299,12 +299,13 @@ public class EventModel implements Event {
    * @return String
    */
   public String bulletString() {
-    return "*" + "  eventName=" + eventName + "," +
-            "  Start=" + startDateTime + "," +
-            "  End=" + endDateTime + "," +
-            "  description=" + description + "," +
-            "  isPrivate=" + isPrivate + "," +
-            "  location=" + location + "," +
-            "  autoDecline=" + autoDecline;
+    String printDescription = description == null ? "No Description" : description;
+    String printLocation = location == null ? "No Location" : location;
+    return "*" + " Event Name = " + eventName + "," +
+            "  Start = " + startDateTime + "," +
+            "  End = " + endDateTime + "," +
+            "  Description = " + printDescription + "," +
+            "  Privacy = " + isPrivate + "," +
+            "  Location = " + printLocation;
   }
 }

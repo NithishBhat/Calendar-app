@@ -18,6 +18,15 @@ import model.EventModel;
  */
 public class ExportToCSV {
 
+  private static final String ANSI_RESET = "\u001B[0m";
+  private static final String ANSI_RED = "\u001B[31m";
+  private static final String ANSI_GREEN = "\u001B[32m";
+  private static final String ANSI_YELLOW = "\u001B[33m";
+
+  private static final String infoString = ANSI_YELLOW + "[INFO] " + ANSI_RESET;
+  private static final String warningString = ANSI_RED + "[WARNING] " + ANSI_RESET;
+  private static final String successString = ANSI_GREEN + "[SUCCESS] " + ANSI_RESET;
+
   /**
    * Generates a CSV file from the list of events.
    *
@@ -73,13 +82,13 @@ public class ExportToCSV {
           bw.write(isPrivate);
           bw.newLine();
         }
-        System.out.println("CSV generated");
+        System.out.println(successString + "CSV generated");
         bw.close();
       } catch (IOException e) {
-        throw new RuntimeException("Error Writing to CSV File: " + e.getMessage());
+        throw new RuntimeException(warningString + "Error Writing to CSV File: " + e.getMessage());
       }
     } else {
-      System.out.println("No Events in Calendar.");
+      System.out.println(infoString + "No Events in Calendar.");
     }
   }
 

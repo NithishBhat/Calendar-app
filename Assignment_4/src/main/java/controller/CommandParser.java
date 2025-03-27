@@ -14,6 +14,12 @@ public class CommandParser {
 
   private Map<String, Pattern> patterns = new HashMap<>();
 
+  private static final String ANSI_RESET = "\u001B[0m";
+  private static final String ANSI_RED = "\u001B[31m";
+
+  private static final String warningString = ANSI_RED + "[WARNING] " + ANSI_RESET;
+
+
   /**
    * Constructs a CommandParser and initializes the command patterns for event creation, editing,
    * printing, exporting, and showing status commands.
@@ -171,7 +177,7 @@ public class CommandParser {
     }
 
     String diagnosticMessage = getDiagnosticMessage(input);
-    throw new IllegalArgumentException("Invalid command: " + diagnosticMessage);
+    throw new IllegalArgumentException(warningString + "Invalid command: " + diagnosticMessage);
   }
 
   /**

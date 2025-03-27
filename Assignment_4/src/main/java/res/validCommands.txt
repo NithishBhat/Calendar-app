@@ -1,5 +1,5 @@
 create calendar --name "testCalendar" --timezone "America/New_York"
-edit calendar --name "testCalendar" --property "time-zone" "America/Los_Angeles"
+edit calendar --name "testCalendar" --property "timezone" "America/Los_Angeles"
 create calendar --name "testCalendar2" --timezone "America/New_York"
 use calendar --name "testCalendar"
 create event "singleEvent" from 2025-10-10T10:00 to 2025-10-10T11:00 description:"test Description" location:"MA" privacy:"true"

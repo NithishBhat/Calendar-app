@@ -26,6 +26,15 @@ public class EventHandler {
   private EventCollectionModel eventCollection;
   private CalenderCollection calenderCollection;
 
+  private static final String ANSI_RESET = "\u001B[0m";
+  private static final String ANSI_RED = "\u001B[31m";
+  private static final String ANSI_YELLOW = "\u001B[33m";
+  private static final String ANSI_CYAN = "\u001B[36m";
+
+  private static final String infoString = ANSI_YELLOW + "[INFO] " + ANSI_RESET;
+  private static final String warningString = ANSI_RED + "[WARNING] " + ANSI_RESET;
+  private static final String successString = ANSI_CYAN + "[INFO] " + ANSI_RESET;
+
   /**
    * Constructor initializes the event collection model.
    */
@@ -52,15 +61,20 @@ public class EventHandler {
    *                event date, target calendar, and target calendar date.
    */
   public void processCopyEventOn(Matcher matcher) {
-    String eventName = matcher.group(1);
-    LocalDateTime eventDateTime = LocalDateTime.parse(matcher.group(2));
-    String tarCalName = matcher.group(3);
-    LocalDateTime tarCalDateTime = LocalDateTime.parse(matcher.group(4));
+    try {
+      String eventName = matcher.group(1);
+      LocalDateTime eventDateTime = LocalDateTime.parse(matcher.group(2));
+      String tarCalName = matcher.group(3);
+      LocalDateTime tarCalDateTime = LocalDateTime.parse(matcher.group(4));
 
-    String sourceCalendar = calenderCollection.getCalendarName(eventCollection);
+      String sourceCalendar = calenderCollection.getCalendarName(eventCollection);
 
-    calenderCollection.copyCalendarEventOn(sourceCalendar, eventName,
-            eventDateTime, tarCalName, tarCalDateTime);
+      calenderCollection.copyCalendarEventOn(sourceCalendar, eventName,
+              eventDateTime, tarCalName, tarCalDateTime);
+      System.out.println(successString + eventName + " copied to calendar");
+    } catch (Exception e) {
+      System.out.println(warningString + "Error copying events: " + e.getMessage());
+    }
   }
 
   /**
@@ -69,15 +83,22 @@ public class EventHandler {
    * @param matcher the matcher object containing the date range and target calendar details.
    */
   public void processCopyCalenderBetweenDates(Matcher matcher) {
-    LocalDate fromDate = LocalDate.parse(matcher.group(1));
-    LocalDate toDate = LocalDate.parse(matcher.group(2));
-    String targetCalendarName = matcher.group(3);
-    LocalDate targetStartDate = LocalDate.parse(matcher.group(4));
+    try {
+      LocalDate fromDate = LocalDate.parse(matcher.group(1));
+      LocalDate toDate = LocalDate.parse(matcher.group(2));
+      String targetCalendarName = matcher.group(3);
+      LocalDate targetStartDate = LocalDate.parse(matcher.group(4));
 
-    String sourceCalendar = calenderCollection.getCalendarName(eventCollection);
+      String sourceCalendar = calenderCollection.getCalendarName(eventCollection);
 
-    calenderCollection.copyCalenderBetweenDates(fromDate, toDate, sourceCalendar,
-            targetStartDate, targetCalendarName);
+      calenderCollection.copyCalenderBetweenDates(fromDate, toDate, sourceCalendar,
+              targetStartDate, targetCalendarName);
+
+      System.out.println(successString + " Events from " + fromDate + " to "
+              + toDate + " copied to calendar " + targetCalendarName);
+    } catch (Exception e) {
+      System.out.println(warningString + "Error copying events: " + e.getMessage());
+    }
   }
 
   /**
@@ -86,14 +107,20 @@ public class EventHandler {
    * @param matcher the matcher object containing the event date and target calendar details.
    */
   public void processCopyEventsOn(Matcher matcher) {
-    LocalDate eventDateTime = LocalDate.parse(matcher.group(1));
-    String targetCalendar = matcher.group(2);
-    LocalDate targetDateTime = LocalDate.parse(matcher.group(3));
+    try {
+      LocalDate eventDateTime = LocalDate.parse(matcher.group(1));
+      String targetCalendar = matcher.group(2);
+      LocalDate targetDateTime = LocalDate.parse(matcher.group(3));
 
-    String sourceCalendar = calenderCollection.getCalendarName(eventCollection);
+      String sourceCalendar = calenderCollection.getCalendarName(eventCollection);
 
-    calenderCollection.copyCalenderEntireDay(eventDateTime, sourceCalendar,
-            targetDateTime, targetCalendar);
+      calenderCollection.copyCalenderEntireDay(eventDateTime, sourceCalendar,
+              targetDateTime, targetCalendar);
+      System.out.println(successString + "Events on " + eventDateTime + " copied to calendar");
+    } catch (Exception e) {
+      System.out.println(warningString + "Error copying events: " + e.getMessage());
+    }
+
   }
 
   /**
@@ -112,8 +139,13 @@ public class EventHandler {
                                                       String sourceCalendarName,
                                                       LocalDateTime targetStartDate,
                                                       String targetCalendarName) {
-    calenderCollection.copyEventsWithSameNameBetweenDates(eventName, fromDate, toDate,
-            sourceCalendarName, targetStartDate, targetCalendarName);
+    try {
+      calenderCollection.copyEventsWithSameNameBetweenDates(eventName, fromDate, toDate,
+              sourceCalendarName, targetStartDate, targetCalendarName);
+      System.out.println(successString + "Events " + eventName + " copied to calendar");
+    } catch (Exception e) {
+      System.out.println(warningString + "Error copying events: " + e.getMessage());
+    }
   }
 
   /**
@@ -123,23 +155,30 @@ public class EventHandler {
    *                property to edit, and new value.
    */
   public void processEditCalendar(Matcher matcher) {
-    String calName = matcher.group(1);
-    String property = matcher.group(2);
-    String propertyValue = matcher.group(3);
+    try {
+      String calName = matcher.group(1);
+      String property = matcher.group(2);
+      String propertyValue = matcher.group(3);
 
-    switch (property) {
-      case "name":
-        calenderCollection.changeCalenderName(calName, propertyValue);
-        break;
+      switch (property) {
+        case "name":
+          calenderCollection.changeCalenderName(calName, propertyValue);
+          break;
 
-      case "time-zone":
-        ZoneId newZone = ZoneId.of(propertyValue);
-        calenderCollection.changeCalendarTimeZone(calName, newZone);
-        break;
+        case "timezone":
+          ZoneId newZone = ZoneId.of(propertyValue);
+          calenderCollection.changeCalendarTimeZone(calName, newZone);
+          break;
 
-      default:
-        throw new IllegalArgumentException("Invalid property: " + property);
+        default:
+          throw new IllegalArgumentException("Invalid property: " + property);
+      }
+      System.out.println(successString + calName + " property: "
+              +  property + " changed to: " + propertyValue);
+    } catch (Exception e) {
+      System.out.println(warningString + "Error editing events: " + e.getMessage());
     }
+
   }
 
   /**
@@ -148,9 +187,13 @@ public class EventHandler {
    * @param matcher the matcher object containing the calendar name to switch to.
    */
   public void processUseCalendar(Matcher matcher) {
-    String calName = matcher.group(1);
-    useCalender(calName);
-    System.out.println("Changed to calendar: " + calName);
+    try {
+      String calName = matcher.group(1);
+      useCalender(calName);
+      System.out.println(successString + "Changed to calendar: " + calName);
+    } catch (Exception e) {
+      System.out.println(warningString + "Error changing events: " + e.getMessage());
+    }
 
   }
 
@@ -199,7 +242,8 @@ public class EventHandler {
     try {
       ZoneId timeZone = ZoneId.of(timeZoneString);
       createCalender(calName, timeZone);
-      System.out.println("Calender: " + calName + " created in Timezone: " + timeZoneString);
+      System.out.println(successString + "Calender: " + calName + " created in Timezone: "
+              + timeZoneString);
     } catch (Exception e) {
       System.out.println("Invalid time zone: " + timeZoneString);
     }
@@ -433,6 +477,7 @@ public class EventHandler {
               " start time, Event was not created");
     }
     editEvents(property, newProperty, eventName, startDateTime, endDateTime);
+    System.out.println(successString + "Event " + eventName + " has been edited");
   }
 
   /**
@@ -450,6 +495,7 @@ public class EventHandler {
 
     LocalDateTime startDateTime = LocalDateTime.parse(startDate);
     editEvents(property, newProperty, eventName, startDateTime, null);
+    System.out.println(successString + "Events " + eventName + " have been edited");
   }
 
   /**
@@ -464,6 +510,7 @@ public class EventHandler {
     String newProperty = matcher.group(3);
 
     editEvents(property, newProperty, eventName, null, null);
+    System.out.println(successString + "Events " + eventName + " have been edited");
   }
 
   /**
@@ -482,6 +529,7 @@ public class EventHandler {
 
     List<EventModel> printList = new ArrayList<>();
     printList = eventCollection.searchEventByTimeFrame(startDateTime, endDateTime);
+    System.out.println(infoString + "Printing events on " + startDate + "...");
     System.out.println(eventCollection.printAssortments(printList));
   }
 
@@ -505,6 +553,7 @@ public class EventHandler {
 
     List<EventModel> printList = new ArrayList<>();
     printList = eventCollection.searchEventByTimeFrame(startDateTime, endDateTime);
+    System.out.println(infoString + "Printing events on " + startDate + " to " + endDate + "...");
     System.out.println(eventCollection.printAssortments(printList));
   }
 
@@ -522,19 +571,19 @@ public class EventHandler {
   void processExport(Matcher matcher) {
     String fileName = matcher.group(1);
 
-    System.out.println("Exporting to " + fileName + "...");
+    System.out.println(infoString + "Exporting to " + fileName + "...");
     File exportFile = new File(fileName);
 
     if (!exportFile.exists()) {
       try {
         if (exportFile.createNewFile()) {
-          System.out.println("File "
+          System.out.println(warningString + "File "
                   + fileName
                   + " did not exist. A new file has been created at "
                   + exportFile.getAbsolutePath());
         }
       } catch (IOException e) {
-        System.out.println("Error creating file: " + exportFile.getAbsolutePath());
+        System.out.println(warningString + "Error creating file: " + exportFile.getAbsolutePath());
         return;
       }
     }
@@ -543,7 +592,7 @@ public class EventHandler {
     try {
       ExportToCSV.generateCSV(fileName, eventList);
     } catch (Exception e) {
-      System.out.println("Could not complete Export: " + e.getMessage());
+      System.out.println(warningString + "Could not complete Export: " + e.getMessage());
     }
   }
 
@@ -558,7 +607,7 @@ public class EventHandler {
   void processShowStatus(Matcher matcher) {
     String startDate = matcher.group(1);
     LocalDateTime startDateTime = LocalDateTime.parse(startDate);
-    System.out.println(eventCollection.checkStatus(startDateTime,
+    System.out.println(infoString + eventCollection.checkStatus(startDateTime,
             startDateTime) + " on " + startDate);
   }
 
