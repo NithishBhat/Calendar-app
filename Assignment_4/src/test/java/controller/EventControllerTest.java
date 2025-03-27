@@ -48,10 +48,10 @@ public class EventControllerTest {
             "exit\n";
 
     writeToFile(testFilename, commands);
-    eventController.headlessMode(testFilename);
+    eventController.headlessMode(new InputSource(testFilename));
 
     String output = testOut.toString();
-    assertTrue(output.contains("Event \"test\" was created"));
+    assertTrue(output.contains("test was created"));
     assertTrue(output.contains("Goodbye") || output.contains("Bye"));
   }
 
@@ -62,7 +62,7 @@ public class EventControllerTest {
       file.delete();
     }
 
-    eventController.headlessMode(testFilename);
+    eventController.headlessMode(new InputSource(testFilename));
     String output = testOut.toString();
     assertTrue(output.contains("File " + testFilename
             + " did not exist. A new file has been created"));
@@ -73,7 +73,7 @@ public class EventControllerTest {
     String commands = "invalid command\nexit\n";
     writeToFile(testFilename, commands);
 
-    eventController.headlessMode(testFilename);
+    eventController.headlessMode(new InputSource(testFilename));
 
     String output = testOut.toString();
     System.out.println(output);
@@ -85,10 +85,10 @@ public class EventControllerTest {
     String commands = "create event \"Workout\" from 2025-10-10T07:00 to 2025-10-10T08:00\n";
     writeToFile(testFilename, commands);
 
-    eventController.headlessMode(testFilename);
+    eventController.headlessMode(new InputSource(testFilename));
 
     String output = testOut.toString();
-    assertTrue(output.contains("Error: please type 'exit' as last command"));
+    assertTrue(output.contains("\u001B[31m[WARNING] \u001B[0mError: please type 'exit' as the last command"));
   }
 
   @Test
@@ -99,12 +99,12 @@ public class EventControllerTest {
             "exit\n";
     writeToFile(testFilename, commands);
 
-    eventController.headlessMode(testFilename);
+    eventController.headlessMode(new InputSource(testFilename));
 
     String output = testOut.toString();
     assertTrue(output.contains("Calender: \"testCal\" created in Timezone: America/New_York"));
     assertTrue(output.contains("Changed to calendar: testCal"));
-    assertTrue(output.contains("Event \"Workout\" was created"));
+    assertTrue(output.contains("Workout was created"));
   }
 
   private void writeToFile(String filename, String content) throws IOException {

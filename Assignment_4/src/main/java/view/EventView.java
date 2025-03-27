@@ -1,6 +1,7 @@
 package view;
 
 import controller.EventController;
+import controller.InputSource;
 
 import java.util.Scanner;
 
@@ -48,7 +49,7 @@ public class EventView {
    * @param filename the path to the file containing commands to process
    */
   public void runHeadlessMode(String filename) {
-    eventController.headlessMode(filename);
+    eventController.headlessMode(new InputSource(filename));
   }
 
   /**

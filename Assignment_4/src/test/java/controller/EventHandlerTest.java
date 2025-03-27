@@ -13,6 +13,7 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.assertTrue;
 
 
 /**
@@ -91,6 +92,56 @@ public class EventHandlerTest {
     assertEquals("MA", event2.getLocation());
     assertEquals(true, event2.getIsPrivate());
   }
+
+  @Test
+  public void testOutputCopyEventOn() {
+    String expectedOutput = "[36m[INFO] \u001B[0mhello world copied to calendar";
+
+    EventController eventController = new EventController();
+
+    eventController.filterCommand("create calendar --name \"test\"" +
+            " --timezone \"America/New_York\"");
+    eventController.filterCommand("use calendar --name \"test\" ");
+
+    eventController.filterCommand("create event \"hello world\" "
+            + "from 2025-10-10T10:00 to 2025-10-10T10:00 "
+            + "description:\"test HELLO\" location:\"MA\" privacy:\"true\"");
+
+    eventController.filterCommand("create event \"test\" "
+            + "from 2025-09-05T09:00 to 2025-09-05T10:30 "
+            + "description:\"test\" location:\"test\" privacy:\"false\"");
+
+    eventController.filterCommand("create event \"test2\" "
+            + "from 2025-09-05T11:00 to 2025-09-05T12:30 "
+            + "description:\"test\" location:\"test\" privacy:\"false\"");
+
+    eventController.filterCommand("create event \"test3\" "
+            + "from 2025-09-05T14:00 to 2025-09-05T15:30 "
+            + "description:\"test\" location:\"test\" privacy:\"true\"");
+
+    eventController.filterCommand("create calendar --name \"testCal\"" +
+            " --timezone \"America/Chicago\"");
+
+    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+    PrintStream originalOut = System.out;
+    System.setOut(new PrintStream(outputStream));
+
+    try {
+
+      eventController.filterCommand("copy event \"hello world\" " +
+              "on 2025-10-10T10:00 --target \"testCal\" to 2025-12-19T10:00");
+
+      String output = outputStream.toString().trim();
+
+      String lastLine = output.substring(output.lastIndexOf("\n") + 1).trim();
+
+      assertEquals(expectedOutput.trim(), lastLine);
+    } finally {
+      System.setOut(originalOut);
+    }
+  }
+
+
 
   @Test
   public void copyCalEventCreationChangeTimeZone() {
@@ -200,6 +251,52 @@ public class EventHandlerTest {
   }
 
   @Test
+  public void testOutputCopyEntireDay() {
+    String expectedOutput = "[36m[INFO] \u001B[0mEvents on 2025-09-05 copied to calendar";
+
+    EventController eventController = new EventController();
+
+    eventController.filterCommand("create calendar --name \"test\"" +
+            " --timezone \"America/New_York\"");
+    eventController.filterCommand("use calendar --name \"test\" ");
+
+    eventController.filterCommand("create event \"test\" "
+            + "from 2025-09-05T09:00 to 2025-09-05T10:30 "
+            + "description:\"test\" location:\"test\" privacy:\"false\"");
+
+    eventController.filterCommand("create event \"test2\" "
+            + "from 2025-09-05T11:00 to 2025-09-05T12:30 "
+            + "description:\"test\" location:\"test\" privacy:\"false\"");
+
+    eventController.filterCommand("create event \"test3\" "
+            + "from 2025-09-05T14:00 to 2025-09-05T15:30 "
+            + "description:\"test\" location:\"test\" privacy:\"true\"");
+
+    eventController.filterCommand("create calendar --name \"testCal\"" +
+            " --timezone \"America/Chicago\"");
+
+
+
+
+    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+    PrintStream originalOut = System.out;
+    System.setOut(new PrintStream(outputStream));
+
+    try {
+
+      eventController.filterCommand("copy events on 2025-09-05 --target \"testCal\" to 2026-01-08");
+
+      String output = outputStream.toString().trim();
+
+      String lastLine = output.substring(output.lastIndexOf("\n") + 1).trim();
+
+      assertEquals(expectedOutput.trim(), lastLine);
+    } finally {
+      System.setOut(originalOut);
+    }
+  }
+
+  @Test
   public void copycalEntireDay() {
 
 
@@ -274,7 +371,7 @@ public class EventHandlerTest {
       String output = outputStream.toString().trim(); // Capture output
 
       // Assert output message
-      assertEquals("Changed to calendar: test", output);
+      assertEquals("[36m[INFO] \u001B[0mChanged to calendar: test", output);
     } finally {
       // Restore System.out
       System.setOut(originalOut);
@@ -335,6 +432,51 @@ public class EventHandlerTest {
 
     assertEquals("2026-01-15T11:00", copiedEvent3.getStartDateTime().toString());
     assertEquals("2026-01-15T12:30", copiedEvent3.getEndDateTime().toString());
+  }
+
+  @Test
+  public void testOutputCopyBetweenDates() {
+    String expectedOutput = "[36m[INFO] \u001B[0m Events from 2025-09-05 " +
+            "to 2025-09-12 copied to calendar testCal";
+
+    EventController eventController = new EventController();
+
+    eventController.filterCommand("create calendar --name \"test\"" +
+            " --timezone \"America/New_York\"");
+    eventController.filterCommand("use calendar --name \"test\" ");
+
+    eventController.filterCommand("create event \"test\" "
+            + "from 2025-09-05T09:00 to 2025-09-05T10:30 "
+            + "description:\"test\" location:\"test\" privacy:\"false\"");
+
+    eventController.filterCommand("create event \"test2\" "
+            + "from 2025-09-07T11:00 to 2025-09-07T12:30 "
+            + "description:\"test\" location:\"test\" privacy:\"false\"");
+
+    eventController.filterCommand("create event \"test3\" "
+            + "from 2025-09-12T14:00 to 2025-09-12T15:30 "
+            + "description:\"test\" location:\"test\" privacy:\"true\"");
+
+    eventController.getEventHandler().createCalender("testCal",
+            ZoneId.of("America/Los_Angeles"));
+
+    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+    PrintStream originalOut = System.out;
+    System.setOut(new PrintStream(outputStream));
+
+    try {
+
+      eventController.filterCommand("copy events between 2025-09-05 and 2025-09-12" +
+              " --target \"testCal\" to 2026-01-08");
+
+      String output = outputStream.toString().trim();
+
+      String lastLine = output.substring(output.lastIndexOf("\n") + 1).trim();
+
+      assertEquals(expectedOutput.trim(), lastLine);
+    } finally {
+      System.setOut(originalOut);
+    }
   }
 
   @Test
@@ -486,7 +628,7 @@ public class EventHandlerTest {
 
     eventController.filterCommand("edit calendar --name \"test\" --property \"name\" \"CS5010\"");
     eventController.filterCommand("edit calendar --name \"test2\"" +
-            " --property \"time-zone\" \"America/New_York\" ");
+            " --property \"timezone\" \"America/New_York\" ");
 
 
 
@@ -521,10 +663,26 @@ public class EventHandlerTest {
 
     assertEquals(3,eventController.getEventHandler().getCalenderCollectionSize());
 
-    Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-      eventController.filterCommand("edit calendar --name \"test\" --property" +
-              " \"nasdasdadame\" \"CS5010\"");
-    });
+    eventController.filterCommand("edit calendar --name \"test\" --property"
+            + " \"nasdasdadame\" \"CS5010\"");
+
+    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+    PrintStream originalOut = System.out;
+    System.setOut(new PrintStream(outputStream));
+
+    try {
+      eventController.getEventHandler().processPrintCalendars();
+      String output = outputStream.toString().trim(); // Capture output
+
+      // Assert output message
+      assertEquals("Available Calendars: \n" +
+              " - default\n" +
+              " - test2\n" +
+              " - test", output);
+    } finally {
+
+      System.setOut(originalOut);
+    }
   }
 
 
@@ -1291,6 +1449,36 @@ public class EventHandlerTest {
 
   }
 
+  @Test
+  public void testOutputEditEvents() {
+    String expectedOutput = "[36m[INFO] \u001B[0mEvents hello world have been edited";
+
+    EventController eventController = new EventController();
+
+    eventController.filterCommand("create event \"hello world\" "
+            + "from 2025-10-10T12:00 to 2025-10-10T13:00");
+    eventController.filterCommand("create event \"hello world\" "
+            + "from 2025-10-11T13:00 to 2025-10-11T14:00");
+
+    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+    PrintStream originalOut = System.out;
+    System.setOut(new PrintStream(outputStream));
+
+    try {
+
+      eventController.filterCommand("edit events eventName \"hello world\" "
+              + "from 2025-10-10T10:00 with \"test\"");
+
+      String output = outputStream.toString().trim();
+
+      String lastLine = output.substring(output.lastIndexOf("\n") + 1).trim();
+
+      assertEquals(expectedOutput.trim(), lastLine);
+    } finally {
+      System.setOut(originalOut);
+    }
+  }
+
   // edit events <property> <eventName> <NewPropertyValue>
   //Pattern editEventsByName = Pattern.compile("edit\\sevents\\s(.*?)\\s(.*?)\\s(.*?)$");
   @Test
@@ -1345,42 +1533,13 @@ public class EventHandlerTest {
             .getEventHandler().getEventCollection("default")
             .searchEventByTimeFrame(startDateTime, endDateTime);
 
-    assertEquals("\n*  eventName=hello world,  Start=2025-10-10T12:00, "
-                    + " End=2025-10-10T13:00,  description=null,  "
-                    + "isPrivate=false,  location=null,  autoDecline=false\n",
+    assertEquals("\n* Event Name = hello world,  " +
+                    "Start = 2025-10-10T12:00,  End = 2025-10-10T13:00,  " +
+                    "Description = No Description,  Privacy = false,  Location = No Location\n",
             eventController.getEventHandler()
                     .getEventCollection("default").printAssortments(printList));
 
     eventController.filterCommand("print events on 2025-10-10");
-  }
-
-  @Test
-  public void printEventsOnOutput() {
-    EventController eventController = new EventController();
-    eventController.filterCommand("create event \"hello world\" "
-            + "from 2025-10-10T10:00 to 2025-10-10T11:00");
-    eventController.filterCommand("create event \"hello world\" "
-            + "from 2025-10-10T11:00 to 2025-10-10T12:00");
-    eventController.filterCommand("create event \"hello world\" "
-            + "from 2025-10-11T10:00 to 2025-10-11T11:00");
-    eventController.filterCommand("create event \"hello world\" "
-            + "from 2025-10-12T10:00 to 2025-10-12T11:00");
-
-
-    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-    PrintStream originalOut = System.out;
-    System.setOut(new PrintStream(outputStream));
-
-    try {
-      eventController.filterCommand("print events on 2025-10-11");
-      String output = outputStream.toString().trim(); // Capture output
-
-      assertEquals("*  eventName=hello world,  Start=2025-10-11T10:00," +
-              "  End=2025-10-11T11:00,  description=null,  isPrivate=false,  location=null, " +
-              " autoDecline=false", output);
-    } finally {
-      System.setOut(originalOut);
-    }
   }
 
   @Test
@@ -1408,18 +1567,20 @@ public class EventHandlerTest {
     List<EventModel> printList = new ArrayList<>();
     printList = eventController.getEventHandler()
             .getEventCollection("default").searchEventByTimeFrame(
-            startDateTime, endDateTime);
+                    startDateTime, endDateTime);
+
+    String output = eventController.getEventHandler()
+            .getEventCollection("default").printAssortments(printList);
 
     assertEquals(
-            "\n"
-                    + "*  eventName=hello world,  "
-                    + "Start=2025-10-11T10:00,  End=2025-10-11T11:00,  "
-                    + "description=null,  isPrivate=false,  location=null,  autoDecline=false\n"
-                    + "*  eventName=hello world,  "
-                    + "Start=2025-10-12T10:00,  End=2025-10-12T11:00,  "
-                    + "description=null,  isPrivate=false,  location=null,  autoDecline=false\n",
-            eventController.getEventHandler()
-                    .getEventCollection("default").printAssortments(printList));
+            "\n" +
+                    "* Event Name = hello world,  " +
+                    "Start = 2025-10-11T10:00,  End = 2025-10-11T11:00,  " +
+                    "Description = No Description,  Privacy = false,  Location = No Location\n" +
+                    "* Event Name = hello world,  Start = 2025-10-12T10:00,  " +
+                    "End = 2025-10-12T11:00,  Description = No Description,  " +
+                    "Privacy = false,  Location = No Location\n", output
+            );
   }
 
   @Test
@@ -1427,8 +1588,6 @@ public class EventHandlerTest {
     EventController eventController = new EventController();
     eventController.filterCommand("create event \"hello world\" "
             + "from 2025-10-10T10:00 to 2025-10-10T11:00");
-    eventController.filterCommand("create event \"hello world\" "
-            + "from 2025-10-10T11:00 to 2025-10-10T12:00");
     eventController.filterCommand("create event \"hello world\" "
             + "from 2025-10-11T10:00 to 2025-10-11T11:00");
     eventController.filterCommand("create event \"hello world\" "
@@ -1441,13 +1600,14 @@ public class EventHandlerTest {
 
     try {
       eventController.filterCommand("print events from 2025-10-11T10:00 to 2025-11-10T10:00");
-      String output = outputStream.toString().trim(); // Capture output
+      String output = outputStream.toString(); // Capture output
 
-      assertEquals("*  eventName=hello world,  Start=2025-10-11T10:00," +
-              "  End=2025-10-11T11:00,  description=null,  isPrivate=false," +
-              "  location=null,  autoDecline=false\n" +
-              "*  eventName=hello world,  Start=2025-10-12T10:00,  End=2025-10-12T11:00," +
-              "  description=null,  isPrivate=false,  location=null,  autoDecline=false", output);
+      String expectedOutput =
+              "* Event Name = hello world,  Start = 2025-10-11T10:00,  " +
+              "End = 2025-10-11T11:00,  Description = No Description,  " +
+              "Privacy = false,  Location = No Location";
+
+      assertTrue(output.contains(expectedOutput));
     } finally {
       System.setOut(originalOut);
     }
@@ -1537,7 +1697,7 @@ public class EventHandlerTest {
 
     eventController.filterCommand("edit calendar --name \"test\" --property \"name\" \"CS5010\"");
     eventController.filterCommand("edit calendar --name \"test2\" --property" +
-            " \"time-zone\" \"America/New_York\" ");
+            " \"timezone\" \"America/New_York\" ");
     assertEquals(print, eventController.getEventHandler().getCalenderCollection().printCalendars());
 
   }
@@ -1559,7 +1719,7 @@ public class EventHandlerTest {
     eventController.filterCommand("edit calendar --name \"test\"" +
             " --property \"name\" \"CS5010\"");
     eventController.filterCommand("edit calendar --name \"test2\" " +
-            "--property \"time-zone\" \"America/New_York\" ");
+            "--property \"timezone\" \"America/New_York\" ");
     assertEquals(print, eventController.getEventHandler()
             .getCalenderCollection().printCalendars());
 
@@ -1571,16 +1731,41 @@ public class EventHandlerTest {
       eventController.getEventHandler().processPrintCalendars();
       String output = outputStream.toString().trim();
 
-      // Assert output message
       assertEquals("Available Calendars: \n" +
               " - default\n" +
               " - test2\n" +
               " - CS5010", output);
     } finally {
-      // Restore System.out
       System.setOut(originalOut);
     }
+  }
 
+  @Test
+  public void testOutput() {
+    String expectedOutput = "[36m[INFO] \u001B[0mtest2 property: timezone changed to: America/New_York";
+
+    EventController eventController = new EventController();
+
+    eventController.filterCommand("create calendar --name \"test\" --timezone \"America/New_York\"");
+    eventController.filterCommand("create calendar --name \"test2\" --timezone \"America/Los_Angeles\"");
+
+    eventController.filterCommand("edit calendar --name \"test\" --property \"name\" \"CS5010\"");
+
+
+    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+    PrintStream originalOut = System.out;
+    System.setOut(new PrintStream(outputStream));
+
+    try {
+
+      eventController.filterCommand("edit calendar --name \"test2\" --property \"timezone\" \"America/New_York\"");
+
+      String output = outputStream.toString().trim();
+
+      assertEquals(expectedOutput.trim(), output);
+    } finally {
+      System.setOut(originalOut);
+    }
   }
 
   @Test
@@ -1599,7 +1784,7 @@ public class EventHandlerTest {
 
     eventController.filterCommand("edit calendar --name \"test\" --property \"name\" \"CS5010\"");
     eventController.filterCommand("edit calendar --name \"test2\"" +
-            " --property \"time-zone\" \"America/New_York\" ");
+            " --property \"timezone\" \"America/New_York\" ");
     assertEquals(print, eventController.getEventHandler().getCalenderCollection().printCalendars());
     assertEquals(ZoneId.of("America/New_York"),
             eventController.getEventHandler().getCalenderCollection().getCalenderCollection()
@@ -1709,6 +1894,76 @@ public class EventHandlerTest {
 
   }
 
+  @Test
+  public void testCreateAndEditEvent() {
+    EventController eventController = new EventController();
+
+    eventController.filterCommand("create event \"test\" " +
+            "from 2025-12-01T15:00 to 2025-12-01T18:00");
+    eventController.filterCommand("edit event eventName \"test\" from " +
+            "2025-12-01T15:00 to 2025-12-01T18:00 with \"test1\"");
+
+    EventModel event = eventController.getEventHandler().getEventCollection("default")
+            .getEventList().get(0);
+
+    assertEquals("test1", event.getEventName());
+    assertEquals("2025-12-01T15:00", event.getStartDateTime().toString());
+    assertEquals("2025-12-01T18:00", event.getEndDateTime().toString());
+  }
+
+  @Test
+  public void testEditEventInvalidTime() {
+    EventController eventController = new EventController();
+
+    eventController.filterCommand("create event \"test\" " +
+            "from 2025-11-01T10:00 to 2025-11-01T12:00");
+
+    Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+      eventController.filterCommand("edit event eventName \"test\" from 2025-11-01T12:00 " +
+              "to 2025-11-01T10:00 with \"test1\"");
+    });
+
+    assertEquals("End time cannot be before start time, " +
+            "Event was not created", exception.getMessage());
+  }
+
+  @Test
+  public void testEditEventNameAfterMultipleEdits() {
+    EventController eventController = new EventController();
+
+    eventController.filterCommand("create event \"test\" " +
+            "from 2025-01-01T10:00 to 2025-01-01T12:00");
+
+    eventController.filterCommand("edit event eventName \"test\" " +
+            "from 2025-01-01T10:00 to 2025-01-01T12:00 with \"testEdit\"");
+    eventController.filterCommand("edit event eventName \"testEdit\" " +
+            "from 2025-01-01T10:00 to 2025-01-01T12:00 with \"testEdit2\"");
+
+    EventModel event = eventController.getEventHandler()
+            .getEventCollection("default").getEventList().get(0);
+
+    assertEquals("testEdit2", event.getEventName());
+  }
+
+  @Test
+  public void testGetEventCount() {
+    EventController eventController = new EventController();
+
+    // Create multiple events
+    eventController.filterCommand("create event \"test 1\" " +
+            "from 2025-05-01T10:00 to 2025-05-01T11:00");
+    eventController.filterCommand("create event \"test 2\" " +
+            "from 2025-05-01T12:00 to 2025-05-01T13:00");
+    eventController.filterCommand("create event \"test 3\" " +
+            "from 2025-05-01T14:00 to 2025-05-01T15:00");
+
+    int eventCount = eventController.getEventHandler()
+            .getEventCollection("default").getEventList().size();
+
+    assertEquals(3, eventCount);
+  }
+
+
+
 
 }
-

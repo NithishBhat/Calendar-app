@@ -68,7 +68,7 @@ public class EventViewTest {
 
     String output = testOut.toString();
     assertTrue(output.contains("Enter Command:"));
-    assertTrue(output.contains("Event \"hello world\" was created"));
+    assertTrue(output.contains("hello world was created"));
     assertTrue(output.contains("Goodbye!"));
   }
 
@@ -107,29 +107,29 @@ public class EventViewTest {
 
     String output = testOut.toString();
     assertTrue(output.contains("Enter Command:"));
-    assertTrue(output.contains("Event \"hello world\" was created"));
-    assertTrue(output.contains("Event \"test\" was created"));
-    assertTrue(output.contains("Event \"test2\" was created"));
-    assertTrue(output.contains("Event \"test3\" was created"));
+    assertTrue(output.contains("hello world was created"));
+    assertTrue(output.contains("test was created"));
+    assertTrue(output.contains("test2 was created"));
+    assertTrue(output.contains("test3 was created"));
     assertTrue(output.contains("Busy on 2025-10-10T10:30"));
-    assertTrue(output.contains("Event \"test4\" was created"));
+    assertTrue(output.contains("test4 was created"));
 
-    assertTrue(output.contains("eventName=test"));
-    assertTrue(output.contains("Start=2025-10-13T00:00"));
-    assertTrue(output.contains("description=test"));
+    assertTrue(output.contains("Event Name = test"));
+    assertTrue(output.contains("Start = 2025-10-13T00:00"));
+    assertTrue(output.contains("Description = test"));
 
-    assertTrue(output.contains("eventName=test"));
-    assertTrue(output.contains("Start=2025-10-14T00:00"));
-    assertTrue(output.contains("description=test"));
+    assertTrue(output.contains("Event Name = test"));
+    assertTrue(output.contains("Start = 2025-10-14T00:00"));
+    assertTrue(output.contains("Description = test"));
 
-    assertTrue(output.contains("eventName=test"));
-    assertTrue(output.contains("Start=2025-10-15T00:00"));
-    assertTrue(output.contains("description=test"));
+    assertTrue(output.contains("Event Name = test"));
+    assertTrue(output.contains("Start = 2025-10-15T00:00"));
+    assertTrue(output.contains("Description = test"));
 
-    assertTrue(output.contains("Event \"test5\" was not created due to conflict"));
+    assertTrue(output.contains("\"test5\" was not created due to conflict"));
     assertTrue(output.contains("Conflict detected, your " +
             "recurring event \"test7\" was not created"));
-    assertTrue(output.contains("Event \"test9\" was not created due to conflict"));
+    assertTrue(output.contains("\"test9\" was not created due to conflict"));
     assertTrue(output.contains("CSV generated"));
 
     assertTrue(output.contains("Goodbye!"));
@@ -150,7 +150,7 @@ public class EventViewTest {
     eventView.runInteractiveMode();
 
     String output = testOut.toString();
-    assertTrue(output.contains("Event \"Leap Day\" was created"));
+    assertTrue(output.contains("Leap Day was created"));
   }
 
 
@@ -180,7 +180,7 @@ public class EventViewTest {
     eventView.runInteractiveMode();
 
     String output = testOut.toString();
-    assertTrue(output.contains("Event \"Past Event\" was created"));
+    assertTrue(output.contains("Past Event was created"));
   }
 
   @Test
@@ -246,9 +246,9 @@ public class EventViewTest {
     System.setOut(originalSystemOut);
     System.out.println("Captured Output: " + output);
 
-    assertTrue(output.contains("Event \"test\" was created"));
+    assertTrue(output.contains("test was created"));
 
-    int eventCount = output.split("\\*  eventName=test").length - 1;
+    int eventCount = output.split("\\* Event Name = test").length - 1;
     assertEquals(12, eventCount);
 
   }
@@ -283,8 +283,8 @@ public class EventViewTest {
     eventView.runInteractiveMode();
 
     String output = testOut.toString();
-    assertTrue(output.contains("Event \"test1\" was created"));
-    assertTrue(output.contains("Event \"test2\" was not created"));
+    assertTrue(output.contains("test1 was created"));
+    assertTrue(output.contains("\"test2\" was not created"));
     assertTrue(output.contains("Conflict detected, your recurring event" +
             " \"test3\" was not created"));
   }
@@ -368,6 +368,19 @@ public class EventViewTest {
 
     String output = out.toString();
     assertTrue(output.contains("Usage: java EventView --mode [interactive|headless filename]"));
+  }
+
+  @Test
+  public void testMainInvalidArgsLength() {
+    String[] args = {"--mode"};
+
+    ByteArrayOutputStream out = new ByteArrayOutputStream();
+    System.setOut(new PrintStream(out));
+
+    EventView.main(args);
+
+    String output = out.toString();
+    assertEquals("Usage: java EventView --mode [interactive|headless filename]\r\n", output);
   }
 }
 

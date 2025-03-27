@@ -4,7 +4,9 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -18,6 +20,13 @@ public class EventController {
 
   private CommandParser parser;
   private EventHandler eventHandler;
+
+  private static final String ANSI_RESET = "\u001B[0m";
+  private static final String ANSI_RED = "\u001B[31m";
+  private static final String ANSI_YELLOW = "\u001B[33m";
+
+  private static final String infoString = ANSI_YELLOW + "[INFO] " + ANSI_RESET;
+  private static final String warningString = ANSI_RED + "[WARNING] " + ANSI_RESET;
 
 
   /**
@@ -86,34 +95,15 @@ public class EventController {
 
   /**
    * Reads and processes commands from a file in a headless mode.
-   * The method ensures the file exists, reads commands line by line,
+   * The method takes a list of command strings,
    * and processes them until an "exit" command is encountered.
    *
-   * @param filename The name of the file containing commands.
+   * @param inputCommands The list of commands from the input source.
    */
-  public void headlessMode(String filename) {
-    File file = new File(filename);  // Force correct path
-
-    // Ensure the file exists
-    if (!file.exists()) {
-      try {
-        if (file.createNewFile()) {
-          System.out.println("File " + filename
-                  + " did not exist. A new file has been created at: \n"
-                  + file.getAbsolutePath()
-                  + "\nPlease input commands to this file.");
-          return;
-        }
-      } catch (IOException e) {
-        System.out.println("Error creating file: " + file.getAbsolutePath());
-        return;
-      }
-    }
-
-    // Use 'file' to explicitly read from 'src/res/'
-    try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
-      String command;
-      while ((command = reader.readLine()) != null) {
+  public void headlessMode(InputCommand inputCommands) {
+    try {
+      List<String> commands = inputCommands.getListOfCommands();
+      for (String command : commands) {
         if (command.isEmpty()) {
           continue;
         }
@@ -128,9 +118,9 @@ public class EventController {
           return;
         }
       }
-      System.out.println("Error: please type 'exit' as last command");
+      System.out.println(warningString + "Error: please type 'exit' as the last command");
     } catch (IOException e) {
-      System.out.println("Unable to open file: " + file.getAbsolutePath());
+      System.out.println(warningString + "Error reading commands: " + e.getMessage());
     }
   }
 }

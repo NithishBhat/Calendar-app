@@ -637,6 +637,34 @@ Here is a list of changes we made to previous code:
     ```
     Added these 6 commands to the commandMap hashmap, so that after a command is parsed the correct
     method in the eventHandler is called.
+  - Abstracted input sources for headless mode so that the CLI can be run using different input sources. With this, a new interface and class were introduced to
+    handle different input sources.
+    This was necessary for future implementations and additions to the Calendar CLI.
+    ```bash
+    public void headlessMode(InputCommand inputCommands) {
+      try {
+        List<String> commands = inputCommands.getListOfCommands();
+        for (String command : commands) {
+          if (command.isEmpty()) {
+            continue;
+          }
+          if (command.equals("exit")) {
+            System.out.println("Bye");
+            return;
+          }
+          try {
+            filterCommand(command);
+          } catch (Exception e) {
+            System.out.println("Error processing command: " + e.getMessage());
+            return;
+          }
+        }
+        System.out.println("Error: please type 'exit' as the last command");
+      } catch (IOException e) {
+        System.out.println("Error reading commands: " + e.getMessage());
+      }
+    }
+    ```
 
 - Event Handler:
   - Update with new calendar commands.
