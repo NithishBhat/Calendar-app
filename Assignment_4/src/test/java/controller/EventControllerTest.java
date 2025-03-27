@@ -88,7 +88,8 @@ public class EventControllerTest {
     eventController.headlessMode(new InputSource(testFilename));
 
     String output = testOut.toString();
-    assertTrue(output.contains("\u001B[31m[WARNING] \u001B[0mError: please type 'exit' as the last command"));
+    assertTrue(output.contains("\u001B[31m[WARNING] \u001B[0mError: please type 'exit' " +
+            "as the last command"));
   }
 
   @Test

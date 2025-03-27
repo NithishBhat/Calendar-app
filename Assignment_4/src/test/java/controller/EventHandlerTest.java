@@ -142,7 +142,6 @@ public class EventHandlerTest {
   }
 
 
-
   @Test
   public void copyCalEventCreationChangeTimeZone() {
 
@@ -274,8 +273,6 @@ public class EventHandlerTest {
 
     eventController.filterCommand("create calendar --name \"testCal\"" +
             " --timezone \"America/Chicago\"");
-
-
 
 
     ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -631,7 +628,6 @@ public class EventHandlerTest {
             " --property \"timezone\" \"America/New_York\" ");
 
 
-
     ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
     PrintStream originalOut = System.out;
     System.setOut(new PrintStream(outputStream));
@@ -661,7 +657,7 @@ public class EventHandlerTest {
     eventController.filterCommand("create calendar --name \"test2\" " +
             "--timezone \"America/Los_Angeles\"");
 
-    assertEquals(3,eventController.getEventHandler().getCalenderCollectionSize());
+    assertEquals(3, eventController.getEventHandler().getCalenderCollectionSize());
 
     eventController.filterCommand("edit calendar --name \"test\" --property"
             + " \"nasdasdadame\" \"CS5010\"");
@@ -1580,7 +1576,7 @@ public class EventHandlerTest {
                     "* Event Name = hello world,  Start = 2025-10-12T10:00,  " +
                     "End = 2025-10-12T11:00,  Description = No Description,  " +
                     "Privacy = false,  Location = No Location\n", output
-            );
+    );
   }
 
   @Test
@@ -1604,8 +1600,8 @@ public class EventHandlerTest {
 
       String expectedOutput =
               "* Event Name = hello world,  Start = 2025-10-11T10:00,  " +
-              "End = 2025-10-11T11:00,  Description = No Description,  " +
-              "Privacy = false,  Location = No Location";
+                      "End = 2025-10-11T11:00,  Description = No Description,  " +
+                      "Privacy = false,  Location = No Location";
 
       assertTrue(output.contains(expectedOutput));
     } finally {
@@ -1742,14 +1738,18 @@ public class EventHandlerTest {
 
   @Test
   public void testOutput() {
-    String expectedOutput = "[36m[INFO] \u001B[0mtest2 property: timezone changed to: America/New_York";
+    String expectedOutput = "[36m[INFO] \u001B[0mtest2 property: timezone changed to: " +
+            "America/New_York";
 
     EventController eventController = new EventController();
 
-    eventController.filterCommand("create calendar --name \"test\" --timezone \"America/New_York\"");
-    eventController.filterCommand("create calendar --name \"test2\" --timezone \"America/Los_Angeles\"");
+    eventController.filterCommand("create calendar --name \"test\" " +
+            "--timezone \"America/New_York\"");
+    eventController.filterCommand("create calendar --name \"test2\" " +
+            "--timezone \"America/Los_Angeles\"");
 
-    eventController.filterCommand("edit calendar --name \"test\" --property \"name\" \"CS5010\"");
+    eventController.filterCommand("edit calendar --name \"test\" " +
+            "--property \"name\" \"CS5010\"");
 
 
     ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -1758,7 +1758,8 @@ public class EventHandlerTest {
 
     try {
 
-      eventController.filterCommand("edit calendar --name \"test2\" --property \"timezone\" \"America/New_York\"");
+      eventController.filterCommand("edit calendar --name \"test2\" " +
+              "--property \"timezone\" \"America/New_York\"");
 
       String output = outputStream.toString().trim();
 
@@ -1962,8 +1963,6 @@ public class EventHandlerTest {
 
     assertEquals(3, eventCount);
   }
-
-
 
 
 }

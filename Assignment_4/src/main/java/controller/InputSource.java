@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * Reads commands from a specific file, if file is not present it creates a new file.
  */
-public class InputSource implements InputCommand{
+public class InputSource implements InputCommand {
   private final String filename;
 
   private static final String ANSI_RESET = "\u001B[0m";

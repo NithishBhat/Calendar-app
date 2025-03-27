@@ -12,8 +12,12 @@ import java.io.StringReader;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
+/**
+ * Test class for InputSource Methods.
+ */
 public class InputSourceTest {
 
   @Test
@@ -33,7 +37,7 @@ public class InputSourceTest {
   }
 
   @Test
-  public void testInputSourceStringReader(){
+  public void testInputSourceStringReader() {
     String stringAsFile = "command1\ncommand2\ncommand3\n";
     BufferedReader reader = new BufferedReader(new StringReader(stringAsFile));
 
