@@ -44,6 +44,15 @@ public class EventHandlerTest {
   }
 
   @Test
+  public void eventCreationThursdayCheck() {
+    EventController eventController = new EventController();
+    eventController.filterCommand("create event \"office-hours-cs5010\" from 2024-03-11T10:00 to 2024-03-11T12:00 repeats MWR until 2024-03-21T13:00");
+
+    assertEquals(6, eventController.getEventHandler()
+            .getEventCollection("default").getEventList().size());
+  }
+
+  @Test
   public void copyCalEventCreation() {
 
     EventController eventController = new EventController();
