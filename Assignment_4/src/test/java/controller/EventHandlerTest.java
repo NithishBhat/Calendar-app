@@ -1447,7 +1447,7 @@ public class EventHandlerTest {
 
   @Test
   public void testOutputEditEvents() {
-    String expectedOutput = "[36m[INFO] \u001B[0mEvents hello world have been edited";
+    String expectedOutput = "";
 
     EventController eventController = new EventController();
 

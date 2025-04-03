@@ -28,16 +28,12 @@ public class InputSource implements InputCommand {
     File file = new File(filename);
 
     if (!file.exists()) {
-      try {
-        if (file.createNewFile()) {
-          System.out.println(infoString + "File " + filename
-                  + " did not exist. A new file has been created at: \n"
-                  + file.getAbsolutePath()
-                  + "\n Please input commands to this file.");
-          return Collections.emptyList();
-        }
-      } catch (IOException e) {
-        System.out.println(warningString + "Error creating file: " + file.getAbsolutePath());
+      if (file.createNewFile()) {
+        System.out.println(infoString + "File " + filename
+                + " did not exist. A new file has been created at: \n"
+                + file.getAbsolutePath()
+                + "\n Please input commands to this file.");
+        return Collections.emptyList();
       }
     }
     return Files.readAllLines(file.toPath());

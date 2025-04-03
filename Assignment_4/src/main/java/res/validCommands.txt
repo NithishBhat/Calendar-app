@@ -9,8 +9,8 @@ copy events on 2025-10-10 --target "testCalendar2" to 2025-11-16
 copy events between 2025-10-10 and 2025-10-31 --target "testCalendar2" to 2025-10-10
 edit event location "test1" from 2025-10-10T10:00 to 2025-10-10T11:00 with "MA"
 print events from 2025-10-01T00:00 to 2025-10-31T23:59
-edit events description "test2" from 2025-10-12T10:00 with "test Description"
-edit event location "test1" from 2025-10-10T10:00 to 2025-10-10T11:00 with "MA"
+edit events description "recurringEventN" from 2025-10-12T10:00 with "test Description 23"
+edit event location "singleEvent" from 2025-10-10T10:00 to 2025-10-10T11:00 with "PARIS"
 create event "recurringEventsUntil" from 2025-10-15T09:00 to 2025-10-15T09:01 repeats MTW until 2025-12-10T10:00 description:"test" location:"MA" privacy:"true"
 print events from 2025-10-01T00:00 to 2025-10-31T23:59
 create event "AllDayEvent" on 2025-10-06T00:00 description:"test Description" location:"MA" privacy:"false"

@@ -27,7 +27,9 @@ public class EventView {
   public void runInteractiveMode() {
     Scanner scanner = new Scanner(System.in);
     while (true) {
-      System.out.print("Enter Command: ");
+      System.out.print("Enter Comma" +
+              "" +
+              "nd: ");
       String command = scanner.nextLine();
       if (command.equals("exit")) {
         System.out.println("Goodbye!");

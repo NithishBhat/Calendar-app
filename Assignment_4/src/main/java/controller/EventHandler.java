@@ -476,8 +476,8 @@ public class EventHandler {
       throw new IllegalArgumentException("End time cannot be before" +
               " start time, Event was not created");
     }
+
     editEvents(property, newProperty, eventName, startDateTime, endDateTime);
-    System.out.println(successString + "Event " + eventName + " has been edited");
   }
 
   /**
@@ -495,7 +495,6 @@ public class EventHandler {
 
     LocalDateTime startDateTime = LocalDateTime.parse(startDate);
     editEvents(property, newProperty, eventName, startDateTime, null);
-    System.out.println(successString + "Events " + eventName + " have been edited");
   }
 
   /**
@@ -510,7 +509,6 @@ public class EventHandler {
     String newProperty = matcher.group(3);
 
     editEvents(property, newProperty, eventName, null, null);
-    System.out.println(successString + "Events " + eventName + " have been edited");
   }
 
   /**
@@ -589,11 +587,8 @@ public class EventHandler {
     }
 
     List<EventModel> eventList = eventCollection.getEventList();
-    try {
-      ExportToCSV.generateCSV(fileName, eventList);
-    } catch (Exception e) {
-      System.out.println(warningString + "Could not complete Export: " + e.getMessage());
-    }
+
+    ExportToCSV.generateCSV(fileName, eventList);
   }
 
   /**
