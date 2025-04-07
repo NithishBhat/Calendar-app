@@ -154,18 +154,6 @@ public class EventCollectionModel {
     return false;
   }
 
-  /**
-   * Adds a recurring event to the collection by generating
-   * all occurrences and checking for conflicts.
-   *
-   * @param event The recurring event to be added.
-   */
-  public void addRecurringEvent(RecurringEventModel event) {
-    List<EventModel> recurringEvents = generateOccurrences(event);
-    for (EventModel e : recurringEvents) {
-      addEvent(e);
-    }
-  }
 
   /**
    * Generates occurrences for a recurring event based on the recurrence pattern and stops once
@@ -225,61 +213,5 @@ public class EventCollectionModel {
     return checkConflict(startDateTime, startDateTime) ? "Busy" : "Available";
   }
 
-  /**
-   * Checks for event time conflicts and handles the event creation based on the conflict status.
-   * If a conflict is detected, the event will not be created, and a message will be printed.
-   * If autoDecline is true, the event will be automatically declined upon conflict.
-   *
-   * @param event the event to check for collisions with existing events.
-   * @param autoDecline a flag indicating whether to automatically decline the event on conflict.
-   * @return true if the event was not created due to a conflict, false otherwise.
-   */
-  public boolean checkForCollision(EventModel event, boolean autoDecline) {
-    boolean hasConflict = checkConflict(event.getStartDateTime(), event.getEndDateTime());
-    autoDecline = true; // Ensures autoDecline is always true
-    if (autoDecline && hasConflict) {
-      System.out.println(warningString + "Event \""
-              + event.getEventName() + "\" was not created due to conflict");
-      return true;
-    }
-    addEvent(event);
-    System.out.println(successString + event.getEventName() + " was created");
-    return false;
-  }
-
-
-
-  /**
-   * Checks for collision with existing events for recurring events and adds if allowed.
-   *
-   * @param recurringEvent The recurring event to check and potentially add
-   * @param autoDecline    Whether to automatically decline events with conflicts
-   * @return true if event was added, false if there was a conflict and autoDecline is true
-   */
-  public boolean checkForCollisionRecurringEvent(RecurringEventModel recurringEvent,
-                                                 boolean autoDecline) {
-    autoDecline = true;
-    if (!autoDecline) {
-      addRecurringEvent(recurringEvent);
-      System.out.println("Event " + recurringEvent.getEventName() + " was created");
-      return false;
-    }
-
-    List<EventModel> recurringEventsList = generateOccurrences(recurringEvent);
-
-    for (EventModel event : recurringEventsList) {
-      if (checkConflict(event.getStartDateTime(), event.getEndDateTime())) {
-        System.out.println(warningString + " Conflict detected, " +
-                "your recurring event \""
-                + recurringEvent.getEventName() + "\" was not created");
-        return true;
-      }
-    }
-
-    addRecurringEvent(recurringEvent);
-    System.out.println(successString + recurringEvent.getEventName()
-             + " was created");
-    return false;
-  }
 
 }

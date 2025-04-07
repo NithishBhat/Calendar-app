@@ -6,6 +6,7 @@ import model.CalenderCollection;
 import model.EventCollectionModel;
 import model.EventModel;
 import model.RecurringEventModel;
+import view.CalendarUIListener;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,11 +26,15 @@ public class EventHandler {
 
   private EventCollectionModel eventCollection;
   private CalenderCollection calenderCollection;
+  private List<CalendarUIListener> uiListeners = new ArrayList<>();
 
   private static final String ANSI_RESET = "\u001B[0m";
   private static final String ANSI_RED = "\u001B[31m";
   private static final String ANSI_YELLOW = "\u001B[33m";
   private static final String ANSI_CYAN = "\u001B[36m";
+  private static final String ANSI_GREEN = "\u001B[32m";
+  private static final String errorString = ANSI_RED + "[ERROR] " + ANSI_RESET;
+  private static final String doneString = ANSI_GREEN + "[SUCCESS] " + ANSI_RESET;
 
   private static final String infoString = ANSI_YELLOW + "[INFO] " + ANSI_RESET;
   private static final String warningString = ANSI_RED + "[WARNING] " + ANSI_RESET;
@@ -45,12 +50,72 @@ public class EventHandler {
   }
 
   /**
+   * Adds a UI listener to receive notifications about model changes.
+   *
+   * @param listener The UI listener to add
+   */
+  public void addUIListener(CalendarUIListener listener) {
+    uiListeners.add(listener);
+  }
+
+  /**
+   * Removes a UI listener.
+   *
+   * @param listener The UI listener to remove
+   */
+  public void removeUIListener(CalendarUIListener listener) {
+    uiListeners.remove(listener);
+  }
+
+  /**
+   * Notifies all registered UI listeners that the current calendar has changed.
+   *
+   * @param calendarName The name of the current calendar
+   */
+  private void notifyCalendarChanged(String calendarName) {
+    for (CalendarUIListener listener : uiListeners) {
+      listener.onCalendarChanged(calendarName);
+    }
+  }
+
+  /**
+   * Notifies all registered UI listeners that the events have changed.
+   */
+  private void notifyEventsChanged() {
+    for (CalendarUIListener listener : uiListeners) {
+      listener.onEventsChanged(calenderCollection);
+    }
+  }
+
+  /**
+   * Notifies all registered UI listeners that the calendar list has changed.
+   */
+  private void notifyCalendarListChanged() {
+    for (CalendarUIListener listener : uiListeners) {
+      listener.onCalendarListChanged();
+    }
+  }
+
+  /**
+   * Notifies all registered UI listeners with a user-friendly message.
+   *
+   * @param message The message to display to the user
+   */
+  private void notifyUserMessage(String message) {
+    for (CalendarUIListener listener : uiListeners) {
+      listener.onCommandOutput(message);
+    }
+  }
+
+  /**
    * Sets the event collection for a specific calendar.
    *
    * @param calenderName the name of the calendar to use.
    */
   public void useCalender(String calenderName) {
     eventCollection = calenderCollection.getEventCollection(calenderName);
+    notifyCalendarChanged(calenderName);
+    notifyEventsChanged();
   }
 
   /**
@@ -72,6 +137,7 @@ public class EventHandler {
       calenderCollection.copyCalendarEventOn(sourceCalendar, eventName,
               eventDateTime, tarCalName, tarCalDateTime);
       System.out.println(successString + eventName + " copied to calendar");
+      notifyEventsChanged();
     } catch (Exception e) {
       System.out.println(warningString + "Error copying events: " + e.getMessage());
     }
@@ -96,6 +162,7 @@ public class EventHandler {
 
       System.out.println(successString + " Events from " + fromDate + " to "
               + toDate + " copied to calendar " + targetCalendarName);
+      notifyEventsChanged();
     } catch (Exception e) {
       System.out.println(warningString + "Error copying events: " + e.getMessage());
     }
@@ -117,10 +184,10 @@ public class EventHandler {
       calenderCollection.copyCalenderEntireDay(eventDateTime, sourceCalendar,
               targetDateTime, targetCalendar);
       System.out.println(successString + "Events on " + eventDateTime + " copied to calendar");
+      notifyEventsChanged();
     } catch (Exception e) {
       System.out.println(warningString + "Error copying events: " + e.getMessage());
     }
-
   }
 
   /**
@@ -143,6 +210,7 @@ public class EventHandler {
       calenderCollection.copyEventsWithSameNameBetweenDates(eventName, fromDate, toDate,
               sourceCalendarName, targetStartDate, targetCalendarName);
       System.out.println(successString + "Events " + eventName + " copied to calendar");
+      notifyEventsChanged();
     } catch (Exception e) {
       System.out.println(warningString + "Error copying events: " + e.getMessage());
     }
@@ -163,11 +231,14 @@ public class EventHandler {
       switch (property) {
         case "name":
           calenderCollection.changeCalenderName(calName, propertyValue);
+          notifyCalendarChanged(propertyValue);
+          notifyCalendarListChanged();
           break;
 
         case "timezone":
           ZoneId newZone = ZoneId.of(propertyValue);
           calenderCollection.changeCalendarTimeZone(calName, newZone);
+          notifyCalendarChanged(calName);
           break;
 
         default:
@@ -178,7 +249,6 @@ public class EventHandler {
     } catch (Exception e) {
       System.out.println(warningString + "Error editing events: " + e.getMessage());
     }
-
   }
 
   /**
@@ -194,7 +264,6 @@ public class EventHandler {
     } catch (Exception e) {
       System.out.println(warningString + "Error changing events: " + e.getMessage());
     }
-
   }
 
   /**
@@ -218,7 +287,6 @@ public class EventHandler {
     return calenderCollection.getCalenderCollectionSize();
   }
 
-
   /**
    * Creates a new calendar with the specified name and time zone.
    *
@@ -227,6 +295,7 @@ public class EventHandler {
    */
   void createCalender(String calenderName, ZoneId timezone) {
     calenderCollection.addCalender(calenderName, timezone);
+    notifyCalendarListChanged();
   }
 
   /**
@@ -276,10 +345,9 @@ public class EventHandler {
 
     EventModel event = new EventModel(eventName, startDate, endDate, description,
             privacy, autoDecline, location);
-    eventCollection.checkForCollision(event, autoDecline);
+    addEvent(event);
+    notifyEventsChanged();
   }
-
-
 
   /**
    * Processes the creation of a recurring event for a specified number of times.
@@ -289,7 +357,6 @@ public class EventHandler {
    * @param matcher The regex matcher containing event details.
    */
   void processCreateRecurringEventN(Matcher matcher) {
-
     String autoDeclineString = matcher.group(1);
     Boolean autoDecline = autoDeclineString != null;
     String eventName = matcher.group(2);
@@ -316,7 +383,8 @@ public class EventHandler {
             recurringWeekDay, numOfTimes,
             null);
 
-    eventCollection.checkForCollisionRecurringEvent(recurringEvent, autoDecline);
+    addRecurringEvent(recurringEvent);
+    notifyEventsChanged();
   }
 
   /**
@@ -329,7 +397,6 @@ public class EventHandler {
    * @param matcher The regex matcher containing event details.
    */
   void processCreateRecurringEventEndDate(Matcher matcher) {
-
     String autoDeclineString = matcher.group(1);
     Boolean autoDecline = autoDeclineString != null;
     String eventName = matcher.group(2);
@@ -346,7 +413,6 @@ public class EventHandler {
     LocalDateTime startDate = LocalDateTime.parse(startDateTime);
     LocalDateTime endDate = LocalDateTime.parse(endDateTime);
 
-
     if (isEndBeforeStart(startDate, endDate)) {
       throw new IllegalArgumentException("End time cannot be before " +
               "start time, Event was not created");
@@ -360,7 +426,8 @@ public class EventHandler {
             recurringWeekDay, null,
             recurrernceEndDateTime);
 
-    eventCollection.checkForCollisionRecurringEvent(recurringEvent, autoDecline);
+    addRecurringEvent(recurringEvent);
+    notifyEventsChanged();
   }
 
   /**
@@ -384,7 +451,8 @@ public class EventHandler {
     LocalDateTime startDate = LocalDateTime.parse(startDateTime);
     EventModel event = new EventModel(eventName, startDate, null, description
             , privacy, autoDecline, location);
-    eventCollection.checkForCollision(event, autoDecline);
+    addEvent(event);
+    notifyEventsChanged();
   }
 
   /**
@@ -396,7 +464,6 @@ public class EventHandler {
    * @param matcher The regex matcher containing event details.
    */
   void processCreateAllDayRecurring(Matcher matcher) {
-
     String autoDeclineString = matcher.group(1);
     Boolean autoDecline = autoDeclineString != null;
     String eventName = matcher.group(2);
@@ -412,13 +479,13 @@ public class EventHandler {
     LocalDateTime startDate = LocalDate.parse(startDateTime).atStartOfDay();
     List<Character> recurringWeekDay = stringToDayOfWeek(weekDay);
 
-
     RecurringEventModel recurringEvent = new RecurringEventModel(eventName, startDate,
             null, description,
             privacy, autoDecline, location,
             recurringWeekDay, numOfTimes,
             null);
-    eventCollection.checkForCollisionRecurringEvent(recurringEvent, autoDecline);
+    addRecurringEvent(recurringEvent);
+    notifyEventsChanged();
   }
 
   /**
@@ -429,7 +496,6 @@ public class EventHandler {
    * @param matcher The regex matcher containing event details.
    */
   void processCreateRecurringWholeDayEventEnd(Matcher matcher) {
-
     String autoDeclineString = matcher.group(1);
     Boolean autoDecline = autoDeclineString != null;
     String eventName = matcher.group(2);
@@ -446,13 +512,13 @@ public class EventHandler {
     LocalDateTime startDateTime = LocalDate.parse(startDate).atStartOfDay();
     LocalDateTime recurrernceEndDateTime = LocalDate.parse(recurrernceEndDate).atStartOfDay();
 
-
     RecurringEventModel recurringEvent = new RecurringEventModel(eventName, startDateTime,
             null, description,
             privacy, autoDecline, location,
             recurringWeekDay, null,
             recurrernceEndDateTime);
-    eventCollection.checkForCollisionRecurringEvent(recurringEvent, autoDecline);
+    addRecurringEvent(recurringEvent);
+    notifyEventsChanged();
   }
 
   /**
@@ -470,14 +536,46 @@ public class EventHandler {
     String endDate = matcher.group(4);
     String newProperty = matcher.group(5);
 
-    LocalDateTime startDateTime = LocalDateTime.parse(startDate);
-    LocalDateTime endDateTime = LocalDateTime.parse(endDate);
-    if (isEndBeforeStart(startDateTime, endDateTime)) {
-      throw new IllegalArgumentException("End time cannot be before" +
-              " start time, Event was not created");
-    }
+    try {
+      LocalDateTime startDateTime = LocalDateTime.parse(startDate);
+      LocalDateTime endDateTime = LocalDateTime.parse(endDate);
+      if (isEndBeforeStart(startDateTime, endDateTime)) {
+        String errorMsg = "End time cannot be before start time, event was not edited";
+        System.out.println(warningString + errorMsg);
+        notifyUserMessage(errorMsg);
+        return;
+      }
 
-    editEvents(property, newProperty, eventName, startDateTime, endDateTime);
+      // Count affected events
+      int count = countEventsForEdit(property, eventName, startDateTime, endDateTime);
+
+      if (count == 0) {
+        String errorMsg = "No events named \"" + eventName + "\" found between "
+                + startDate + " and " + endDate;
+        System.out.println(warningString + errorMsg);
+        notifyUserMessage(errorMsg);
+        return;
+      }
+
+      editEvents(property, newProperty, eventName, startDateTime, endDateTime);
+      notifyEventsChanged();
+
+      // Send user-friendly message
+      String message = "Successfully edited " + property + " to \"" + newProperty + "\" for ";
+      if (count == 1) {
+        message += "1 occurrence of event \"" + eventName + "\"";
+      } else {
+        message += count + " occurrences of event \"" + eventName + "\"";
+      }
+      message += " between " + startDate + " and " + endDate;
+
+      System.out.println(successString + message);
+      notifyUserMessage(message);
+    } catch (Exception e) {
+      String errorMsg = "Error editing event: " + e.getMessage();
+      System.out.println(warningString + errorMsg);
+      notifyUserMessage(errorMsg);
+    }
   }
 
   /**
@@ -493,10 +591,39 @@ public class EventHandler {
     String startDate = matcher.group(3);
     String newProperty = matcher.group(4);
 
-    LocalDateTime startDateTime = LocalDateTime.parse(startDate);
-    editEvents(property, newProperty, eventName, startDateTime, null);
-  }
+    try {
+      LocalDateTime startDateTime = LocalDateTime.parse(startDate);
 
+      // Count affected events
+      int count = countEventsForEdit(property, eventName, startDateTime, null);
+
+      if (count == 0) {
+        String errorMsg = "No events named \"" + eventName + "\" found from " + startDate + " onwards";
+        System.out.println(warningString + errorMsg);
+        notifyUserMessage(errorMsg);
+        return;
+      }
+
+      editEvents(property, newProperty, eventName, startDateTime, null);
+      notifyEventsChanged();
+
+      // Send user-friendly message
+      String message = "Successfully edited " + property + " to \"" + newProperty + "\" for ";
+      if (count == 1) {
+        message += "1 occurrence of event \"" + eventName + "\"";
+      } else {
+        message += count + " occurrences of event \"" + eventName + "\"";
+      }
+      message += " from " + startDate + " onwards";
+
+      System.out.println(successString + message);
+      notifyUserMessage(message);
+    } catch (Exception e) {
+      String errorMsg = "Error editing events: " + e.getMessage();
+      System.out.println(warningString + errorMsg);
+      notifyUserMessage(errorMsg);
+    }
+  }
   /**
    * Processes the editing of a property for all events with the specified name.
    * Format: edit events {@code <property>} {@code <eventName>} {@code <NewPropertyValue>}.
@@ -508,7 +635,35 @@ public class EventHandler {
     String eventName = matcher.group(2);
     String newProperty = matcher.group(3);
 
-    editEvents(property, newProperty, eventName, null, null);
+    try {
+      // Count affected events
+      int count = countEventsForEdit(property, eventName, null, null);
+
+      if (count == 0) {
+        String errorMsg = "No events named \"" + eventName + "\" found";
+        System.out.println(warningString + errorMsg);
+        notifyUserMessage(errorMsg);
+        return;
+      }
+
+      editEvents(property, newProperty, eventName, null, null);
+      notifyEventsChanged();
+
+      // Send user-friendly message
+      String message = "Successfully edited " + property + " to \"" + newProperty + "\" for ";
+      if (count == 1) {
+        message += "1 occurrence of event \"" + eventName + "\"";
+      } else {
+        message += count + " occurrences of event \"" + eventName + "\"";
+      }
+
+      System.out.println(successString + message);
+      notifyUserMessage(message);
+    } catch (Exception e) {
+      String errorMsg = "Error editing events: " + e.getMessage();
+      System.out.println(warningString + errorMsg);
+      notifyUserMessage(errorMsg);
+    }
   }
 
   /**
@@ -520,15 +675,39 @@ public class EventHandler {
    * @param matcher The regex matcher containing date details.
    */
   void processPrintEventsOn(Matcher matcher) {
-    String startDate = matcher.group(1);
-    LocalDateTime startDateTime = LocalDate.parse(startDate).atStartOfDay();
-    LocalDateTime endDateTime =
-            startDateTime.toLocalDate().atTime(LocalTime.of(23, 59));
+    try {
+      String startDate = matcher.group(1);
+      LocalDateTime startDateTime = LocalDate.parse(startDate).atStartOfDay();
+      LocalDateTime endDateTime = startDateTime.toLocalDate().atTime(LocalTime.of(23, 59));
 
-    List<EventModel> printList = new ArrayList<>();
-    printList = eventCollection.searchEventByTimeFrame(startDateTime, endDateTime);
-    System.out.println(infoString + "Printing events on " + startDate + "...");
-    System.out.println(eventCollection.printAssortments(printList));
+      // Search for events in the timeframe
+      List<EventModel> printList = eventCollection.searchEventByTimeFrame(startDateTime, endDateTime);
+
+      // Get calendar name and count events
+      String calendarName = calenderCollection.getCalendarName(eventCollection);
+      int eventCount = printList.size();
+
+      // Send user-friendly message
+      String message = "Found " + eventCount + " event" + (eventCount != 1 ? "s" : "") +
+              " on " + startDate + " in calendar \"" + calendarName + "\"";
+      System.out.println(infoString + message);
+
+      // Print the events to console
+      String printOutput = eventCollection.printAssortments(printList);
+      System.out.println(printOutput);
+
+      // Send both the message and the events list to the UI separately
+      for (CalendarUIListener listener : uiListeners) {
+        listener.onCommandOutput(message);
+        if (!printList.isEmpty()) {
+          listener.onCommandOutput(printOutput);
+        }
+      }
+    } catch (Exception e) {
+      String errorMsg = "Error printing events: " + e.getMessage();
+      System.out.println(warningString + errorMsg);
+      notifyUserMessage(errorMsg);
+    }
   }
 
   /**
@@ -553,6 +732,10 @@ public class EventHandler {
     printList = eventCollection.searchEventByTimeFrame(startDateTime, endDateTime);
     System.out.println(infoString + "Printing events on " + startDate + " to " + endDate + "...");
     System.out.println(eventCollection.printAssortments(printList));
+    for (CalendarUIListener listener : uiListeners) {
+      listener.onCommandOutput("Printing events on " + startDate + " to " + endDate
+              + "...\n"+eventCollection.printAssortments(printList));
+    }
   }
 
   void processPrintCalendars() {
@@ -570,25 +753,41 @@ public class EventHandler {
     String fileName = matcher.group(1);
 
     System.out.println(infoString + "Exporting to " + fileName + "...");
-    File exportFile = new File(fileName);
 
-    if (!exportFile.exists()) {
-      try {
-        if (exportFile.createNewFile()) {
-          System.out.println(warningString + "File "
-                  + fileName
-                  + " did not exist. A new file has been created at "
-                  + exportFile.getAbsolutePath());
+    try {
+      File exportFile = new File(fileName);
+
+      if (!exportFile.exists()) {
+        try {
+          if (exportFile.createNewFile()) {
+            String fileCreatedMsg = "File \"" + fileName + "\" did not exist. A new file has been created at "
+                    + exportFile.getAbsolutePath();
+            System.out.println(warningString + fileCreatedMsg);
+            notifyUserMessage(fileCreatedMsg);
+          }
+        } catch (IOException e) {
+          String errorMsg = "Error creating file: " + exportFile.getAbsolutePath() + " - " + e.getMessage();
+          System.out.println(warningString + errorMsg);
+          notifyUserMessage(errorMsg);
+          return;
         }
-      } catch (IOException e) {
-        System.out.println(warningString + "Error creating file: " + exportFile.getAbsolutePath());
-        return;
       }
+
+      List<EventModel> eventList = eventCollection.getEventList();
+      String calendarName = calenderCollection.getCalendarName(eventCollection);
+
+      ExportToCSV.generateCSV(fileName, eventList);
+
+      // Send user-friendly message
+      String message = "Successfully exported " + eventList.size() + " events from calendar \""
+              + calendarName + "\" to file \"" + exportFile.getAbsolutePath() + "\"";
+      System.out.println(doneString + message);
+      notifyUserMessage(message);
+    } catch (Exception e) {
+      String errorMsg = "Error exporting calendar: " + e.getMessage();
+      System.out.println(errorString + errorMsg);
+      notifyUserMessage(errorMsg);
     }
-
-    List<EventModel> eventList = eventCollection.getEventList();
-
-    ExportToCSV.generateCSV(fileName, eventList);
   }
 
   /**
@@ -668,6 +867,7 @@ public class EventHandler {
       if (event.getEventName().equals(eventName) && checkEventBetweenDates(event,
               startDateTime, endDateTime)) {
         event.setStartDateTime(newProperty);
+
       }
     }
     return null;
@@ -792,7 +992,6 @@ public class EventHandler {
     }
   }
 
-
   /**
    * Checks if the end date-time is before the start date-time.
    *
@@ -802,5 +1001,188 @@ public class EventHandler {
    */
   public boolean isEndBeforeStart(LocalDateTime startDateTime, LocalDateTime endDateTime) {
     return endDateTime.isBefore(startDateTime);
+  }
+
+  /**
+   * Adds an event to the current calendar's event collection.
+   * By default, autoDecline is set to true, which means events with time conflicts
+   * will not be created.
+   *
+   * @param event The event to be added.
+   * @return true if the event was added successfully, false if there was a conflict.
+   */
+  public boolean addEvent(EventModel event) {
+    // Force autoDecline to true by default
+    boolean autoDecline = true;
+
+    // Check for conflicts
+    boolean hasConflict = eventCollection.checkConflict(event.getStartDateTime(), event.getEndDateTime());
+
+    if (autoDecline && hasConflict) {
+      String errorMsg = "Event \"" + event.getEventName() +
+              "\" was not created due to time conflict with an existing event";
+      System.out.println(warningString + errorMsg);
+      notifyUserMessage(errorMsg);
+      return false;
+    }
+
+    // Add event if no conflict or autoDecline is false
+    eventCollection.addEvent(event);
+    String dateTime = formatDateTime(event);
+    String calendarName = calenderCollection.getCalendarName(eventCollection);
+
+    String successMsg = "Event \"" + event.getEventName() + "\" " + dateTime +
+            " successfully created in calendar \"" + calendarName + "\"";
+    System.out.println(doneString + successMsg);
+    notifyUserMessage(successMsg);
+    notifyEventsChanged();
+    return true;
+  }
+
+  /**
+   * Adds a recurring event to the current calendar's event collection.
+   * By default, autoDecline is set to true, which means events with time conflicts
+   * will not be created.
+   *
+   * @param recurringEvent The recurring event to be added.
+   * @return true if the recurring event was added successfully, false if there was a conflict.
+   */
+  public boolean addRecurringEvent(RecurringEventModel recurringEvent) {
+    // Force autoDecline to true by default
+    boolean autoDecline = true;
+
+    // Generate all occurrences to check for conflicts
+    List<EventModel> recurringEventsList = eventCollection.generateOccurrences(recurringEvent);
+
+    // Check each occurrence for conflicts
+    for (EventModel event : recurringEventsList) {
+      if (eventCollection.checkConflict(event.getStartDateTime(), event.getEndDateTime())) {
+        String conflictDateTime = "on " + event.getStartDateTime().toLocalDate() +
+                " at " + event.getStartDateTime().toLocalTime();
+
+        String errorMsg = "Recurring event \"" + recurringEvent.getEventName() +
+                "\" was not created due to time conflict " + conflictDateTime;
+        System.out.println(warningString + errorMsg);
+        notifyUserMessage(errorMsg);
+        return false;
+      }
+    }
+
+    // If no conflicts or autoDecline is false, add all occurrences individually
+    for (EventModel event : recurringEventsList) {
+      eventCollection.addEvent(event);
+    }
+    String recurrenceDesc = buildRecurrenceDescription(recurringEvent);
+    String calendarName = calenderCollection.getCalendarName(eventCollection);
+
+    String successMsg = "Created recurring event \"" + recurringEvent.getEventName() + "\" " +
+            recurrenceDesc + " in calendar \"" + calendarName + "\" (" +
+            recurringEventsList.size() + " occurrences)";
+
+    System.out.println(doneString + successMsg);
+    notifyUserMessage(successMsg);
+    notifyEventsChanged();
+    return true;
+  }
+  /**
+   * Formats a datetime display string for an event based on whether it's all-day or timed.
+   *
+   * @param event The event model to format
+   * @return A user-friendly date/time string
+   */
+  private String formatDateTime(EventModel event) {
+    if (event.getEndDateTime() == null) {
+      // All-day event
+      return "on " + event.getStartDateTime().toLocalDate();
+    } else {
+      // Timed event
+      return "from " + event.getStartDateTime().toLocalDate() +
+              " " + event.getStartDateTime().toLocalTime() +
+              " to " + event.getEndDateTime().toLocalDate() +
+              " " + event.getEndDateTime().toLocalTime();
+    }
+  }
+  /**
+   * Builds a user-friendly description of a recurring event pattern.
+   *
+   * @param recurringEvent The recurring event model
+   * @return A string describing the recurrence pattern
+   */
+  private String buildRecurrenceDescription(RecurringEventModel recurringEvent) {
+    StringBuilder builder = new StringBuilder();
+
+    // Add basic datetime info
+    if (recurringEvent.getEndDateTime() == null) {
+      // All-day event
+      builder.append("on ")
+              .append(recurringEvent.getStartDateTime().toLocalDate());
+    } else {
+      // Timed event
+      builder.append("from ")
+              .append(recurringEvent.getStartDateTime().toLocalDate())
+              .append(" ")
+              .append(recurringEvent.getStartDateTime().toLocalTime())
+              .append(" to ")
+              .append(recurringEvent.getEndDateTime().toLocalDate())
+              .append(" ")
+              .append(recurringEvent.getEndDateTime().toLocalTime());
+    }
+
+    // Add recurrence pattern
+    builder.append(" repeating on ");
+    List<Character> weekdays = recurringEvent.getRecurringDays();
+    for (int i = 0; i < weekdays.size(); i++) {
+      if (i > 0) {
+        if (i == weekdays.size() - 1) {
+          builder.append(" and ");
+        } else {
+          builder.append(", ");
+        }
+      }
+
+      switch (weekdays.get(i)) {
+        case 'M': builder.append("Monday"); break;
+        case 'T': builder.append("Tuesday"); break;
+        case 'W': builder.append("Wednesday"); break;
+        case 'R': builder.append("Thursday"); break;
+        case 'F': builder.append("Friday"); break;
+        case 'S': builder.append("Saturday"); break;
+        case 'U': builder.append("Sunday"); break;
+        default: builder.append(weekdays.get(i));
+      }
+    }
+
+    // Add termination condition
+    if (recurringEvent.getOccurrences() != null) {
+      builder.append(" for ")
+              .append(recurringEvent.getOccurrences())
+              .append(" times");
+    } else if (recurringEvent.getRecurrenceEndDateTime() != null) {
+      builder.append(" until ")
+              .append(recurringEvent.getRecurrenceEndDateTime().toLocalDate());
+    }
+
+    return builder.toString();
+  }
+  /**
+   * Counts the number of events that would be affected by an edit operation.
+   * Used to provide more informative feedback to users.
+   *
+   * @param property      The property to be edited
+   * @param eventName     The name of the target events
+   * @param startDateTime The start date-time filter (can be null)
+   * @param endDateTime   The end date-time filter (can be null)
+   * @return The number of events that match the criteria
+   */
+  private int countEventsForEdit(String property, String eventName,
+                                 LocalDateTime startDateTime, LocalDateTime endDateTime) {
+    int count = 0;
+    for (EventModel event : eventCollection.getEventList()) {
+      if (event.getEventName().equals(eventName) &&
+              checkEventBetweenDates(event, startDateTime, endDateTime)) {
+        count++;
+      }
+    }
+    return count;
   }
 }

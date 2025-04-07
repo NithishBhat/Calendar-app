@@ -28,6 +28,13 @@ public class CalenderCollection {
    */
   private HashMap<String, CalenderModel> calenderCollection;
 
+  private static final String ANSI_RESET = "\u001B[0m";
+  private static final String ANSI_RED = "\u001B[31m";
+  private static final String ANSI_GREEN = "\u001B[32m";
+
+  private static final String warningString = ANSI_RED + "[WARNING] " + ANSI_RESET;
+  private static final String successString = ANSI_GREEN + "[SUCCESS] " + ANSI_RESET;
+
   /**
    * Initializes an empty calendar collection.
    * Creates a new HashMap to store calendar models, preparing
@@ -175,8 +182,8 @@ public class CalenderCollection {
     LocalDateTime newEndDateTime = tarCalDate.plus(duration);
     copiedEvent.setEndDateTime(newEndDateTime);
 
-    // Check for potential scheduling conflicts
-    targetEventCollection.checkForCollision(copiedEvent, true);
+    // Check for conflicts and add event
+    addEventWithCollisionCheck(targetEventCollection, copiedEvent);
   }
 
   /**
@@ -227,8 +234,8 @@ public class CalenderCollection {
       event.setStartDateTime(eventStartZoned.toLocalDateTime());
       event.setEndDateTime(eventEndZoned.toLocalDateTime());
 
-      // Check for potential scheduling conflicts
-      targetEventCollection.checkForCollision(event, true);
+      // Check for conflicts and add event
+      addEventWithCollisionCheck(targetEventCollection, event);
     }
   }
 
@@ -278,8 +285,8 @@ public class CalenderCollection {
       event.setStartDateTime(eventStartZoned.toLocalDateTime());
       event.setEndDateTime(eventEndZoned.toLocalDateTime());
 
-      // Check for potential scheduling conflicts
-      targetEventCollection.checkForCollision(event, true);
+      // Check for conflicts and add event
+      addEventWithCollisionCheck(targetEventCollection, event);
     }
   }
 
@@ -319,9 +326,35 @@ public class CalenderCollection {
       event.setStartDateTime(eventStart);
       event.setEndDateTime(eventEnd);
 
-      // Check for potential scheduling conflicts
-      targetEventCollection.checkForCollision(event, true);
+      // Check for conflicts and add event
+      addEventWithCollisionCheck(targetEventCollection, event);
     }
+  }
+
+  /**
+   * Checks for event time conflicts and handles the event creation based on the conflict status.
+   * If a conflict is detected, the event will not be created, and a message will be printed.
+   * This is similar to the former checkForCollision method from EventCollectionModel.
+   *
+   * @param targetCollection the event collection to add the event to.
+   * @param event the event to check for collisions and potentially add.
+   * @return true if the event was not created due to a conflict, false otherwise.
+   */
+  private boolean addEventWithCollisionCheck(EventCollectionModel targetCollection, EventModel event) {
+    // Ensure autoDecline is always true
+    boolean autoDecline = true;
+
+    boolean hasConflict = targetCollection.checkConflict(event.getStartDateTime(), event.getEndDateTime());
+
+    if (autoDecline && hasConflict) {
+      System.out.println(warningString + "Event \""
+              + event.getEventName() + "\" was not created due to conflict");
+      return true;
+    }
+
+    targetCollection.addEvent(event);
+    System.out.println(successString + event.getEventName() + " was created");
+    return false;
   }
 
   /**
@@ -355,5 +388,4 @@ public class CalenderCollection {
     }
     return sb.toString();
   }
-
 }
