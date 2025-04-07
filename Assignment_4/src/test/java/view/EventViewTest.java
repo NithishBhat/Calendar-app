@@ -67,9 +67,14 @@ public class EventViewTest {
     eventView.runInteractiveMode();
 
     String output = testOut.toString();
-    assertTrue(output.contains("Enter Command:"));
-    assertTrue(output.contains("hello world was created"));
-    assertTrue(output.contains("Goodbye!"));
+    // Using trimmed strings and ignoring whitespace differences
+    String expectedOutput = "\u001B[36m[INFO] \u001B[0mCalendar \"\"default\"\" created with timezone UTC\n" +
+            "Enter Command: \u001B[32m[SUCCESS] \u001B[0mEvent \"hello world\" from 2025-10-10 10:00 to 2025-10-10 11:00 successfully created in calendar \"default\"\n" +
+            "Enter Command: Goodbye!";
+
+    // Option 1: Compare ignoring whitespace
+    assertEquals(output.replaceAll("\\s+", " ").trim(),
+            expectedOutput.replaceAll("\\s+", " ").trim());
   }
 
   @Test
@@ -107,12 +112,12 @@ public class EventViewTest {
 
     String output = testOut.toString();
     assertTrue(output.contains("Enter Command:"));
-    assertTrue(output.contains("hello world was created"));
-    assertTrue(output.contains("test was created"));
-    assertTrue(output.contains("test2 was created"));
-    assertTrue(output.contains("test3 was created"));
+    assertTrue(output.contains("hello world\" from 2025-10-10 10:00 to 2025-10-10 11:00 successfully created"));
+    assertTrue(output.contains("Created recurring event \"test\""));
+    assertTrue(output.contains("Created recurring event \"test2\""));
+    assertTrue(output.contains("Created recurring event \"test3\""));
     assertTrue(output.contains("Busy on 2025-10-10T10:30"));
-    assertTrue(output.contains("test4 was created"));
+    assertTrue(output.contains("test4\" from 2025-10-10 12:00 to 2025-10-10 13:00 successfully created"));
 
     assertTrue(output.contains("Event Name = test"));
     assertTrue(output.contains("Start = 2025-10-13T00:00"));
@@ -126,18 +131,14 @@ public class EventViewTest {
     assertTrue(output.contains("Start = 2025-10-15T00:00"));
     assertTrue(output.contains("Description = test"));
 
-    assertTrue(output.contains("\"test5\" was not created due to conflict"));
-    assertTrue(output.contains("Conflict detected, your " +
-            "recurring event \"test7\" was not created"));
-    assertTrue(output.contains("\"test9\" was not created due to conflict"));
+    // Update these assertions to match your current error messages
+    assertTrue(output.contains("Event \"test5\" was not created due to time conflict with an existing event"));
+    assertTrue(output.contains("Recurring event \"test7\" was not created due to time conflict on 2021-10-13 at 10:00"));
+    assertTrue(output.contains("Event \"test9\" was not created due to time conflict with an existing event"));
+
     assertTrue(output.contains("CSV generated"));
-
     assertTrue(output.contains("Goodbye!"));
-
-    //System.setOut(originalSystemOut);
-    //System.out.println("Captured Output: " + output);
   }
-
 
   @Test
   public void testCreateEventOnLeapDay() {
@@ -150,7 +151,8 @@ public class EventViewTest {
     eventView.runInteractiveMode();
 
     String output = testOut.toString();
-    assertTrue(output.contains("Leap Day was created"));
+    assertTrue(output.contains("Event \"Leap Day\" from 2024-02-29 10:00 to 2024-02-29 11:00" +
+            " successfully created in calendar "));
   }
 
 
@@ -180,7 +182,8 @@ public class EventViewTest {
     eventView.runInteractiveMode();
 
     String output = testOut.toString();
-    assertTrue(output.contains("Past Event was created"));
+    assertTrue(output.contains("Event \"Past Event\" from 2020-10-10 10:00" +
+            " to 2020-10-10 11:00 successfully created"));
   }
 
   @Test
@@ -246,7 +249,7 @@ public class EventViewTest {
     System.setOut(originalSystemOut);
     System.out.println("Captured Output: " + output);
 
-    assertTrue(output.contains("test was created"));
+    assertTrue(output.contains("Created recurring event \"test\""));
 
     int eventCount = output.split("\\* Event Name = test").length - 1;
     assertEquals(12, eventCount);
@@ -283,10 +286,13 @@ public class EventViewTest {
     eventView.runInteractiveMode();
 
     String output = testOut.toString();
-    assertTrue(output.contains("test1 was created"));
-    assertTrue(output.contains("\"test2\" was not created"));
-    assertTrue(output.contains("Conflict detected, your recurring event" +
-            " \"test3\" was not created"));
+
+    assertTrue(output.contains("Event \"test1\" from 2025-10-10 10:00 to" +
+            " 2025-10-10 11:00 successfully created"));
+    assertTrue(output.contains("Event \"test2\" was not created " +
+            "due to time conflict with an existing event"));
+    assertTrue(output.contains("Recurring event \"test3\" was not created due to time" +
+            " conflict on 2025-10-10 at 09:00"));
   }
 
   @Test
