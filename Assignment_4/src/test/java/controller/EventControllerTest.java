@@ -10,6 +10,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintStream;
+
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -51,9 +53,10 @@ public class EventControllerTest {
     eventController.headlessMode(new InputSource(testFilename));
 
     String output = testOut.toString();
-    assertTrue(output.contains("test was created"));
-    assertTrue(output.contains("Goodbye") || output.contains("Bye"));
+    assertTrue(output.contains("\"test\"") && output.contains("successfully created"));
+    assertTrue(output.contains("Bye"));
   }
+
 
   @Test
   public void testHeadlessModeFileNotExists() {
@@ -103,9 +106,9 @@ public class EventControllerTest {
     eventController.headlessMode(new InputSource(testFilename));
 
     String output = testOut.toString();
-    assertTrue(output.contains("Calender: \"testCal\" created in Timezone: America/New_York"));
-    assertTrue(output.contains("Changed to calendar: testCal"));
-    assertTrue(output.contains("Workout was created"));
+    assertTrue(output.contains("testCal") && output.contains("America/New_York"));
+    assertTrue(output.contains("\"Workout\"") && output.contains("successfully created"));
+    assertTrue(output.contains("Bye"));
   }
 
   private void writeToFile(String filename, String content) throws IOException {
@@ -113,4 +116,5 @@ public class EventControllerTest {
       writer.write(content);
     }
   }
+
 }

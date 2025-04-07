@@ -116,6 +116,7 @@ public class EventHandler {
     eventCollection = calenderCollection.getEventCollection(calenderName);
     notifyCalendarChanged(calenderName);
     notifyEventsChanged();
+
   }
 
   /**
@@ -260,10 +261,11 @@ public class EventHandler {
     try {
       String calName = matcher.group(1);
       useCalender(calName);
+      System.out.println(successString + "Changed to calendar: " + calName);
       // No need to print success message here as it's done in useCalender method
     } catch (Exception e) {
       String errorMsg = "Error changing calendar: " + e.getMessage();
-      System.out.println(warningString + errorMsg);
+      System.out.println(warningString + "Error changing events: " + e.getMessage());
       notifyUserMessage(errorMsg);
     }
   }

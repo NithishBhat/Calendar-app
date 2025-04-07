@@ -1223,37 +1223,50 @@ public class EventHandlerTest {
 
   }
 
-
   @Test
   public void editlocationInvalidDate() {
-    EventController eventController = new EventController();
-    eventController.filterCommand("create event \"hello world\" "
-            + "from 2025-10-10T12:00 to 2025-10-10T13:00");
-    eventController.filterCommand("create event \"hello world\" "
-            + "from 2025-10-11T10:00 to 2025-10-11T11:00");
-    eventController.filterCommand("create event \"hello world\" "
-            + "from 2025-10-12T10:00 to 2025-10-12T11:00");
+    // Save the original output stream
+    PrintStream originalOut = System.out;
+    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+    System.setOut(new PrintStream(outputStream));
 
-    EventModel eventOne = eventController.getEventHandler()
-            .getEventCollection("default").getEventList().get(0);
-    assertEquals(3, eventController.getEventHandler()
-            .getEventCollection("default").getEventList().size());
+    try {
+      EventController eventController = new EventController();
+      eventController.filterCommand("create event \"hello world\" "
+              + "from 2025-10-10T12:00 to 2025-10-10T13:00");
+      eventController.filterCommand("create event \"hello world\" "
+              + "from 2025-10-11T10:00 to 2025-10-11T11:00");
+      eventController.filterCommand("create event \"hello world\" "
+              + "from 2025-10-12T10:00 to 2025-10-12T11:00");
 
-    assertEquals("hello world", eventOne.getEventName());
-    assertEquals("2025-10-10T12:00", eventOne.getStartDateTime().toString());
-    assertEquals("2025-10-10T13:00", eventOne.getEndDateTime().toString());
-    assertEquals(null, eventOne.getDescription());
-    assertEquals(null, eventOne.getLocation());
-    assertEquals(false, eventOne.getIsPrivate());
+      EventModel eventOne = eventController.getEventHandler()
+              .getEventCollection("default").getEventList().get(0);
+      assertEquals(3, eventController.getEventHandler()
+              .getEventCollection("default").getEventList().size());
 
+      assertEquals("hello world", eventOne.getEventName());
+      assertEquals("2025-10-10T12:00", eventOne.getStartDateTime().toString());
+      assertEquals("2025-10-10T13:00", eventOne.getEndDateTime().toString());
+      assertEquals(null, eventOne.getDescription());
+      assertEquals(null, eventOne.getLocation());
+      assertEquals(false, eventOne.getIsPrivate());
 
-    Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+      // Test the invalid date edit
       eventController.filterCommand("edit event location \"hello world\" "
               + "from 2025-10-10T10:00 to 2025-10-09T10:00 with \"USAAAAAAAA\"");
-    });
-    assertEquals("End time cannot be before start time, Event was not created",
-            exception.getMessage());
 
+      // Get the output
+      String output = outputStream.toString();
+
+      // Get the last line of output
+      String lastLine = output.lines().reduce((first, second) -> second).orElse("");
+
+      // Check if the last line is the expected error message
+      assertEquals("\u001B[31m[WARNING] \u001B[0mEnd time cannot be before start time, event was not edited", lastLine);
+    } finally {
+      // Restore the original output stream
+      System.setOut(originalOut);
+    }
   }
 
   @Test
@@ -1447,29 +1460,32 @@ public class EventHandlerTest {
 
   @Test
   public void testOutputEditEvents() {
-    String expectedOutput = "";
-
     EventController eventController = new EventController();
 
+    // Create two events
     eventController.filterCommand("create event \"hello world\" "
             + "from 2025-10-10T12:00 to 2025-10-10T13:00");
     eventController.filterCommand("create event \"hello world\" "
             + "from 2025-10-11T13:00 to 2025-10-11T14:00");
 
+    // Capture output
     ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
     PrintStream originalOut = System.out;
     System.setOut(new PrintStream(outputStream));
 
     try {
-
+      // Edit the events
       eventController.filterCommand("edit events eventName \"hello world\" "
               + "from 2025-10-10T10:00 with \"test\"");
 
-      String output = outputStream.toString().trim();
+      // Get the output and strip ANSI color codes
+      String output = outputStream.toString();
 
-      String lastLine = output.substring(output.lastIndexOf("\n") + 1).trim();
 
-      assertEquals(expectedOutput.trim(), lastLine);
+
+      assertEquals(output.trim(), ("\u001B[36m[INFO] \u001B[0mSuccessfully edited eventName to" +
+              " \"test\" for 2 occurrences of event \"hello world\"" +
+              " from 2025-10-10T10:00 onwards").trim());
     } finally {
       System.setOut(originalOut);
     }
@@ -1915,17 +1931,30 @@ public class EventHandlerTest {
   @Test
   public void testEditEventInvalidTime() {
     EventController eventController = new EventController();
+    ByteArrayOutputStream testOut = new ByteArrayOutputStream();
+    PrintStream originalOut = System.out;
 
-    eventController.filterCommand("create event \"test\" " +
-            "from 2025-11-01T10:00 to 2025-11-01T12:00");
+    try {
+      System.setOut(new PrintStream(testOut));
 
-    Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+      // Create an initial event
+      eventController.filterCommand("create event \"test\" " +
+              "from 2025-11-01T10:00 to 2025-11-01T12:00");
+
+      // Try to edit with invalid times
       eventController.filterCommand("edit event eventName \"test\" from 2025-11-01T12:00 " +
               "to 2025-11-01T10:00 with \"test1\"");
-    });
 
-    assertEquals("End time cannot be before start time, " +
-            "Event was not created", exception.getMessage());
+      // Get the output and strip ANSI color codes
+      String output = testOut.toString();
+      String strippedOutput = output.replaceAll("\u001B\\[\\d+(;\\d+)*m", "");
+
+      // Check that output contains the expected content
+      assertTrue(strippedOutput.contains("Event \"test\" from 2025-11-01 10:00 to 2025-11-01 12:00 successfully created in calendar \"default\""));
+      assertTrue(strippedOutput.contains("End time cannot be before start time, event was not edited"));
+    } finally {
+      System.setOut(originalOut);
+    }
   }
 
   @Test

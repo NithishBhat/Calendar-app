@@ -38,6 +38,69 @@ public class EventCollectionModel {
   }
 
   /**
+   * Adds a recurring event to the collection by generating all of its occurrences
+   * and adding them to the event list.
+   *
+   * @param event The recurring event to be added.
+   * @return true if the recurring event was added successfully, false otherwise.
+   */
+  public boolean addRecurringEvent(RecurringEventModel event) {
+    List<EventModel> occurrences = generateOccurrences(event);
+    for (EventModel occurrence : occurrences) {
+      addEvent(occurrence);
+    }
+    return true;
+  }
+
+  /**
+   * Checks for collision between a given event and existing events.
+   * If auto-decline is enabled and a collision is detected, the event won't be added.
+   * Otherwise, the event will be added regardless of collision.
+   *
+   * @param event The event to check for collision.
+   * @param autoDecline Whether to auto-decline events with collisions.
+   * @return true if the event was added, false if it was declined due to collision.
+   */
+  public boolean checkForCollision(EventModel event, boolean autoDecline) {
+    boolean hasCollision = checkConflict(event.getStartDateTime(), event.getEndDateTime());
+
+    if (hasCollision && event.isAutoDecline()) {
+      return false;
+    }
+
+    eventList.add(event);
+    return true;
+  }
+
+  /**
+   * Checks for collision between a recurring event's occurrences and existing events.
+   * If auto-decline is enabled and any occurrence has a collision, the recurring event won't be added.
+   * Otherwise, all occurrences will be added regardless of collisions.
+   *
+   * @param event The recurring event to check for collision.
+   * @param autoDecline Whether to auto-decline events with collisions.
+   * @return true if the recurring event was added, false if it was declined due to collision.
+   */
+  public boolean checkForCollisionRecurringEvent(RecurringEventModel event, boolean autoDecline) {
+    List<EventModel> occurrences = generateOccurrences(event);
+
+    if (autoDecline) {
+      for (EventModel occurrence : occurrences) {
+        if (checkConflict(occurrence.getStartDateTime(), occurrence.getEndDateTime())) {
+          return false;
+        }
+      }
+    }
+
+    // If we get here, either autoDecline is false or no collisions were found
+    for (EventModel occurrence : occurrences) {
+      eventList.add(occurrence);
+    }
+
+    return true;
+  }
+
+  /**
    * Removes an event from the collection.
    *
    * @param event The event to be removed.
