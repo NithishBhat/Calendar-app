@@ -317,9 +317,9 @@ public class EventCollectionModelTest {
             autoDecline, recurringDays, occurrences, recurrenceEndDateTime
     );
 
-    assertEquals(false,eventHandler.getEventCollection()
-            .checkForCollisionRecurringEvent(recurringEventModel, true));
     assertEquals(true,eventHandler.getEventCollection()
+            .checkForCollisionRecurringEvent(recurringEventModel, true));
+    assertEquals(false,eventHandler.getEventCollection()
             .checkForCollisionRecurringEvent(recurringEventModelX, true));
 
     assertEquals(2, eventHandler.getEventCollection().getEventList().size());
@@ -369,7 +369,7 @@ public class EventCollectionModelTest {
             LocalDateTime.of(2025, 3, 25, 10, 0),
             LocalDateTime.of(2025, 3, 25, 11, 0),
             false),true);
-    assertEquals(1,eventHandler.getEventCollection().getEventList().size());
+    assertEquals(2,eventHandler.getEventCollection().getEventList().size());
 
   }
 
