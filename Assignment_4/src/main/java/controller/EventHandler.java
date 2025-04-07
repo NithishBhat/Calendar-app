@@ -256,16 +256,17 @@ public class EventHandler {
    *
    * @param matcher the matcher object containing the calendar name to switch to.
    */
-  public void processUseCalendar(Matcher matcher) {
+  void processUseCalendar(Matcher matcher) {
     try {
       String calName = matcher.group(1);
       useCalender(calName);
-      System.out.println(successString + "Changed to calendar: " + calName);
+      // No need to print success message here as it's done in useCalender method
     } catch (Exception e) {
-      System.out.println(warningString + "Error changing events: " + e.getMessage());
+      String errorMsg = "Error changing calendar: " + e.getMessage();
+      System.out.println(warningString + errorMsg);
+      notifyUserMessage(errorMsg);
     }
   }
-
   /**
    * Retrieves the event collection managed by the controller.
    *
@@ -294,8 +295,19 @@ public class EventHandler {
    * @param timezone     the time zone to associate with the calendar.
    */
   void createCalender(String calenderName, ZoneId timezone) {
-    calenderCollection.addCalender(calenderName, timezone);
-    notifyCalendarListChanged();
+    try {
+      calenderCollection.addCalender(calenderName, timezone);
+      notifyCalendarListChanged();
+
+      // Send user-friendly message
+      String message = "Calendar \"" + calenderName + "\" created with timezone " + timezone;
+      System.out.println(successString + message);
+      notifyUserMessage(message);
+    } catch (Exception e) {
+      String errorMsg = "Error creating calendar: " + e.getMessage();
+      System.out.println(warningString + errorMsg);
+      notifyUserMessage(errorMsg);
+    }
   }
 
   /**
@@ -311,10 +323,11 @@ public class EventHandler {
     try {
       ZoneId timeZone = ZoneId.of(timeZoneString);
       createCalender(calName, timeZone);
-      System.out.println(successString + "Calender: " + calName + " created in Timezone: "
-              + timeZoneString);
+      // No need to print success message here as it's done in createCalender method
     } catch (Exception e) {
-      System.out.println("Invalid time zone: " + timeZoneString);
+      String errorMsg = "Failed to create calendar: Invalid time zone: " + timeZoneString;
+      System.out.println(warningString + errorMsg);
+      notifyUserMessage(errorMsg);
     }
   }
 
