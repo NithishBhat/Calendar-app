@@ -157,13 +157,8 @@ public class MonthViewPanel extends AbstractCalendarPanel {
   }
 
   private void redirectToCreateEventTab(LocalDate date) {
-    tabbedPane.removeTabAt(3);
-    System.out.println("Clicked day " + date);
-    CreateEventPanel createEventPanel = new CreateEventPanel(controller, commandPreviewArea, commandGenerator, date);
-
-    // Add the panel to the tabbed pane, assuming it has a tab for creating events
-    tabbedPane.addTab("Create Event", createEventPanel);
-    tabbedPane.setSelectedComponent(createEventPanel);
+    int createEventTabIndex = 3;
+    tabbedPane.setSelectedIndex(createEventTabIndex);
   }
 
   // Redirect to Edit Event Tab with selected date pre-filled
