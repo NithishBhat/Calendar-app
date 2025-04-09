@@ -271,4 +271,33 @@ public class ExportToCSVTest {
     }
     file.delete();
   }
+
+  @Test
+  public void testExportedCSVIncludesStartEndDateAndPrivacy() throws IOException {
+    // Arrange
+    LocalDateTime start = LocalDateTime.of(2025, 4, 8, 9, 0);
+    LocalDateTime end = LocalDateTime.of(2025, 4, 8, 10, 0);
+    boolean isPrivate = true;
+
+    EventModel event = new EventModel(
+            "Morning Meeting",
+            start,
+            end,
+            "Status update",
+            isPrivate,
+            false,
+            "Room 101"
+    );
+
+    File tempFile = File.createTempFile("event_export", ".csv");
+
+    ExportToCSV.generateCSV(tempFile.getAbsolutePath(), List.of(event));
+    List<String> lines = Files.readAllLines(tempFile.toPath());
+
+
+    assertEquals(lines.get(0), "Subject,Start Date,Start Time,End Date,End Time,All Day Event,Description,Location,Private");
+    assertEquals(lines.get(1), "Morning Meeting, 2025-04-08, 09:00, 2025-04-08, 10:00, false, \"Status update\", \"Room 101\", true");
+
+    tempFile.deleteOnExit();
+  }
 }
