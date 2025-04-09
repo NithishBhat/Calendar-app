@@ -1,11 +1,11 @@
-package view.components;
+package view.componentsGui;
 
 import controller.EventController;
-import view.utils.CommandGenerator;
-import view.utils.UIUtils;
+import view.utilsGui.CommandGenerator;
+import view.utilsGui.UIUtils;
 
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
+
 import java.awt.*;
 import java.io.File;
 import java.util.Map;

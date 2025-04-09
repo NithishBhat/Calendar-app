@@ -1,4 +1,4 @@
-package view.models;
+package view.componentsGui;
 
 import javax.swing.*;
 import java.util.Map;

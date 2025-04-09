@@ -1,9 +1,8 @@
-package view.components;
+package view.componentsGui;
 
 
 import controller.EventController;
-import view.models.FormField;
-import view.utils.UIUtils;
+import view.utilsGui.UIUtils;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;

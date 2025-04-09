@@ -45,6 +45,28 @@ public class EventHandlerTest {
     assertEquals(true, event.getIsPrivate());
   }
 
+
+  @Test
+  public void normalEventCreationWithoutQuotes() {
+
+    EventController eventController = new EventController();
+    eventController.filterCommand("create event hello_world from 2025-10-10T10:00 to 2025-10-10T10:00 "
+            + "description:test location:MA privacy:true");
+
+
+    assertEquals(1, eventController.getEventHandler()
+            .getEventCollection("default").getEventList().size());
+    EventModel event = eventController.getEventHandler()
+            .getEventCollection("default").getEventList().get(0);
+
+    assertEquals("hello_world", event.getEventName());
+    assertEquals("2025-10-10T10:00", event.getStartDateTime().toString());
+    assertEquals("2025-10-10T10:00", event.getEndDateTime().toString());
+    assertEquals("test", event.getDescription());
+    assertEquals("MA", event.getLocation());
+    assertEquals(true, event.getIsPrivate());
+  }
+
   @Test
   public void eventCreationThursdayCheck() {
     EventController eventController = new EventController();

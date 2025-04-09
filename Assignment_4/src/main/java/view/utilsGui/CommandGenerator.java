@@ -1,4 +1,4 @@
-package view.utils;
+package view.utilsGui;
 
 import java.util.Map;
 

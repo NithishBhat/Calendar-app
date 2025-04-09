@@ -20,7 +20,7 @@ import java.util.List;
  * The class uses a HashMap to store multiple CalenderModel instances,
  * each representing a distinct calendar with its own events and time zone.
  */
-public class CalenderCollection {
+public class CalenderCollection implements CalendarCollectionInterface {
 
   /**
    * Stores the collection of calendars, where the key is the calendar name

@@ -1,10 +1,9 @@
-package view.components;
+package view.componentsGui;
 
 import controller.EventController;
 import model.CalenderModel;
-import view.CalendarUIListener;
-import view.utils.CommandGenerator;
-import view.utils.UIUtils;
+import view.utilsGui.CommandGenerator;
+import view.utilsGui.UIUtils;
 
 import javax.swing.*;
 import java.awt.*;
