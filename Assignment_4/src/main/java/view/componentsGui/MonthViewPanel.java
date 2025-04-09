@@ -6,6 +6,8 @@ import view.utilsGui.CommandGenerator;
 import javax.swing.*;
 
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.time.DayOfWeek;
@@ -17,6 +19,7 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.List;
+import java.util.ArrayList;
 
 public class MonthViewPanel extends AbstractCalendarPanel {
   private YearMonth currentMonth;
@@ -443,31 +446,17 @@ public class MonthViewPanel extends AbstractCalendarPanel {
       // Get the selected component
       Component currentTab = tabbedPane.getSelectedComponent();
 
-      // Find all combo boxes and date fields within the component hierarchy
+      // Find all components within the tab
       Component[] components = getAllComponents(currentTab);
 
-      // Find event name combo box
+      // Find event name combo box and set the event
       JComboBox<String> eventNameCombo = null;
       for (Component comp : components) {
         if (comp instanceof JComboBox) {
           JComboBox<?> comboBox = (JComboBox<?>) comp;
-          // Try to identify the event name combo box
           if (comboBox.isEditable()) {
             eventNameCombo = (JComboBox<String>) comboBox;
             break;
-          }
-        }
-      }
-
-      // Find date fields
-      java.util.List<JTextField> dateFields = new java.util.ArrayList<>();
-      for (Component comp : components) {
-        if (comp instanceof JTextField) {
-          JTextField textField = (JTextField) comp;
-          String text = textField.getText();
-          // Identify date fields by their format (YYYY-MM-DD)
-          if (text != null && text.matches("\\d{4}-\\d{2}-\\d{2}")) {
-            dateFields.add(textField);
           }
         }
       }
@@ -491,12 +480,62 @@ public class MonthViewPanel extends AbstractCalendarPanel {
         }
       }
 
+      // Find the "Edit Specific Event" radio button and select it
+      JRadioButton specificEventRB = null;
+      for (Component comp : components) {
+        if (comp instanceof JRadioButton) {
+          JRadioButton radioButton = (JRadioButton) comp;
+          if (radioButton.getText() != null &&
+                  radioButton.getText().contains("Specific Event")) {
+            specificEventRB = radioButton;
+            break;
+          }
+        }
+      }
+
+      // Select the "Edit Specific Event" radio button
+      if (specificEventRB != null) {
+        specificEventRB.setSelected(true);
+        // This should trigger the action listener that shows the from-to fields
+        // Fire the action event to ensure the UI updates
+        for (ActionListener listener : specificEventRB.getActionListeners()) {
+          listener.actionPerformed(
+                  new ActionEvent(specificEventRB, ActionEvent.ACTION_PERFORMED, ""));
+        }
+      }
+
+      // Find date fields - first for the "from-to" section
+      List<JTextField> dateFields = new ArrayList<>();
+      for (Component comp : components) {
+        if (comp instanceof JTextField) {
+          JTextField textField = (JTextField) comp;
+          String name = textField.getName();
+          if (name != null && (name.equals("FromDate") || name.equals("ToDate"))) {
+            dateFields.add(textField);
+          } else if (textField.getText() != null &&
+                  textField.getText().matches("\\d{4}-\\d{2}-\\d{2}")) {
+            // Fallback: Identify date fields by their content format
+            dateFields.add(textField);
+          }
+        }
+      }
+
       // Update date fields if found
       if (!dateFields.isEmpty()) {
-        // First two date fields are usually the from/to date fields
-        int count = Math.min(2, dateFields.size());
-        for (int i = 0; i < count; i++) {
-          dateFields.get(i).setText(date.toString());
+        for (JTextField textField : dateFields) {
+          String name = textField.getName();
+          if (name != null) {
+            // Set values based on field names
+            if (name.equals("FromDate") || name.equals("ToDate")) {
+              textField.setText(date.toString());
+            }
+          } else {
+            // If no name, set all date fields with the format YYYY-MM-DD
+            if (textField.getText() != null &&
+                    textField.getText().matches("\\d{4}-\\d{2}-\\d{2}")) {
+              textField.setText(date.toString());
+            }
+          }
         }
       }
 

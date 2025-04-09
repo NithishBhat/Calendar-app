@@ -65,6 +65,7 @@ public class CreateCalendarPanel extends AbstractCalendarPanel {
   @Override
   protected String generateCommand() {
     Map<String, String> values = getFormValues();
+    System.out.println(values);
     return commandGenerator.createCalendarCommand(values);
   }
 
