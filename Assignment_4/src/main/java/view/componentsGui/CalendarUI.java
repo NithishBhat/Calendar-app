@@ -1,19 +1,17 @@
-package view;
+package view.componentsGui;
 
 import controller.EventController;
 import model.CalenderCollection;
 import model.EventCollectionModel;
 import model.EventModel;
-import view.components.*;
-import view.utils.CommandGenerator;
-import view.utils.UIUtils;
+import view.utilsGui.CommandGenerator;
+import view.utilsGui.UIUtils;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 
 import java.awt.*;
 import java.time.LocalTime;
-import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.List;
@@ -74,7 +72,7 @@ public class CalendarUI implements CalendarUIListener {
     // Create the main frame
     JFrame frame = new JFrame("Calendar Command UI");
     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    frame.setPreferredSize(new Dimension(1200, 700));
+    frame.setPreferredSize(new Dimension(1200, 750));
     frame.setMinimumSize(new Dimension(800, 500));
     frame.setResizable(true);
 

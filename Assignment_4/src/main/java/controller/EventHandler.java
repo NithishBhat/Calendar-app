@@ -6,7 +6,7 @@ import model.CalenderCollection;
 import model.EventCollectionModel;
 import model.EventModel;
 import model.RecurringEventModel;
-import view.CalendarUIListener;
+import view.componentsGui.CalendarUIListener;
 
 import java.io.File;
 import java.io.IOException;
@@ -15,7 +15,6 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.regex.Matcher;
 
 /**

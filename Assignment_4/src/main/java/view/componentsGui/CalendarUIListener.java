@@ -1,4 +1,4 @@
-package view;
+package view.componentsGui;
 
 
 import model.CalenderCollection;

@@ -4,12 +4,11 @@ import model.RecurringEventModel;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import view.CalendarUIListener;
+import view.componentsGui.CalendarUIListener;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
