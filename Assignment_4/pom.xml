@@ -42,7 +42,6 @@
                     <targetClasses>
                         <param>controller.**</param>
                         <param>model.**</param>
-                        <param>view.**</param>
                     </targetClasses>
                 </configuration>
             </plugin>
