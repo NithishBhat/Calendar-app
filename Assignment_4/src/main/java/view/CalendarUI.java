@@ -13,6 +13,7 @@ import javax.swing.border.EmptyBorder;
 
 import java.awt.*;
 import java.time.LocalTime;
+import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.List;
@@ -29,6 +30,7 @@ public class CalendarUI implements CalendarUIListener {
   private EventController controller;
   private String lastCommand = ""; // Track last command to prevent infinite loops
   private CommandGenerator commandGenerator;
+  private MonthViewPanel monthViewPanel;
 
   // Reference to the edit event panel's event name combo box
   private JComboBox<String> editEventNameCombo;
@@ -36,7 +38,7 @@ public class CalendarUI implements CalendarUIListener {
   /**
    * Main method - application entry point
    */
-  public static void main(String[] args) {
+  public void start() {
     // Use SwingUtilities.invokeLater to ensure UI creation happens on EDT
     SwingUtilities.invokeLater(() -> {
       // Initialize controller first
@@ -105,10 +107,13 @@ public class CalendarUI implements CalendarUIListener {
     JTabbedPane tabbedPane = new JTabbedPane();
 
     // Add the tab panels using our new component classes
-    tabbedPane.addTab("Month View", UIUtils.wrapPanel(new MonthViewPanel(controller, commandPreviewArea, commandGenerator)));
+    monthViewPanel = new MonthViewPanel(controller, commandPreviewArea, commandGenerator, tabbedPane);
+    tabbedPane.addTab("Month View", UIUtils.wrapPanel(monthViewPanel));
+
     tabbedPane.addTab("Create Calendar", UIUtils.wrapPanel(new CreateCalendarPanel(controller, commandPreviewArea, commandGenerator)));
     tabbedPane.addTab("Edit Calendar", UIUtils.wrapPanel(new EditCalendarPanel(controller, commandPreviewArea, commandGenerator)));
-    tabbedPane.addTab("Create Event", UIUtils.wrapPanel(new CreateEventPanel(controller, commandPreviewArea, commandGenerator)));
+
+    tabbedPane.addTab("Create Event", UIUtils.wrapPanel(new CreateEventPanel(controller, commandPreviewArea, commandGenerator, null)));
 
     // Create EditEventPanel instance and store reference to its event name combo box
     EditEventPanel editEventPanel = new EditEventPanel(controller, commandPreviewArea, commandGenerator);
@@ -117,6 +122,7 @@ public class CalendarUI implements CalendarUIListener {
 
     tabbedPane.addTab("Print Events", UIUtils.wrapPanel(new PrintEventsPanel(controller, commandPreviewArea, commandGenerator)));
     tabbedPane.addTab("Export Calendar", UIUtils.wrapPanel(new ExportCalendarPanel(controller, commandPreviewArea, commandGenerator)));
+    tabbedPane.addTab("Import Calendar", UIUtils.wrapPanel(new ImportCalendarPanel(controller, commandPreviewArea, commandGenerator)));
     tabbedPane.addTab("Show Status", UIUtils.wrapPanel(new ShowStatusPanel(controller, commandPreviewArea, commandGenerator)));
 
     // Calendar selector panel
@@ -130,6 +136,7 @@ public class CalendarUI implements CalendarUIListener {
     commandPanel.add(calendarSelectorPanel, BorderLayout.NORTH);
     commandPanel.add(new JScrollPane(commandPreviewArea), BorderLayout.CENTER);
 
+
     // Main panel with fixed layout
     JPanel mainPanel = new JPanel(new GridLayout(1, 2));  // 1 row, 2 columns
     mainPanel.add(tabbedPane);
@@ -139,6 +146,7 @@ public class CalendarUI implements CalendarUIListener {
     frame.pack();
     frame.setLocationRelativeTo(null); // Center on screen
     frame.setVisible(true);
+
   }
 
   /**
@@ -189,8 +197,12 @@ public class CalendarUI implements CalendarUIListener {
 
   @Override
   public void onEventsChanged(CalenderCollection calenderCollection) {
-    // Update event names in the edit panel
-    SwingUtilities.invokeLater(this::updateEventNameComboBox);
+    SwingUtilities.invokeLater(() -> {
+      updateEventNameComboBox();
+      if (monthViewPanel != null) {
+        monthViewPanel.refreshMonth();
+      }
+    });
   }
 
   @Override

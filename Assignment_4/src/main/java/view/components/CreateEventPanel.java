@@ -8,6 +8,7 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 /**
  * Panel for creating new events
@@ -36,11 +37,16 @@ public class CreateEventPanel extends AbstractCalendarPanel {
   private JRadioButton repeatUntilRB;
   private JTextField repeatUntilDateField;
 
+  private LocalDate selectedDate;
+
   public CreateEventPanel(EventController controller, JTextArea commandPreviewArea,
-                          CommandGenerator commandGenerator) {
+                          CommandGenerator commandGenerator, LocalDate selectedDate) {
     super(controller, commandPreviewArea);
     this.commandGenerator = commandGenerator;
+    this.selectedDate = selectedDate;
   }
+
+
 
   @Override
   protected void initializeUI() {
@@ -81,7 +87,7 @@ public class CreateEventPanel extends AbstractCalendarPanel {
     startPanel.add(startLabel, BorderLayout.WEST);
 
     JPanel startFieldsPanel = new JPanel(new BorderLayout(5, 0));
-    startDateField = new JTextField(LocalDate.now().toString());
+    startDateField = (selectedDate==null?new JTextField(LocalDate.now().toString()): new JTextField(selectedDate.toString()));
     applySize(startDateField, new Dimension(110, 25));
     addFormField("StartDate", startDateField);
 
@@ -101,7 +107,7 @@ public class CreateEventPanel extends AbstractCalendarPanel {
     endPanel.add(endLabel, BorderLayout.WEST);
 
     JPanel endFieldsPanel = new JPanel(new BorderLayout(5, 0));
-    endDateField = new JTextField(LocalDate.now().toString());
+    endDateField = (selectedDate==null?new JTextField(LocalDate.now().toString()): new JTextField(selectedDate.toString()));
     applySize(endDateField, new Dimension(110, 25));
     addFormField("EndDate", endDateField);
 

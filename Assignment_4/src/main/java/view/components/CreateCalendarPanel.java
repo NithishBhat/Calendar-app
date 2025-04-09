@@ -6,6 +6,7 @@ import view.utils.UIUtils;
 
 import javax.swing.*;
 import java.awt.*;
+import java.time.LocalDate;
 import java.util.Map;
 
 /**
@@ -16,6 +17,7 @@ public class CreateCalendarPanel extends AbstractCalendarPanel {
   private CommandGenerator commandGenerator;
   private JTextField nameField;
   private JComboBox<String> timezoneCombo;
+
 
   /**
    * Constructor
@@ -28,6 +30,7 @@ public class CreateCalendarPanel extends AbstractCalendarPanel {
                              CommandGenerator commandGenerator) {
     super(controller, commandPreviewArea);
     this.commandGenerator = commandGenerator;
+
   }
 
   @Override

@@ -1,5 +1,6 @@
 package controller;
 
+import model.EventCollectionModel;
 import model.EventModel;
 
 import org.junit.Test;
@@ -1408,6 +1409,19 @@ public class EventHandlerTest {
     assertEquals(null, eventOne.getLocation());
     assertEquals(false, eventOne.getIsPrivate());
 
+  }
+
+  @Test
+  public void processImport() {
+    EventController eventController = new EventController();
+    eventController.filterCommand("import cal october2025Test.csv");
+
+    EventCollectionModel importedCalendar = eventController.getEventHandler().getEventCollection();
+    assertEquals("singleEvent", importedCalendar.getEventList().get(0).getEventName());
+    assertEquals("recurringEventN", importedCalendar.getEventList().get(1).getEventName());
+    assertEquals("recurringEventsUntil", importedCalendar.getEventList().get(2).getEventName());
+    assertEquals("recurringEventsUntil", importedCalendar.getEventList().get(3).getEventName());
+    assertEquals("AllDayEvent", importedCalendar.getEventList().get(4).getEventName());
   }
 
   @Test

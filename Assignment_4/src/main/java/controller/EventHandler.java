@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 
 /**
@@ -116,7 +117,6 @@ public class EventHandler {
     eventCollection = calenderCollection.getEventCollection(calenderName);
     notifyCalendarChanged(calenderName);
     notifyEventsChanged();
-
   }
 
   /**
@@ -805,6 +805,58 @@ public class EventHandler {
     }
   }
 
+  void processImport(Matcher matcher) {
+    String fileName = matcher.group(1);
+
+    System.out.println(infoString + "Importing from " + fileName + "...");
+
+    File importFile = new File(fileName);
+
+    if (!importFile.exists()) {
+      String errorMsg = "File " + importFile.getAbsolutePath() + " does not exist.";
+      System.out.println(errorString + errorMsg);
+      notifyUserMessage(errorMsg);
+      return;
+    }
+
+    String lowerFileName = fileName.toLowerCase();
+    ImportInterface importer;
+
+    if (lowerFileName.endsWith(".csv")) {
+      importer = new ImportFromCSV();
+    } else if (lowerFileName.endsWith(".ics")) {
+      return;
+      //importer = new ImportFromICS();
+    } else {
+      String errorMsg = "File \"" + fileName + "\" is not a supported filetype";
+      System.out.println(errorMsg);
+      notifyUserMessage(errorMsg);
+      return;
+    }
+
+    try {
+      List<EventModel> importedEvents = importer.importEvents(importFile);
+      if (importedEvents.isEmpty()) {
+        String errorMsg = "No events found in " + importFile.getAbsolutePath();
+        System.out.println(errorMsg);
+        notifyUserMessage(errorMsg);
+      } else {
+        for (EventModel importedEvent : importedEvents) {
+          eventCollection.addEvent(importedEvent);
+        }
+
+        String message = "Successfully imported " + importedEvents.size() + " events";
+        System.out.println(doneString + message);
+        notifyUserMessage(message);
+      }
+    } catch (Exception e) {
+      String errorMsg = "Error importing calendar: " + e.getMessage();
+      System.out.println(errorString + errorMsg);
+      notifyUserMessage(errorMsg);
+    }
+
+  }
+
   /**
    * Shows availability status at a specific date and time.
    * Format: show status on {@code <dateString>T<timeString>}.
@@ -1199,5 +1251,43 @@ public class EventHandler {
       }
     }
     return count;
+  }
+
+  private List<EventModel> getEventsBetween(String cal, LocalDateTime start, LocalDateTime end) {
+    eventCollection = calenderCollection.getEventCollection(cal);
+    List<EventModel> events = eventCollection.getEventList();
+    List<EventModel> filteredEvents = new ArrayList<>();
+    for (EventModel event : events) {
+      if (checkEventBetweenDates(event, start, end)) {
+        filteredEvents.add(event);
+      }
+    }
+    return filteredEvents;
+  }
+
+  /**
+   * Returns a list of events for a specific calendar between a specific start and end time.
+   * @param start LocalDateTime starting time
+   * @param end LocalDateTime Ending time
+   * @return a List of Events
+   */
+  public List<String> processGetEventsBetween(LocalDateTime start, LocalDateTime end) {
+    String calendarName = this.calenderCollection.getCalendarName(this.eventCollection);
+    List<EventModel> filteredEvents = getEventsBetween(calendarName, start, end);
+    List<String> eventStrings = new ArrayList<>();
+    for (EventModel event : filteredEvents) {
+      String formattedEventString = formatEvent(event);
+      eventStrings.add(formattedEventString);
+    }
+    return eventStrings;
+  }
+
+  private String formatEvent(EventModel event) {
+    return String.format(
+            "%s, %s, %s",
+            event.getEventName(),
+            event.getStartDateTime(),
+            event.getEndDateTime()
+    );
   }
 }

@@ -223,4 +223,9 @@ public class CommandGenerator {
 
     return String.format("show status on %sT%s", date, time);
   }
+
+  public String importCalendarCommand(Map<String, String> values) {
+    String filename = values.get("Filename:");
+    return String.format("import cal %s", filename);
+  }
 }

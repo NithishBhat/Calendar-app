@@ -153,6 +153,8 @@ public class CommandParser {
             + "\\s+to\\s+"
             + dateTimeString
             + "\\s*$", Pattern.CASE_INSENSITIVE));
+
+    // export cal filename
     patterns.put("export", Pattern.compile("\\s*export\\s+cal\\s+"
             + "([a-zA-Z0-9]+\\.csv)\\s*", Pattern.CASE_INSENSITIVE));
 
@@ -160,6 +162,10 @@ public class CommandParser {
     patterns.put("show", Pattern.compile("\\s*show\\s+status\\s+on\\s+"
             + dateTimeString
             + "\\s*$", Pattern.CASE_INSENSITIVE));
+
+    //import cal filename
+    patterns.put("import", Pattern.compile("\\s*import\\s+cal\\s+"
+            + "([a-zA-Z0-9]+\\.csv)\\s*", Pattern.CASE_INSENSITIVE));
   }
 
   /**

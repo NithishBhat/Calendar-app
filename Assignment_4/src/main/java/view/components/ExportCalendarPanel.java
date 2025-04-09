@@ -101,6 +101,7 @@ public class ExportCalendarPanel extends AbstractCalendarPanel {
     JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
     buttonPanel.add(exportButton);
     add(buttonPanel);
+
   }
 
   @Override

@@ -2,11 +2,15 @@ package controller;
 
 
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import model.EventModel;
 
 /**
  * The EventController class is responsible for managing event-related commands.
@@ -79,6 +83,7 @@ public class EventController {
       commandMap.put("printEventsBetween", () -> eventHandler.processPrintEventsBetween(matcher));
       commandMap.put("export", () -> eventHandler.processExport(matcher));
       commandMap.put("show", () -> eventHandler.processShowStatus(matcher));
+      commandMap.put("import", () -> eventHandler.processImport(matcher));
 
       // go through the map and call method if there is a match
       for (Map.Entry<String, Pattern> entry : parser.getPatterns().entrySet()) {
@@ -88,6 +93,16 @@ public class EventController {
         }
       }
     }
+  }
+
+  /**
+   * Returns a list of events in a specific time range
+   * @param start LocalDateTime starting dateTime
+   * @param end LocalDateTime ending dateTime
+   * @return List of events
+   */
+  public List<String> getEventsBetween(LocalDateTime start, LocalDateTime end) {
+    return eventHandler.processGetEventsBetween(start, end);
   }
 
   /**

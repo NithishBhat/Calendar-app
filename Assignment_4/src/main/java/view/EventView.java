@@ -2,6 +2,7 @@ package view;
 
 import controller.EventController;
 import controller.InputSource;
+import view.utils.CommandGenerator;
 
 import java.util.Scanner;
 
@@ -54,6 +55,20 @@ public class EventView {
     eventController.headlessMode(new InputSource(filename));
   }
 
+  public void runGUIMode() {
+    CommandGenerator commandGenerator = new CommandGenerator();
+    CalendarUI ui = new CalendarUI(eventController, commandGenerator);
+    eventController.getEventHandler().addUIListener(ui);
+    ui.start();
+  }
+
+  private static void printUsage() {
+    System.out.println("Usage:");
+    System.out.println("  java -jar Program.jar");
+    System.out.println("  java -jar Program.jar --mode interactive");
+    System.out.println("  java -jar Program.jar --mode headless <filename>");
+  }
+
   /**
    * Main method for running the application. Processes command-line arguments to determine the
    * operating mode.
@@ -61,20 +76,23 @@ public class EventView {
    * @param args command-line arguments in the format: --mode [interactive|headless filename]
    */
   public static void main(String[] args) {
-    if (args.length < 2 || !args[0].equalsIgnoreCase("--mode")) {
-      System.out.println("Usage: java EventView --mode [interactive|headless filename]");
-      return;
-    }
     EventView eventView = new EventView();
 
-    if (args[1].equalsIgnoreCase("interactive")) {
-      eventView.runInteractiveMode();
-    }
-    else if (args[1].equalsIgnoreCase("headless") && args.length == 3) {
-      eventView.runHeadlessMode(args[2]);
-    }
-    else {
-      System.out.println("Usage: java EventView --mode [interactive|headless filename]");
+    if (args.length == 0) {
+      // No args → Launch GUI by default
+      eventView.runGUIMode();
+    } else if (args.length >= 2 && args[0].equalsIgnoreCase("--mode")) {
+      if (args[1].equalsIgnoreCase("interactive")) {
+        eventView.runInteractiveMode();
+      } else if (args[1].equalsIgnoreCase("headless") && args.length == 3) {
+        eventView.runHeadlessMode(args[2]);
+      } else {
+        printUsage();
+      }
+    } else {
+      printUsage();
     }
   }
 }
+
+
