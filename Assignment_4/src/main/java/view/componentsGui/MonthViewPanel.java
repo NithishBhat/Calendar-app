@@ -3,9 +3,30 @@ package view.componentsGui;
 import controller.EventController;
 import view.utilsGui.CommandGenerator;
 
-import javax.swing.*;
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
+import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import javax.swing.JRadioButton;
+import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
 
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.GridLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -32,11 +53,12 @@ public class MonthViewPanel extends AbstractCalendarPanel {
   private JScrollPane calendarScrollPane;
 
   /**
-   * Constructor
+   * Constructs a new MonthViewPanel.
    *
-   * @param controller The event controller (not directly used here)
+   * @param controller The event controller for accessing event data
    * @param commandPreviewArea The shared command preview area
-   * @param commandGenerator The command generator
+   * @param commandGenerator The command generator for building command strings
+   * @param tabbedPane The parent tabbed pane for navigation between tabs
    */
   public MonthViewPanel(EventController controller, JTextArea commandPreviewArea,
                         CommandGenerator commandGenerator, JTabbedPane tabbedPane) {
@@ -248,6 +270,12 @@ public class MonthViewPanel extends AbstractCalendarPanel {
 
     // Add mouse listeners for user interactions
     dayPanel.addMouseListener(new MouseAdapter() {
+      /**
+       * Handles mouse press events on day panels.
+       * Right-click shows context menu, double-click redirects to create event tab.
+       *
+       * @param e The mouse event that triggered this method
+       */
       @Override
       public void mousePressed(MouseEvent e) {
         if (e.getButton() == MouseEvent.BUTTON3) {  // Right-click
@@ -260,6 +288,12 @@ public class MonthViewPanel extends AbstractCalendarPanel {
 
     // Add mouse listener for the event text area
     eventArea.addMouseListener(new MouseAdapter() {
+      /**
+       * Handles mouse click events on the event text area.
+       * Clicking on an event text redirects to edit event tab for that event.
+       *
+       * @param e The mouse event that triggered this method
+       */
       @Override
       public void mouseClicked(MouseEvent e) {
         // If there's text at the point clicked (i.e., clicking on an event)
@@ -615,7 +649,8 @@ public class MonthViewPanel extends AbstractCalendarPanel {
   }
 
   /**
-   * Method to show events for the entire month
+   * Displays events for the entire current month in the calendar view.
+   * Fetches events from the controller and displays them in their corresponding day cells.
    */
   public void showEventsForMonth() {
     LocalDateTime startDateTime = currentMonth.atDay(1).atStartOfDay();
@@ -681,6 +716,10 @@ public class MonthViewPanel extends AbstractCalendarPanel {
     }
   }
 
+  /**
+   * Refreshes the entire month view by rebuilding the calendar grid and updating events.
+   * This method should be called when events have been added, modified, or deleted.
+   */
   public void refreshMonth() {
     // Rebuild the calendar grid completely
     refreshCalendarGrid();
