@@ -1,10 +1,10 @@
-package view.componentsGui;
+package view.componentsgui;
 
 import controller.EventController;
 import model.EventCollectionModel;
 import model.EventModel;
-import view.utilsGui.CommandGenerator;
-import view.utilsGui.UIUtils;
+import view.utilsgui.CommandGenerator;
+import view.utilsgui.UIUtils;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;

@@ -1,7 +1,7 @@
-package view.componentsGui;
+package view.componentsgui;
 
 import controller.EventController;
-import view.utilsGui.CommandGenerator;
+import view.utilsgui.CommandGenerator;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;

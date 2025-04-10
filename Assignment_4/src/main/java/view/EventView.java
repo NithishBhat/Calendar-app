@@ -2,8 +2,8 @@ package view;
 
 import controller.EventController;
 import controller.InputSource;
-import view.componentsGui.CalendarUI;
-import view.utilsGui.CommandGenerator;
+import view.componentsgui.CalendarUI;
+import view.utilsgui.CommandGenerator;
 
 import java.util.Scanner;
 

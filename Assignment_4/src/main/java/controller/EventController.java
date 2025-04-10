@@ -96,7 +96,7 @@ public class EventController {
   }
 
   /**
-   * Returns a list of events in a specific time range
+   * Returns a list of events in a specific time range.
    * @param start LocalDateTime starting dateTime
    * @param end LocalDateTime ending dateTime
    * @return List of events

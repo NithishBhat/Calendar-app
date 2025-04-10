@@ -1,9 +1,9 @@
-package view.componentsGui;
+package view.componentsgui;
 
 import controller.EventController;
 import model.CalenderModel;
-import view.utilsGui.CommandGenerator;
-import view.utilsGui.UIUtils;
+import view.utilsgui.CommandGenerator;
+import view.utilsgui.UIUtils;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
