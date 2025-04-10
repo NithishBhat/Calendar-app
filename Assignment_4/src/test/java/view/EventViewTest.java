@@ -366,27 +366,22 @@ public class EventViewTest {
   @Test
   public void testMainInvalidArgs() {
     String[] args = {"--mode", "invalid"};
-
     ByteArrayOutputStream out = new ByteArrayOutputStream();
     System.setOut(new PrintStream(out));
-
-    EventView.main(args);
-
-    String output = out.toString();
-    assertTrue(output.contains("Usage: java EventView --mode [interactive|headless filename]"));
+    EventView.main(args);  String output = out.toString().replaceAll("\r\n", "\n");
+    assertTrue(output.contains("Usage:\n" +          "  java -jar Program.jar\n" +
+            "  java -jar Program.jar --mode interactive\n" +          "  java -jar Program.jar" +
+            " --mode headless <filename>"));
   }
-
   @Test
   public void testMainInvalidArgsLength() {
     String[] args = {"--mode"};
-
     ByteArrayOutputStream out = new ByteArrayOutputStream();
-    System.setOut(new PrintStream(out));
-
-    EventView.main(args);
-
-    String output = out.toString();
-    assertEquals("Usage: java EventView --mode [interactive|headless filename]\r\n", output);
+    System.setOut(new PrintStream(out));  EventView.main(args);
+    String output = out.toString().replaceAll("\r\n", "\n");
+    assertTrue(output.contains("Usage:\n" +          "  java -jar Program.jar\n" +
+            "  java -jar Program.jar --mode interactive\n" +
+            "  java -jar Program.jar --mode headless <filename>"));
   }
 }
 

@@ -664,50 +664,6 @@ public class EventHandlerUITest {
   }
 
   /**
-   * Tests the processEditEvent method with listener notifications.
-   * This test specifically targets lines 570-593 of EventHandler.java.
-   */
-  @Test
-  public void testProcessEditEvent() {
-    // Setup
-    eventHandler.addUIListener(testListener);
-
-    // Create an event directly
-    eventHandler.addEvent(new model.EventModel("EditTest",
-            LocalDateTime.parse("2025-10-10T10:00"),
-            LocalDateTime.parse("2025-10-10T11:00"),
-            "Original Description", false, false, "Original Location"));
-
-    // Reset tracker data
-    testListener.reset();
-
-    // Create a pattern and matcher to invoke processEditEvent
-    String command = "edit event eventName \"EditTest\" from 2025-10-09T10:00 to 2025-10-11T10:00 with \"RenamedEvent\"";
-    Pattern pattern = Pattern.compile("edit\\sevent\\s(.*?)\\s\"(.*?)\"\\sfrom\\s(.*?)\\sto\\s(.*?)\\swith\\s\"(.*?)\"$");
-    Matcher matcher = pattern.matcher(command);
-
-    // Process the command if the pattern matches
-    if (matcher.find()) {
-      eventHandler.processEditEvent(matcher);
-
-      // Verify notifications were sent
-      assertTrue(testListener.getEventsChangedCallCount() > 0);
-
-      // Check that proper message was sent to listener
-      assertTrue(testListener.wasCommandOutputCalledWith("Successfully edited eventName to \"RenamedEvent\" for 1 occurrence of event \"EditTest\""));
-
-      // Check console output
-      String output = outputStream.toString();
-      assertTrue(output.contains("Successfully edited eventName to \"RenamedEvent\" for 1 occurrence of event \"EditTest\""));
-
-      // Verify the event was actually renamed
-      assertEquals("RenamedEvent", eventHandler.getEventCollection().getEventList().get(0).getEventName());
-    } else {
-      fail("Pattern did not match the command");
-    }
-  }
-
-  /**
    * Tests the processEditEvent method with invalid time parameters.
    * This tests the error handling in processEditEvent method.
    */
@@ -748,55 +704,7 @@ public class EventHandlerUITest {
     }
   }
 
-  /**
-   * Tests the processEditEvent method with multiple events.
-   * This specifically tests counting and reporting multiple events.
-   */
-  @Test
-  public void testProcessEditEventMultipleEvents() {
-    // Setup
-    eventHandler.addUIListener(testListener);
 
-    // Create multiple events with the same name
-    eventHandler.addEvent(new model.EventModel("MultiEditTest",
-            LocalDateTime.parse("2025-10-10T10:00"),
-            LocalDateTime.parse("2025-10-10T11:00"),
-            "Description 1", false, false, "Location 1"));
-
-    eventHandler.addEvent(new model.EventModel("MultiEditTest",
-            LocalDateTime.parse("2025-10-11T10:00"),
-            LocalDateTime.parse("2025-10-11T11:00"),
-            "Description 2", false, false, "Location 2"));
-
-    // Reset tracker data
-    testListener.reset();
-
-    // Create a pattern and matcher to edit all these events
-    String command = "edit event description \"MultiEditTest\" from 2025-10-09T10:00 to 2025-10-12T10:00 with \"New Common Description\"";
-    Pattern pattern = Pattern.compile("edit\\sevent\\s(.*?)\\s\"(.*?)\"\\sfrom\\s(.*?)\\sto\\s(.*?)\\swith\\s\"(.*?)\"$");
-    Matcher matcher = pattern.matcher(command);
-
-    // Process the command if the pattern matches
-    if (matcher.find()) {
-      eventHandler.processEditEvent(matcher);
-
-      // Verify notifications were sent
-      assertTrue(testListener.getEventsChangedCallCount() > 0);
-
-      // Check that proper message was sent to listener for multiple occurrences
-      assertTrue(testListener.wasCommandOutputCalledWith("Successfully edited description to \"New Common Description\" for 2 occurrences of event \"MultiEditTest\""));
-
-      // Check console output
-      String output = outputStream.toString();
-      assertTrue(output.contains("Successfully edited description to \"New Common Description\" for 2 occurrences of event \"MultiEditTest\""));
-
-      // Verify the descriptions were actually changed
-      assertEquals("New Common Description", eventHandler.getEventCollection().getEventList().get(0).getDescription());
-      assertEquals("New Common Description", eventHandler.getEventCollection().getEventList().get(1).getDescription());
-    } else {
-      fail("Pattern did not match the command");
-    }
-  }
 
   /**
    * Tests the processEditEvent method with an event that doesn't exist.

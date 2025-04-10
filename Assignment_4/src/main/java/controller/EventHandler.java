@@ -930,13 +930,19 @@ public class EventHandler {
     for (EventModel event : eventCollection.getEventList()) {
       // if start and enddate is specified then we need to check
       // if the event given is between the two dates
+      if (isEndBeforeStart(newProperty,event.getEndDateTime())){
+        throw new RuntimeException("End date should be before start date");
+      }
+
       if (event.getEventName().equals(eventName) && checkEventBetweenDates(event,
-              startDateTime, endDateTime)) {
+              startDateTime, endDateTime) ) {
         event.setStartDateTime(newProperty);
 
       }
     }
-    return null;
+    throw new RuntimeException("Event " + eventName + " not found");
+
+
   }
 
   /**
@@ -951,12 +957,15 @@ public class EventHandler {
   private Void setEndDateTime(LocalDateTime newProperty, String eventName,
                               LocalDateTime startDateTime, LocalDateTime endDateTime) {
     for (EventModel event : eventCollection.getEventList()) {
+      if (isEndBeforeStart(newProperty,event.getEndDateTime())){
+        throw new RuntimeException("End date should be before start date");
+      }
       if (event.getEventName().equals(eventName) && checkEventBetweenDates(event, startDateTime,
-              endDateTime)) {
+              endDateTime)&& isEndBeforeStart(event.getStartDateTime(),newProperty)) {
         event.setEndDateTime(newProperty);
       }
     }
-    return null;
+    throw new RuntimeException("Event " + eventName + " not found");
   }
 
   /**
@@ -976,7 +985,7 @@ public class EventHandler {
         event.setLocation(location);
       }
     }
-    return null;
+    throw new RuntimeException("Event " + eventName + " not found");
   }
 
   /**
@@ -996,7 +1005,7 @@ public class EventHandler {
         event.setEventName(newEventName);
       }
     }
-    return null;
+    throw new RuntimeException("Event " + eventName + " not found");
   }
 
   /**
@@ -1016,7 +1025,7 @@ public class EventHandler {
         event.setIsPrivate(isPrivate);
       }
     }
-    return null;
+    throw new RuntimeException("Event " + eventName + " not found");
   }
 
   /**
@@ -1036,7 +1045,7 @@ public class EventHandler {
         event.setDescription(description);
       }
     }
-    return null;
+    throw new RuntimeException("Event " + eventName + " not found");
   }
 
   /**

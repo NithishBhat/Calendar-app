@@ -28,8 +28,8 @@ public class CommandParser {
     String dateTimeString = "(\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2})";
     String dateString = "(\\d{4}-\\d{2}-\\d{2})";
     String weekDay = "([MTWRFSU]{1,7})";
-    String optionalParamsPattern = "\\s*(?:description:\\s*\"(.*?)\")?\\s*" +
-            "(?:location:\\s*\"(.*?)\")?\\s*(?:privacy:\\s*\"(true|false)\")?";
+    String optionalParamsPattern = "\\s*(?:description:\\s*\"?(.*?)\"?)?\\s*" +
+            "(?:location:\\s*\"?(.*?)\"?)?\\s*(?:privacy:\\s*\"?(true|false)\"?)?";
 
     //Calendar commands
     //use calendar --name <name-of-calendar>
@@ -65,19 +65,19 @@ public class CommandParser {
     //copy events on <dateString> --target <calName> to <dateString>
     patterns.put("copyEventsOn", Pattern.compile(
             "\\s*copy\\s+events\\s+on\\s+" + dateString +
-            "\\s+--target\\s+\"([^\"]+)\"\\s+to\\s+" + dateString +
+            "\\s+--target\\s+\"?([^\"]+)\"?\\s+to\\s+" + dateString +
             "\\s*$", Pattern.CASE_INSENSITIVE));
 
     //copy events between <dateString> and <dateString> --target <calName> to <dateString>
     patterns.put("copyEventsBetween", Pattern.compile(
             "\\s*copy\\s+events\\s+between\\s+" + dateString +
             "\\s+and\\s+" + dateString +
-            "\\s+--target\\s+\"([^\"]+)\"\\s+to\\s+" + dateString +
+            "\\s+--target\\s+\"?([^\"]+)\"?\\s+to\\s+" + dateString +
             "\\s*$", Pattern.CASE_INSENSITIVE));
 
     //Create Events pattern
     patterns.put("createEventPattern", Pattern.compile("\\s*create\\s+"
-            + "event(\\s+--autoDecline)?\\s+\"(.*?)\"\\s+from\\s+"
+            + "event(\\s+--autoDecline)?\\s+\"?(.*?)\"?\\s+from\\s+"
             + dateTimeString
             + "\\s+to\\s+"
             + dateTimeString
@@ -94,7 +94,7 @@ public class CommandParser {
             + optionalParamsPattern
             + "\\s*$", Pattern.CASE_INSENSITIVE));
     patterns.put("createRecurringEventEndDate", Pattern.compile("\\s*create\\s+"
-            + "event(\\s+--autoDecline)?\\s+\"(.*?)\"\\s+from\\s+"
+            + "event(\\s+--autoDecline)?\\s+\"?(.*?)\"?\\s+from\\s+"
             + dateTimeString
             + "\\s+to\\s+"
             + dateTimeString
@@ -106,13 +106,13 @@ public class CommandParser {
             + optionalParamsPattern
             + "\\s*$", Pattern.CASE_INSENSITIVE));
     patterns.put("createWholeDayEvent", Pattern.compile("\\s*create\\s+"
-            + "event(\\s+--autoDecline)?\\s+\"(.*?)\"\\s+on\\s+"
+            + "event(\\s+--autoDecline)?\\s+\"?(.*?)\"?\\s+on\\s+"
             + dateTimeString
             + "\\s*"
             + optionalParamsPattern
             + "\\s*$", Pattern.CASE_INSENSITIVE));
     patterns.put("createRecurringWholeDayEventN", Pattern.compile("\\s*create\\s+"
-            + "event(\\s+--autoDecline)?\\s+\"(.*?)\"\\s+on\\s+"
+            + "event(\\s+--autoDecline)?\\s+\"?(.*?)\"?\\s+on\\s+"
             + dateString +
             "\\s+repeats\\s+"
             + weekDay
@@ -120,7 +120,7 @@ public class CommandParser {
             + optionalParamsPattern
             + "\\s*$", Pattern.CASE_INSENSITIVE));
     patterns.put("createRecurringWholeDayEventEnd", Pattern.compile("\\s*create\\s+"
-            + "event(\\s+--autoDecline)?\\s+\"(.*?)\"\\s+on\\s+"
+            + "event(\\s+--autoDecline)?\\s+\"?(.*?)\"?\\s+on\\s+"
             + dateString
             + "\\s+repeats\\s+"
             + weekDay
@@ -132,17 +132,17 @@ public class CommandParser {
 
     // Edit event patterns
     patterns.put("editEvent", Pattern.compile("\\s*edit\\s+"
-            + "event\\s+(\\S+)\\s+\"(.*?)\"\\s+from\\s+"
+            + "event\\s+(\\S+)\\s+\"?(.*?)\"?\\s+from\\s+"
             + dateTimeString
             + "\\s+to\\s+"
             + dateTimeString
-            + "\\s+with\\s+\"(.*?)\"\\s*$", Pattern.CASE_INSENSITIVE));
+            + "\\s+with\\s+\"?(.*?)\"?\\s*$", Pattern.CASE_INSENSITIVE));
     patterns.put("editEvents", Pattern.compile("\\s*edit\\s+"
-            + "events\\s+(\\S+)\\s+\"(.*?)\"\\s+from\\s+"
+            + "events\\s+(\\S+)\\s+\"?(.*?)\"?\\s+from\\s+"
             + dateTimeString
-            + "\\s+with\\s+\"(.*?)\"\\s*$", Pattern.CASE_INSENSITIVE));
+            + "\\s+with\\s+\"?(.*?)\"?\\s*$", Pattern.CASE_INSENSITIVE));
     patterns.put("editEventsByName", Pattern.compile("\\s*edit\\s+"
-            + "events\\s+(\\S+)\\s+\"(.+?)\"\\s+\"(.*?)\"\\s*$", Pattern.CASE_INSENSITIVE));
+            + "events\\s+(\\S+)\\s+\"(.+)\"\\s+\"(.+)\"\\s*$", Pattern.CASE_INSENSITIVE));
 
     // Print and export patterns
     patterns.put("printEventsOn", Pattern.compile("\\s*print\\s+events\\s+on\\s+"
