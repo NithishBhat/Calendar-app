@@ -1,6 +1,0 @@
-Subject,Start Date,Start Time,End Date,End Time,All Day Event,Description,Location,Private
-singleEvent, 2025-10-10, 10:00, 2025-10-10, 11:00, false, "test Description", "MA", true
-recurringEventN, 2025-10-13, 12:00, 2025-10-13, 13:00, false, "test Description", "MA", false
-recurringEventsUntil, 2025-12-09, 09:00, 2025-12-09, 09:01, false, "test", "MA", true
-recurringEventsUntil, 2025-12-10, 09:00, 2025-12-10, 09:01, false, "test", "MA", true
-AllDayEvent, 2025-10-06, 00:00, 2025-10-06, 23:59, true, "test Description", "MA", false
