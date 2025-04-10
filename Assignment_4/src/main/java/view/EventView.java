@@ -13,6 +13,7 @@ import java.util.Scanner;
  */
 public class EventView {
 
+  /** The event controller responsible for handling commands and managing events. */
   private EventController eventController;
 
   /**
@@ -29,9 +30,7 @@ public class EventView {
   public void runInteractiveMode() {
     Scanner scanner = new Scanner(System.in);
     while (true) {
-      System.out.print("Enter Comma" +
-              "" +
-              "nd: ");
+      System.out.print("Enter Command: ");
       String command = scanner.nextLine();
       if (command.equals("exit")) {
         System.out.println("Goodbye!");
@@ -56,6 +55,11 @@ public class EventView {
     eventController.headlessMode(new InputSource(filename));
   }
 
+  /**
+   * Runs the application in GUI mode, displaying a graphical calendar interface.
+   * This method initializes the UI components, sets up event listeners, and
+   * starts the graphical user interface.
+   */
   public void runGUIMode() {
     CommandGenerator commandGenerator = new CommandGenerator();
     CalendarUI ui = new CalendarUI(eventController, commandGenerator);
@@ -63,6 +67,10 @@ public class EventView {
     ui.start();
   }
 
+  /**
+   * Prints usage instructions for the application to the console.
+   * This includes the available command-line options and examples.
+   */
   private static void printUsage() {
     System.out.println("Usage:");
     System.out.println("  java -jar Program.jar");
@@ -95,5 +103,3 @@ public class EventView {
     }
   }
 }
-
-

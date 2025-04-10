@@ -74,7 +74,8 @@ public class EventCollectionModel {
 
   /**
    * Checks for collision between a recurring event's occurrences and existing events.
-   * If auto-decline is enabled and any occurrence has a collision, the recurring event won't be added.
+   * If auto-decline is enabled and any occurrence has a collision, the recurring
+   * event won't be added.
    * Otherwise, all occurrences will be added regardless of collisions.
    *
    * @param event The recurring event to check for collision.

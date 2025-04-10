@@ -12,20 +12,38 @@ import java.time.LocalDate;
 import java.util.Map;
 
 /**
- * Panel for showing calendar status at a particular date/time
+ * Panel for showing calendar status at a particular date/time.
+ * This panel allows users to input a date and time to check
+ * the calendar status at that specific moment.
  */
 public class ShowStatusPanel extends AbstractCalendarPanel {
 
+  /** Command generator for creating status commands */
   private CommandGenerator commandGenerator;
+
+  /** Text field for entering the date */
   private JTextField dateField;
+
+  /** Text field for entering the time */
   private JTextField timeField;
 
+  /**
+   * Constructs a new ShowStatusPanel.
+   *
+   * @param controller the event controller that manages calendar operations
+   * @param commandPreviewArea the text area where command previews are displayed
+   * @param commandGenerator the generator for creating status commands
+   */
   public ShowStatusPanel(EventController controller, JTextArea commandPreviewArea,
                          CommandGenerator commandGenerator) {
     super(controller, commandPreviewArea);
     this.commandGenerator = commandGenerator;
   }
 
+  /**
+   * Initializes the user interface components for this panel.
+   * Sets up the date and time input fields, format hints, and action button.
+   */
   @Override
   protected void initializeUI() {
     // Date and time section
@@ -90,6 +108,11 @@ public class ShowStatusPanel extends AbstractCalendarPanel {
     add(buttonPanel);
   }
 
+  /**
+   * Generates the command to check calendar status based on user input.
+   *
+   * @return the generated status command string
+   */
   @Override
   protected String generateCommand() {
     Map<String, String> values = getFormValues();
@@ -100,6 +123,11 @@ public class ShowStatusPanel extends AbstractCalendarPanel {
     return commandGenerator.showStatusCommand(values);
   }
 
+  /**
+   * Gets the text to display on the action button.
+   *
+   * @return the button text
+   */
   @Override
   protected String getButtonText() {
     return "Check Status";

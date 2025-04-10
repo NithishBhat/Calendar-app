@@ -4,28 +4,57 @@ import controller.EventController;
 import view.utilsGui.CommandGenerator;
 import view.utilsGui.UIUtils;
 
-import javax.swing.*;
+import javax.swing.Box;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
+import javax.swing.JPanel;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
-import java.awt.*;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.io.File;
 import java.util.Map;
 
 /**
- * Panel for importing a calendar from a file
+ * Panel for importing a calendar from a file.
+ * Provides UI components for selecting a file to import and the format
+ * of the file. Extends AbstractCalendarPanel to inherit common panel functionality.
  */
 public class ImportCalendarPanel extends AbstractCalendarPanel {
 
+  /** Generator for creating formatted command strings. */
   private CommandGenerator commandGenerator;
-  private JTextField filenameField;
-  private JComboBox<String> formatCombo;
-  private JButton importButton;  // Declare the import button
 
+  /** Text field for displaying the selected file path. */
+  private JTextField filenameField;
+
+  /** Dropdown for selecting the import file format. */
+  private JComboBox<String> formatCombo;
+
+  /** Button to initiate the import action. */
+  private JButton importButton;
+
+  /**
+   * Constructor for the import calendar panel.
+   *
+   * @param controller The event controller that processes commands
+   * @param commandPreviewArea The shared text area for displaying command output
+   * @param commandGenerator The generator for creating formatted command strings
+   */
   public ImportCalendarPanel(EventController controller, JTextArea commandPreviewArea,
                              CommandGenerator commandGenerator) {
     super(controller, commandPreviewArea);
     this.commandGenerator = commandGenerator;
   }
 
+  /**
+   * Initializes the UI components for this panel.
+   * Creates and arranges fields for file selection, format options,
+   * and buttons for browsing and importing.
+   */
   @Override
   protected void initializeUI() {
     // Import file section
@@ -63,15 +92,16 @@ public class ImportCalendarPanel extends AbstractCalendarPanel {
 
     buttonPanel.add(importButton);
     add(buttonPanel);
-
   }
 
   /**
-   * Opens a file chooser to select a file.
+   * Opens a file chooser dialog to select a file for import.
+   * Sets the selected file path in the filename field.
+   * The file chooser is configured to filter for CSV files.
    */
   private void openFileChooser() {
     JFileChooser fileChooser = new JFileChooser();
-    fileChooser.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter("CSV files", "csv"));
+    fileChooser.setFileFilter(new FileNameExtensionFilter("CSV files", "csv"));
     int returnVal = fileChooser.showOpenDialog(this);
     if (returnVal == JFileChooser.APPROVE_OPTION) {
       File selectedFile = fileChooser.getSelectedFile();
@@ -79,14 +109,19 @@ public class ImportCalendarPanel extends AbstractCalendarPanel {
     }
   }
 
+  /**
+   * Generates a command string for importing a calendar based on the current field values.
+   * Extracts just the filename (without the path) from the selected file
+   * and uses the command generator to format it into a valid command.
+   *
+   * @return A formatted command string for importing a calendar from the specified file
+   */
   @Override
   protected String generateCommand() {
     Map<String, String> values = getFormValues();
 
     // Get filename from the text field
     String filename = filenameField.getText();
-
-    System.out.println("Selected File: " + filename);
 
     // Extract just the filename (without the path)
     String extractedFilename = new File(filename).getName();
@@ -97,6 +132,11 @@ public class ImportCalendarPanel extends AbstractCalendarPanel {
     return commandGenerator.importCalendarCommand(values);
   }
 
+  /**
+   * Returns the text to display on this panel's action button.
+   *
+   * @return The button text ("Import Calendar")
+   */
   @Override
   protected String getButtonText() {
     return "Import Calendar";

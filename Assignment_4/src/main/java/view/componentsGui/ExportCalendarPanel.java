@@ -4,27 +4,59 @@ import controller.EventController;
 import view.utilsGui.CommandGenerator;
 import view.utilsGui.UIUtils;
 
-import javax.swing.*;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.util.Map;
 
 /**
- * Panel for exporting a calendar to a file
+ * Panel for exporting a calendar to a file in different formats.
+ * Provides UI components for specifying export details including filename,
+ * location, and format. Extends AbstractCalendarPanel to inherit common panel functionality.
  */
 public class ExportCalendarPanel extends AbstractCalendarPanel {
 
+  /** Generator for creating formatted command strings. */
   private CommandGenerator commandGenerator;
+
+  /** Text field for entering the export filename. */
   private JTextField filenameField;
+
+  /** Text field for entering the export file path. */
   private JTextField pathField;
+
+  /** Dropdown for selecting the export file format. */
   private JComboBox<String> formatCombo;
 
+  /**
+   * Constructor for the export calendar panel.
+   *
+   * @param controller The event controller that processes commands
+   * @param commandPreviewArea The shared text area for displaying command output
+   * @param commandGenerator The generator for creating formatted command strings
+   */
   public ExportCalendarPanel(EventController controller, JTextArea commandPreviewArea,
                              CommandGenerator commandGenerator) {
     super(controller, commandPreviewArea);
     this.commandGenerator = commandGenerator;
   }
 
+  /**
+   * Initializes the UI components for this panel.
+   * Creates and arranges fields for export details including filename,
+   * path selection with browse button, and format options.
+   */
   @Override
   protected void initializeUI() {
     // File details section
@@ -101,9 +133,15 @@ public class ExportCalendarPanel extends AbstractCalendarPanel {
     JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
     buttonPanel.add(exportButton);
     add(buttonPanel);
-
   }
 
+  /**
+   * Generates a command string for exporting a calendar based on the current field values.
+   * Handles file extension validation and path combination, then uses the command
+   * generator to format the values into a valid command.
+   *
+   * @return A formatted command string for exporting a calendar to the specified file
+   */
   @Override
   protected String generateCommand() {
     Map<String, String> values = getFormValues();
@@ -131,6 +169,11 @@ public class ExportCalendarPanel extends AbstractCalendarPanel {
     return commandGenerator.exportCalendarCommand(values);
   }
 
+  /**
+   * Returns the text to display on this panel's action button.
+   *
+   * @return The button text ("Export Calendar")
+   */
   @Override
   protected String getButtonText() {
     return "Export Calendar";

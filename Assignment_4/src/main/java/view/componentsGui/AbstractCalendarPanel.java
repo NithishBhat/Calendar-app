@@ -1,12 +1,17 @@
 package view.componentsGui;
 
-
 import controller.EventController;
 import view.utilsGui.UIUtils;
 
-import javax.swing.*;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JPanel;
+import javax.swing.JTextArea;
 import javax.swing.border.EmptyBorder;
-import java.awt.*;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -18,16 +23,20 @@ import java.util.Map;
  */
 public abstract class AbstractCalendarPanel extends JPanel {
 
-  // Common components
+  /** List of form fields contained in this panel. */
   protected List<FormField> formFields;
+
+  /** Text area for displaying command previews. */
   protected JTextArea commandPreviewArea;
+
+  /** Reference to the event controller for executing commands. */
   protected EventController controller;
 
   /**
-   * Constructor
+   * Constructor for the abstract calendar panel.
    *
-   * @param controller The event controller
-   * @param commandPreviewArea The shared command preview area
+   * @param controller The event controller that will process generated commands
+   * @param commandPreviewArea The shared command preview area for displaying commands
    */
   public AbstractCalendarPanel(EventController controller, JTextArea commandPreviewArea) {
     this.controller = controller;
@@ -44,23 +53,23 @@ public abstract class AbstractCalendarPanel extends JPanel {
 
   /**
    * Initialize the panel UI components.
-   * Must be implemented by subclasses.
+   * Must be implemented by subclasses to create their specific UI elements.
    */
   protected abstract void initializeUI();
 
   /**
    * Generate the command string for this panel's action.
-   * Must be implemented by subclasses.
+   * Must be implemented by subclasses to create the appropriate command syntax.
    *
-   * @return The command string
+   * @return The command string to be executed
    */
   protected abstract String generateCommand();
 
   /**
    * Get the button text for this panel.
-   * Can be overridden by subclasses if needed.
+   * Can be overridden by subclasses if needed for custom button labels.
    *
-   * @return The button text
+   * @return The button text to display
    */
   protected String getButtonText() {
     return "Run Command";
@@ -68,9 +77,10 @@ public abstract class AbstractCalendarPanel extends JPanel {
 
   /**
    * Add a form field to this panel.
+   * Creates a FormField object and adds it to the collection of fields.
    *
-   * @param label The field label
-   * @param component The UI component
+   * @param label The field label to display
+   * @param component The UI component for input
    * @return The created FormField object
    */
   protected FormField addFormField(String label, JComponent component) {
@@ -81,8 +91,9 @@ public abstract class AbstractCalendarPanel extends JPanel {
 
   /**
    * Create a section panel with title border.
+   * Delegates to UIUtils to maintain consistent styling.
    *
-   * @param title The section title
+   * @param title The section title to display
    * @param rows The number of rows in the grid
    * @param cols The number of columns in the grid
    * @return The created section panel
@@ -93,9 +104,10 @@ public abstract class AbstractCalendarPanel extends JPanel {
 
   /**
    * Create a row with label and components.
+   * Delegates to UIUtils to maintain consistent styling.
    *
-   * @param label The row label
-   * @param components The UI components to add
+   * @param label The row label to display
+   * @param components The UI components to add to the row
    * @return The created row panel
    */
   protected JPanel createRow(String label, Component... components) {
@@ -104,8 +116,9 @@ public abstract class AbstractCalendarPanel extends JPanel {
 
   /**
    * Create the action button for this panel.
+   * Sets up the button with appropriate styling and action listener.
    *
-   * @return The action button
+   * @return The configured action button
    */
   protected JButton createActionButton() {
     JButton button = new JButton(getButtonText());
@@ -121,6 +134,7 @@ public abstract class AbstractCalendarPanel extends JPanel {
   /**
    * Execute the panel's action.
    * Default implementation generates and executes the command.
+   * Can be overridden by subclasses for custom action behavior.
    */
   protected void executeAction() {
     // Generate the command
@@ -131,8 +145,10 @@ public abstract class AbstractCalendarPanel extends JPanel {
       controller.filterCommand(command);
     }
   }
+
   /**
    * Get values from all form fields.
+   * Collects values from all form fields into a map for processing.
    *
    * @return A map of field labels to values
    */
@@ -148,6 +164,7 @@ public abstract class AbstractCalendarPanel extends JPanel {
 
   /**
    * Apply a consistent size to a component.
+   * Delegates to UIUtils to maintain consistent styling.
    *
    * @param component The component to size
    * @param size The dimension to apply

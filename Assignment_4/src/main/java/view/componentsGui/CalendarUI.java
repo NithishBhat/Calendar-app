@@ -7,34 +7,57 @@ import model.EventModel;
 import view.utilsGui.CommandGenerator;
 import view.utilsGui.UIUtils;
 
-import javax.swing.*;
+import javax.swing.JComboBox;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
+import javax.swing.JTextArea;
+import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.GridLayout;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Main UI class for the Calendar application.
  * Manages the UI components and handles events.
+ * Implements CalendarUIListener to receive notifications about changes in the model.
  */
 public class CalendarUI implements CalendarUIListener {
 
-  // Shared components
+  /** Text area to display command history and output. */
   private JTextArea commandPreviewArea;
+
+  /** Dropdown to select the current calendar. */
   private JComboBox<String> calendarSelector;
+
+  /** Reference to the event controller for executing commands. */
   private EventController controller;
-  private String lastCommand = ""; // Track last command to prevent infinite loops
+
+  /** Tracks the last executed command to prevent infinite loops. */
+  private String lastCommand = "";
+
+  /** Helper to generate command strings. */
   private CommandGenerator commandGenerator;
+
+  /** Reference to the month view panel for refreshing the calendar display. */
   private MonthViewPanel monthViewPanel;
 
-  // Reference to the edit event panel's event name combo box
+  /** Reference to the edit event panel's event name combo box for updating event lists. */
   private JComboBox<String> editEventNameCombo;
 
   /**
-   * Main method - application entry point
+   * Main method - application entry point.
+   * Creates and initializes the UI on the Event Dispatch Thread.
    */
   public void start() {
     // Use SwingUtilities.invokeLater to ensure UI creation happens on EDT
@@ -55,10 +78,10 @@ public class CalendarUI implements CalendarUIListener {
   }
 
   /**
-   * Constructor
+   * Constructor for the Calendar UI.
    *
-   * @param controller The event controller
-   * @param commandGenerator The command generator
+   * @param controller The event controller that processes commands
+   * @param commandGenerator The command generator for creating command strings
    */
   public CalendarUI(EventController controller, CommandGenerator commandGenerator) {
     this.controller = controller;
@@ -66,7 +89,8 @@ public class CalendarUI implements CalendarUIListener {
   }
 
   /**
-   * Create and show the main UI
+   * Creates and displays the main application window.
+   * Sets up all UI components, panels, and event handlers.
    */
   private void createAndShowGUI() {
     // Create the main frame
@@ -134,7 +158,6 @@ public class CalendarUI implements CalendarUIListener {
     commandPanel.add(calendarSelectorPanel, BorderLayout.NORTH);
     commandPanel.add(new JScrollPane(commandPreviewArea), BorderLayout.CENTER);
 
-
     // Main panel with fixed layout
     JPanel mainPanel = new JPanel(new GridLayout(1, 2));  // 1 row, 2 columns
     mainPanel.add(tabbedPane);
@@ -144,11 +167,13 @@ public class CalendarUI implements CalendarUIListener {
     frame.pack();
     frame.setLocationRelativeTo(null); // Center on screen
     frame.setVisible(true);
-
   }
 
   /**
-   * CalendarUIListener implementation methods
+   * Called when the current calendar changes.
+   * Updates the UI to reflect the new calendar selection.
+   *
+   * @param calendarName The name of the newly selected calendar
    */
   @Override
   public void onCalendarChanged(String calendarName) {
@@ -168,6 +193,12 @@ public class CalendarUI implements CalendarUIListener {
     });
   }
 
+  /**
+   * Called when a command produces output.
+   * Appends the formatted output to the command preview area.
+   *
+   * @param output The command output text to display
+   */
   @Override
   public void onCommandOutput(String output) {
     SwingUtilities.invokeLater(() -> {
@@ -180,12 +211,13 @@ public class CalendarUI implements CalendarUIListener {
   }
 
   /**
-   * Formats command output to be more user-friendly
+   * Formats command output to be more user-friendly.
+   * Adds a timestamp to the output message.
+   *
    * @param output The raw command output
-   * @return Formatted user-friendly message
+   * @return Formatted user-friendly message with timestamp
    */
   private String formatCommandOutput(String output) {
-
     // Add timestamp
     String timestamp = LocalTime.now().format(
             DateTimeFormatter.ofPattern("HH:mm:ss"));
@@ -193,6 +225,12 @@ public class CalendarUI implements CalendarUIListener {
     return "[" + timestamp + "] " + output;
   }
 
+  /**
+   * Called when the events in a calendar change.
+   * Updates event-related UI components.
+   *
+   * @param calenderCollection The updated calendar collection
+   */
   @Override
   public void onEventsChanged(CalenderCollection calenderCollection) {
     SwingUtilities.invokeLater(() -> {
@@ -203,13 +241,18 @@ public class CalendarUI implements CalendarUIListener {
     });
   }
 
+  /**
+   * Called when the list of available calendars changes.
+   * Updates the calendar selector dropdown.
+   */
   @Override
   public void onCalendarListChanged() {
     updateCalendarList();
   }
 
   /**
-   * Update the calendar selector with current calendars
+   * Updates the calendar selector dropdown with the current list of calendars.
+   * Preserves the current selection if possible.
    */
   private void updateCalendarList() {
     SwingUtilities.invokeLater(() -> {
@@ -239,7 +282,8 @@ public class CalendarUI implements CalendarUIListener {
   }
 
   /**
-   * Updates the event name combo box with current events
+   * Updates the event name combo box with the current events from the selected calendar.
+   * Identifies and marks recurring events.
    */
   private void updateEventNameComboBox() {
     if (editEventNameCombo == null) return;

@@ -340,11 +340,13 @@ public class CalenderCollection implements CalendarCollectionInterface {
    * @param event the event to check for collisions and potentially add.
    * @return true if the event was not created due to a conflict, false otherwise.
    */
-  private boolean addEventWithCollisionCheck(EventCollectionModel targetCollection, EventModel event) {
+  private boolean addEventWithCollisionCheck(EventCollectionModel targetCollection,
+                                             EventModel event) {
     // Ensure autoDecline is always true
     boolean autoDecline = true;
 
-    boolean hasConflict = targetCollection.checkConflict(event.getStartDateTime(), event.getEndDateTime());
+    boolean hasConflict = targetCollection.checkConflict(event.getStartDateTime(),
+            event.getEndDateTime());
 
     if (autoDecline && hasConflict) {
       System.out.println(warningString + "Event \""

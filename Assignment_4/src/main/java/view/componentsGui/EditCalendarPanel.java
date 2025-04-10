@@ -5,28 +5,51 @@ import model.CalenderModel;
 import view.utilsGui.CommandGenerator;
 import view.utilsGui.UIUtils;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JPanel;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
+import java.awt.CardLayout;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.util.Map;
 
 /**
- * Panel for editing an existing calendar
+ * Panel for editing an existing calendar in the application.
+ * Provides UI components for selecting a calendar and modifying its properties.
+ * Extends AbstractCalendarPanel to inherit common panel functionality and
+ * implements CalendarUIListener to receive notifications about changes in the model.
  */
 public class EditCalendarPanel extends AbstractCalendarPanel implements CalendarUIListener {
 
+  /** Generator for creating formatted command strings. */
   private CommandGenerator commandGenerator;
+
+  /** Dropdown for selecting the calendar to edit. */
   private JComboBox<String> calendarNameSelector;
+
+  /** Dropdown for selecting which property to edit. */
   private JComboBox<String> propertyCombo;
+
+  /** Panel containing different input components based on selected property. */
   private JPanel valueCardPanel;
+
+  /** Text field for editing the calendar name. */
   private JTextField nameField;
+
+  /** Dropdown for selecting a timezone. */
   private JComboBox<String> timezoneCombo;
 
   /**
-   * Constructor
+   * Constructor for the edit calendar panel.
    *
-   * @param controller The event controller
-   * @param commandPreviewArea The shared command preview area
-   * @param commandGenerator The command generator
+   * @param controller The event controller that processes commands
+   * @param commandPreviewArea The shared text area for displaying command output
+   * @param commandGenerator The generator for creating formatted command strings
    */
   public EditCalendarPanel(EventController controller, JTextArea commandPreviewArea,
                            CommandGenerator commandGenerator) {
@@ -37,6 +60,11 @@ public class EditCalendarPanel extends AbstractCalendarPanel implements Calendar
     controller.getEventHandler().addUIListener(this);
   }
 
+  /**
+   * Initializes the UI components for this panel.
+   * Creates and arranges fields for calendar selection, property selection,
+   * and value input, and adds a button to submit the edit request.
+   */
   @Override
   protected void initializeUI() {
     // Calendar Selection Section
@@ -103,6 +131,12 @@ public class EditCalendarPanel extends AbstractCalendarPanel implements Calendar
     add(buttonPanel);
   }
 
+  /**
+   * Generates a command string for editing a calendar based on the current field values.
+   * Collects the input values and uses the command generator to format them into a valid command.
+   *
+   * @return A formatted command string for editing a calendar with the specified changes
+   */
   @Override
   protected String generateCommand() {
     Map<String, String> values = getFormValues();
@@ -120,13 +154,19 @@ public class EditCalendarPanel extends AbstractCalendarPanel implements Calendar
     return commandGenerator.editCalendarCommand(values);
   }
 
+  /**
+   * Returns the text to display on this panel's action button.
+   *
+   * @return The button text ("Run Edit Calendar")
+   */
   @Override
   protected String getButtonText() {
     return "Run Edit Calendar";
   }
 
   /**
-   * Update the calendar selector with current calendars
+   * Updates the calendar selector dropdown with the current list of calendars.
+   * Preserves the current selection if possible.
    */
   private void updateCalendarList() {
     SwingUtilities.invokeLater(() -> {
@@ -159,21 +199,43 @@ public class EditCalendarPanel extends AbstractCalendarPanel implements Calendar
 
   // CalendarUIListener implementation
 
+  /**
+   * Called when the current calendar changes.
+   * This panel does not need to take any action for this event.
+   *
+   * @param calendarName The name of the newly selected calendar
+   */
   @Override
   public void onCalendarChanged(String calendarName) {
     // No action needed for this panel
   }
 
+  /**
+   * Called when a command produces output.
+   * This panel does not need to take any action for this event.
+   *
+   * @param output The command output text
+   */
   @Override
   public void onCommandOutput(String output) {
     // No action needed for this panel
   }
 
+  /**
+   * Called when the events in any calendar change.
+   * This panel does not need to take any action for this event.
+   *
+   * @param calenderCollection The updated calendar collection
+   */
   @Override
   public void onEventsChanged(model.CalenderCollection calenderCollection) {
     // No action needed for this panel
   }
 
+  /**
+   * Called when the list of available calendars changes.
+   * Updates the calendar selector dropdown in response.
+   */
   @Override
   public void onCalendarListChanged() {
     updateCalendarList();

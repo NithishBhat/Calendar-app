@@ -612,7 +612,8 @@ public class EventHandler {
       int count = countEventsForEdit(property, eventName, startDateTime, null);
 
       if (count == 0) {
-        String errorMsg = "No events named \"" + eventName + "\" found from " + startDate + " onwards";
+        String errorMsg = "No events named \"" + eventName + "\" found from " + startDate +
+                " onwards";
         System.out.println(warningString + errorMsg);
         notifyUserMessage(errorMsg);
         return;
@@ -692,10 +693,12 @@ public class EventHandler {
     try {
       String startDate = matcher.group(1);
       LocalDateTime startDateTime = LocalDate.parse(startDate).atStartOfDay();
-      LocalDateTime endDateTime = startDateTime.toLocalDate().atTime(LocalTime.of(23, 59));
+      LocalDateTime endDateTime =
+              startDateTime.toLocalDate().atTime(LocalTime.of(23, 59));
 
       // Search for events in the timeframe
-      List<EventModel> printList = eventCollection.searchEventByTimeFrame(startDateTime, endDateTime);
+      List<EventModel> printList =
+              eventCollection.searchEventByTimeFrame(startDateTime, endDateTime);
 
       // Get calendar name and count events
       String calendarName = calenderCollection.getCalendarName(eventCollection);
@@ -774,13 +777,15 @@ public class EventHandler {
       if (!exportFile.exists()) {
         try {
           if (exportFile.createNewFile()) {
-            String fileCreatedMsg = "File \"" + fileName + "\" did not exist. A new file has been created at "
+            String fileCreatedMsg = "File \"" + fileName + "\" " +
+                    "did not exist. A new file has been created at "
                     + exportFile.getAbsolutePath();
             System.out.println(warningString + fileCreatedMsg);
             notifyUserMessage(fileCreatedMsg);
           }
         } catch (IOException e) {
-          String errorMsg = "Error creating file: " + exportFile.getAbsolutePath() + " - " + e.getMessage();
+          String errorMsg = "Error creating file: " +
+                  exportFile.getAbsolutePath() + " - " + e.getMessage();
           System.out.println(warningString + errorMsg);
           notifyUserMessage(errorMsg);
           return;
@@ -930,7 +935,7 @@ public class EventHandler {
     for (EventModel event : eventCollection.getEventList()) {
       // if start and enddate is specified then we need to check
       // if the event given is between the two dates
-      if (isEndBeforeStart(newProperty,event.getEndDateTime())){
+      if (isEndBeforeStart(newProperty,event.getEndDateTime())) {
         throw new RuntimeException("End date should be before start date");
       }
 
@@ -957,11 +962,11 @@ public class EventHandler {
   private Void setEndDateTime(LocalDateTime newProperty, String eventName,
                               LocalDateTime startDateTime, LocalDateTime endDateTime) {
     for (EventModel event : eventCollection.getEventList()) {
-      if (isEndBeforeStart(newProperty,event.getEndDateTime())){
+      if (isEndBeforeStart(newProperty,event.getEndDateTime())) {
         throw new RuntimeException("End date should be before start date");
       }
       if (event.getEventName().equals(eventName) && checkEventBetweenDates(event, startDateTime,
-              endDateTime)&& isEndBeforeStart(event.getStartDateTime(),newProperty)) {
+              endDateTime) && isEndBeforeStart(event.getStartDateTime(),newProperty)) {
         event.setEndDateTime(newProperty);
       }
     }
@@ -1091,7 +1096,8 @@ public class EventHandler {
     boolean autoDecline = true;
 
     // Check for conflicts
-    boolean hasConflict = eventCollection.checkConflict(event.getStartDateTime(), event.getEndDateTime());
+    boolean hasConflict =
+            eventCollection.checkConflict(event.getStartDateTime(), event.getEndDateTime());
 
     if (autoDecline && hasConflict) {
       String errorMsg = "Event \"" + event.getEventName() +
@@ -1159,6 +1165,7 @@ public class EventHandler {
     notifyEventsChanged();
     return true;
   }
+
   /**
    * Formats a datetime display string for an event based on whether it's all-day or timed.
    *
@@ -1177,6 +1184,8 @@ public class EventHandler {
               " " + event.getEndDateTime().toLocalTime();
     }
   }
+
+
   /**
    * Builds a user-friendly description of a recurring event pattern.
    *
@@ -1216,13 +1225,20 @@ public class EventHandler {
       }
 
       switch (weekdays.get(i)) {
-        case 'M': builder.append("Monday"); break;
-        case 'T': builder.append("Tuesday"); break;
-        case 'W': builder.append("Wednesday"); break;
-        case 'R': builder.append("Thursday"); break;
-        case 'F': builder.append("Friday"); break;
-        case 'S': builder.append("Saturday"); break;
-        case 'U': builder.append("Sunday"); break;
+        case 'M': builder.append("Monday");
+        break;
+        case 'T': builder.append("Tuesday");
+        break;
+        case 'W': builder.append("Wednesday");
+        break;
+        case 'R': builder.append("Thursday");
+        break;
+        case 'F': builder.append("Friday");
+        break;
+        case 'S': builder.append("Saturday");
+        break;
+        case 'U': builder.append("Sunday");
+        break;
         default: builder.append(weekdays.get(i));
       }
     }
@@ -1239,6 +1255,8 @@ public class EventHandler {
 
     return builder.toString();
   }
+
+
   /**
    * Counts the number of events that would be affected by an edit operation.
    * Used to provide more informative feedback to users.

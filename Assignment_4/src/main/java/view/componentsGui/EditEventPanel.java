@@ -6,41 +6,100 @@ import model.EventModel;
 import view.utilsGui.CommandGenerator;
 import view.utilsGui.UIUtils;
 
-import javax.swing.*;
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.ButtonGroup;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.CardLayout;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.GridLayout;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 /**
- * Panel for editing existing events
+ * Panel for editing existing events in the calendar application.
+ * Provides UI components for selecting an event and modifying its properties.
+ * Extends AbstractCalendarPanel to inherit common panel functionality and
+ * implements CalendarUIListener to receive notifications about changes in the model.
  */
 public class EditEventPanel extends AbstractCalendarPanel implements CalendarUIListener {
 
+  /** Generator for creating formatted command strings. */
   private CommandGenerator commandGenerator;
+
+  /** Dropdown for selecting the event to edit. */
   private JComboBox<String> eventNameCombo;
+
+  /** Dropdown for selecting which property to edit. */
   private JComboBox<String> propertyCombo;
+
+  /** Panel containing different input components based on selected property. */
   private JPanel valuePanel;
+
+  /** Text field for entering text-based property values. */
   private JTextField textValueField;
+
+  /** Text field for entering date values. */
   private JTextField dateField;
+
+  /** Text field for entering time values. */
   private JTextField timeField;
+
+  /** Dropdown for selecting privacy settings. */
   private JComboBox<String> privacyCombo;
 
+  /** Radio button for editing a specific occurrence of an event. */
   private JRadioButton specificEventRB;
+
+  /** Radio button for editing events from a specific date onward. */
   private JRadioButton eventsFromRB;
+
+  /** Radio button for editing all occurrences of an event. */
   private JRadioButton allEventsRB;
 
+  /** Text field for entering the from date in a date range. */
   private JTextField fromDateField;
+
+  /** Text field for entering the from time in a date range. */
   private JTextField fromTimeField;
+
+  /** Text field for entering the to date in a date range. */
   private JTextField toDateField;
+
+  /** Text field for entering the to time in a date range. */
   private JTextField toTimeField;
+
+  /** Text field for entering a single from date when editing events from a date onward. */
   private JTextField fromOnlyDateField;
+
+  /** Text field for entering a single from time when editing events from a date onward. */
   private JTextField fromOnlyTimeField;
 
+  /** Panel containing date and time fields that change based on selected edit mode. */
   private JPanel dateTimeFieldsPanel;
+
+  /** Name of the currently selected calendar. */
   private String currentCalendarName;
 
+  /**
+   * Constructor for the edit event panel.
+   *
+   * @param controller The event controller that processes commands
+   * @param commandPreviewArea The shared text area for displaying command output
+   * @param commandGenerator The generator for creating formatted command strings
+   */
   public EditEventPanel(EventController controller, JTextArea commandPreviewArea,
                         CommandGenerator commandGenerator) {
     super(controller, commandPreviewArea);
@@ -48,10 +107,21 @@ public class EditEventPanel extends AbstractCalendarPanel implements CalendarUIL
     controller.getEventHandler().addUIListener(this);
   }
 
+  /**
+   * Returns the event name combo box for external access.
+   * Used by other UI components to update the event list.
+   *
+   * @return The combo box containing event names
+   */
   public JComboBox<String> getEventNameCombo() {
     return eventNameCombo;
   }
 
+  /**
+   * Initializes the UI components for this panel.
+   * Creates and arranges fields for event selection, property selection,
+   * value input, edit mode selection, and date range specification.
+   */
   @Override
   protected void initializeUI() {
     setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -270,6 +340,13 @@ public class EditEventPanel extends AbstractCalendarPanel implements CalendarUIL
     add(runPanel);
   }
 
+  /**
+   * Generates a command string for editing an event based on the current field values.
+   * Collects the input values, handles special cases for different property types,
+   * and uses the command generator to format them into a valid command.
+   *
+   * @return A formatted command string for editing an event with the specified changes
+   */
   @Override
   protected String generateCommand() {
     Map<String, String> values = getFormValues();
@@ -306,11 +383,22 @@ public class EditEventPanel extends AbstractCalendarPanel implements CalendarUIL
     return commandGenerator.editEventCommand(values);
   }
 
+  /**
+   * Returns the text to display on this panel's action button.
+   *
+   * @return The button text ("Run Edit Event")
+   */
   @Override
   protected String getButtonText() {
     return "Run Edit Event";
   }
 
+  /**
+   * Filters the event name combo box based on user input.
+   * Displays a dropdown of matching event names as the user types.
+   *
+   * @param text The filter text entered by the user
+   */
   private void filterEventNameComboBox(String text) {
     if (currentCalendarName == null || currentCalendarName.isEmpty()) {
       Map<String, model.CalenderModel> calendars =
@@ -367,17 +455,45 @@ public class EditEventPanel extends AbstractCalendarPanel implements CalendarUIL
     }
   }
 
+  /**
+   * Called when the current calendar changes.
+   * Updates the panel's reference to the current calendar name.
+   *
+   * @param calendarName The name of the newly selected calendar
+   */
   @Override
   public void onCalendarChanged(String calendarName) {
     this.currentCalendarName = calendarName;
   }
 
+  /**
+   * Called when a command produces output.
+   * This panel does not need to take any action for this event.
+   *
+   * @param output The command output text
+   */
   @Override
-  public void onCommandOutput(String output) {}
+  public void onCommandOutput(String output) {
+    // No action needed for this panel
+  }
 
+  /**
+   * Called when the events in any calendar change.
+   * This panel does not need to take any action for this event.
+   *
+   * @param calenderCollection The updated calendar collection
+   */
   @Override
-  public void onEventsChanged(model.CalenderCollection calenderCollection) {}
+  public void onEventsChanged(model.CalenderCollection calenderCollection) {
+    // No action needed for this panel
+  }
 
+  /**
+   * Called when the list of available calendars changes.
+   * This panel does not need to take any action for this event.
+   */
   @Override
-  public void onCalendarListChanged() {}
+  public void onCalendarListChanged() {
+    // No action needed for this panel
+  }
 }

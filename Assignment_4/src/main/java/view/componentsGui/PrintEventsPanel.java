@@ -4,15 +4,31 @@ import controller.EventController;
 import view.utilsGui.CommandGenerator;
 import view.utilsGui.UIUtils;
 
-import javax.swing.*;
+import javax.swing.JButton;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.JLabel;
+import javax.swing.ButtonGroup;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.BorderFactory;
 import javax.swing.border.EmptyBorder;
 
-import java.awt.*;
+import java.awt.CardLayout;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.FlowLayout;
+
 import java.time.LocalDate;
 import java.util.Map;
 
 /**
- * Panel for printing events by date or in a date range
+ * Panel for printing events either on a specific date or within a date-time range.
+ * Provides radio button options to choose the print mode and inputs for date/time.
+ * Uses a card layout to toggle between date-only and date-time range input modes.
  */
 public class PrintEventsPanel extends AbstractCalendarPanel {
 
@@ -24,17 +40,27 @@ public class PrintEventsPanel extends AbstractCalendarPanel {
   private JTextField fromTimeField;
   private JTextField toDateField;
   private JTextField toTimeField;
-  private JPanel dateTimeFieldsPanel;
 
+  /**
+   * Constructs a PrintEventsPanel with the provided controller, command preview area,
+   * and command generator.
+   *
+   * @param controller           the EventController to handle commands
+   * @param commandPreviewArea   the JTextArea to preview commands
+   * @param commandGenerator     the command generator utility
+   */
   public PrintEventsPanel(EventController controller, JTextArea commandPreviewArea,
                           CommandGenerator commandGenerator) {
     super(controller, commandPreviewArea);
     this.commandGenerator = commandGenerator;
   }
 
+  /**
+   * Initializes the UI components of the panel, including print mode selection,
+   * date and time input fields, and the action button.
+   */
   @Override
   protected void initializeUI() {
-    // Print Mode Selection
     JPanel modePanel = createSectionPanel("Print Mode", 2, 1);
 
     printOnDateRB = new JRadioButton("Print events on a specific day");
@@ -54,7 +80,6 @@ public class PrintEventsPanel extends AbstractCalendarPanel {
     add(modePanel);
     add(Box.createRigidArea(new Dimension(0, 10)));
 
-    // Date Selection with CardLayout
     JPanel datePanel = new JPanel(new CardLayout());
     datePanel.setBorder(BorderFactory.createTitledBorder("Date Selection"));
 
@@ -83,7 +108,6 @@ public class PrintEventsPanel extends AbstractCalendarPanel {
     JPanel rangePanel = new JPanel();
     rangePanel.setLayout(new BoxLayout(rangePanel, BoxLayout.Y_AXIS));
 
-    // From Row
     JPanel fromRow = new JPanel();
     fromRow.setLayout(new BoxLayout(fromRow, BoxLayout.X_AXIS));
     JLabel fromLabel = new JLabel("From:");
@@ -104,7 +128,6 @@ public class PrintEventsPanel extends AbstractCalendarPanel {
     fromRow.setBorder(new EmptyBorder(5, 0, 5, 0));
     rangePanel.add(fromRow);
 
-    // To Row
     JPanel toRow = new JPanel();
     toRow.setLayout(new BoxLayout(toRow, BoxLayout.X_AXIS));
     JLabel toLabel = new JLabel("To:");
@@ -129,21 +152,17 @@ public class PrintEventsPanel extends AbstractCalendarPanel {
     add(datePanel);
     add(Box.createRigidArea(new Dimension(0, 5)));
 
-    // Format hint
     JLabel formatHint = new JLabel("Format: Date (YYYY-MM-DD), Time (HH:MM, 24-hour)");
     formatHint.setFont(new Font(formatHint.getFont().getName(), Font.ITALIC, 12));
     formatHint.setAlignmentX(Component.LEFT_ALIGNMENT);
     add(formatHint);
 
-    // Toggle card layout
     CardLayout cardLayout = (CardLayout) datePanel.getLayout();
     printOnDateRB.addActionListener(e -> cardLayout.show(datePanel, "onDate"));
     printIntervalRB.addActionListener(e -> cardLayout.show(datePanel, "range"));
 
-    // Add space before button
     add(Box.createRigidArea(new Dimension(0, 15)));
 
-    // Run Button
     JButton runBtn = new JButton(getButtonText());
     applySize(runBtn, UIUtils.getButtonSize());
     runBtn.addActionListener(e -> executeAction());
@@ -153,11 +172,15 @@ public class PrintEventsPanel extends AbstractCalendarPanel {
     add(buttonPanel);
   }
 
+  /**
+   * Gathers form values and generates the command string based on selected print mode.
+   *
+   * @return the generated command string
+   */
   @Override
   protected String generateCommand() {
     Map<String, String> values = getFormValues();
 
-    // Prepare values based on selected mode
     if (printOnDateRB.isSelected()) {
       values.put("Print Events on:", printOnDateField.getText());
       values.put("Interval From Date:", "");
@@ -175,6 +198,11 @@ public class PrintEventsPanel extends AbstractCalendarPanel {
     return commandGenerator.printEventsCommand(values);
   }
 
+  /**
+   * Returns the label for the execute button.
+   *
+   * @return the button label
+   */
   @Override
   protected String getButtonText() {
     return "Print Events";

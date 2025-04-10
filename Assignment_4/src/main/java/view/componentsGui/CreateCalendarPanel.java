@@ -4,34 +4,50 @@ import controller.EventController;
 import view.utilsGui.CommandGenerator;
 import view.utilsGui.UIUtils;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.Box;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JPanel;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.util.Map;
 
 /**
- * Panel for creating a new calendar
+ * Panel for creating a new calendar in the application.
+ * Provides UI components for entering calendar details and submitting the creation request.
+ * Extends AbstractCalendarPanel to inherit common panel functionality.
  */
 public class CreateCalendarPanel extends AbstractCalendarPanel {
 
+  /** Generator for creating formatted command strings. */
   private CommandGenerator commandGenerator;
+
+  /** Text field for entering the calendar name. */
   private JTextField nameField;
+
+  /** Dropdown for selecting the calendar's timezone. */
   private JComboBox<String> timezoneCombo;
 
-
   /**
-   * Constructor
+   * Constructor for the create calendar panel.
    *
-   * @param controller The event controller
-   * @param commandPreviewArea The shared command preview area
-   * @param commandGenerator The command generator
+   * @param controller The event controller that processes commands
+   * @param commandPreviewArea The shared text area for displaying command output
+   * @param commandGenerator The generator for creating formatted command strings
    */
   public CreateCalendarPanel(EventController controller, JTextArea commandPreviewArea,
                              CommandGenerator commandGenerator) {
     super(controller, commandPreviewArea);
     this.commandGenerator = commandGenerator;
-
   }
 
+  /**
+   * Initializes the UI components for this panel.
+   * Creates and arranges fields for calendar name and timezone selection,
+   * and adds a button to submit the creation request.
+   */
   @Override
   protected void initializeUI() {
     // Calendar Details Section
@@ -62,13 +78,23 @@ public class CreateCalendarPanel extends AbstractCalendarPanel {
     add(buttonPanel);
   }
 
+  /**
+   * Generates a command string for creating a calendar based on the current field values.
+   * Collects the input values and uses the command generator to format them into a valid command.
+   *
+   * @return A formatted command string for creating a calendar with the specified details
+   */
   @Override
   protected String generateCommand() {
     Map<String, String> values = getFormValues();
-    System.out.println(values);
     return commandGenerator.createCalendarCommand(values);
   }
 
+  /**
+   * Returns the text to display on this panel's action button.
+   *
+   * @return The button text ("Create Calendar")
+   */
   @Override
   protected String getButtonText() {
     return "Create Calendar";

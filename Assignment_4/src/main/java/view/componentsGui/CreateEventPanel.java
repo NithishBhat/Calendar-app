@@ -4,40 +4,96 @@ import controller.EventController;
 import view.utilsGui.CommandGenerator;
 import view.utilsGui.UIUtils;
 
-import javax.swing.*;
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.ButtonGroup;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.GridLayout;
+import java.awt.Insets;
 import java.time.LocalDate;
 
 /**
- * Panel for creating new events
+ * Panel for creating new events in the calendar application.
+ * Provides UI components for entering event details including name, time, location,
+ * and recurrence settings. Extends AbstractCalendarPanel to inherit common panel functionality.
  */
 public class CreateEventPanel extends AbstractCalendarPanel {
 
+  /** Generator for creating formatted command strings. */
   private CommandGenerator commandGenerator;
 
+  /** Text field for entering the event name. */
   private JTextField eventNameField;
+
+  /** Text field for entering the event location. */
   private JTextField locationField;
+
+  /** Text area for entering the event description. */
   private JTextArea descriptionArea;
 
+  /** Text field for entering the start date. */
   private JTextField startDateField;
+
+  /** Text field for entering the start time. */
   private JTextField startTimeField;
+
+  /** Text field for entering the end date. */
   private JTextField endDateField;
+
+  /** Text field for entering the end time. */
   private JTextField endTimeField;
 
+  /** Dropdown for selecting the event's privacy setting. */
   private JComboBox<String> privacyCombo;
+
+  /** Checkbox for specifying if the event lasts all day. */
   private JCheckBox allDayCB;
+
+  /** Checkbox for specifying if the event should auto-decline conflicts. */
   private JCheckBox autoDeclineCB;
 
+  /** Checkbox for specifying if the event is recurring. */
   private JCheckBox recurringCB;
+
+  /** Array of checkboxes for selecting days of the week for recurrence. */
   private JCheckBox[] dayCheckboxes;
+
+  /** Radio button for specifying that the event repeats a fixed number of times. */
   private JRadioButton repeatNTimesRB;
+
+  /** Text field for entering the number of times the event repeats. */
   private JTextField repeatCountField;
+
+  /** Radio button for specifying that the event repeats until a certain date. */
   private JRadioButton repeatUntilRB;
+
+  /** Text field for entering the date until which the event repeats. */
   private JTextField repeatUntilDateField;
 
+  /** The date selected when creating this panel, used to pre-populate date fields. */
   private LocalDate selectedDate;
 
+  /**
+   * Constructor for the create event panel.
+   *
+   * @param controller The event controller that processes commands
+   * @param commandPreviewArea The shared text area for displaying command output
+   * @param commandGenerator The generator for creating formatted command strings
+   * @param selectedDate The date initially selected (if any), used to pre-populate date fields
+   */
   public CreateEventPanel(EventController controller, JTextArea commandPreviewArea,
                           CommandGenerator commandGenerator, LocalDate selectedDate) {
     super(controller, commandPreviewArea);
@@ -45,8 +101,12 @@ public class CreateEventPanel extends AbstractCalendarPanel {
     this.selectedDate = selectedDate;
   }
 
-
-
+  /**
+   * Initializes the UI components for this panel.
+   * Creates and arranges fields for event details including basic information,
+   * date and time, settings, and recurrence options. Also adds a button to submit
+   * the creation request.
+   */
   @Override
   protected void initializeUI() {
     setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -233,11 +293,22 @@ public class CreateEventPanel extends AbstractCalendarPanel {
     add(buttonPanel);
   }
 
+  /**
+   * Generates a command string for creating an event based on the current field values.
+   * Collects the input values and uses the command generator to format them into a valid command.
+   *
+   * @return A formatted command string for creating an event with the specified details
+   */
   @Override
   protected String generateCommand() {
     return commandGenerator.createEventCommand(getFormValues());
   }
 
+  /**
+   * Returns the text to display on this panel's action button.
+   *
+   * @return The button text ("Create Event")
+   */
   @Override
   protected String getButtonText() {
     return "Create Event";

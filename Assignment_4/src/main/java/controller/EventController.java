@@ -2,7 +2,7 @@ package controller;
 
 
 import java.io.IOException;
-import java.time.LocalDate;
+
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import model.EventModel;
+
 
 /**
  * The EventController class is responsible for managing event-related commands.
