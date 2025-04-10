@@ -3,7 +3,7 @@ package controller;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import view.componentsGui.CalendarUIListener;
+import view.componentsgui.CalendarUIListener;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;

@@ -1,4 +1,4 @@
-package view.componentsGui;
+package view.componentsgui;
 
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;

@@ -6,7 +6,7 @@ import model.CalenderCollection;
 import model.EventCollectionModel;
 import model.EventModel;
 import model.RecurringEventModel;
-import view.componentsGui.CalendarUIListener;
+import view.componentsgui.CalendarUIListener;
 
 import java.io.File;
 import java.io.IOException;
@@ -268,6 +268,7 @@ public class EventHandler {
       notifyUserMessage(errorMsg);
     }
   }
+
   /**
    * Retrieves the event collection managed by the controller.
    *
@@ -639,6 +640,8 @@ public class EventHandler {
       notifyUserMessage(errorMsg);
     }
   }
+
+
   /**
    * Processes the editing of a property for all events with the specified name.
    * Format: edit events {@code <property>} {@code <eventName>} {@code <NewPropertyValue>}.
@@ -751,7 +754,7 @@ public class EventHandler {
     System.out.println(eventCollection.printAssortments(printList));
     for (CalendarUIListener listener : uiListeners) {
       listener.onCommandOutput("Printing events on " + startDate + " to " + endDate
-              + "...\n"+eventCollection.printAssortments(printList));
+              + "...\n" + eventCollection.printAssortments(printList));
     }
   }
 
@@ -942,6 +945,7 @@ public class EventHandler {
       if (event.getEventName().equals(eventName) && checkEventBetweenDates(event,
               startDateTime, endDateTime) ) {
         event.setStartDateTime(newProperty);
+        return null;
 
       }
     }
@@ -968,6 +972,7 @@ public class EventHandler {
       if (event.getEventName().equals(eventName) && checkEventBetweenDates(event, startDateTime,
               endDateTime) && isEndBeforeStart(event.getStartDateTime(),newProperty)) {
         event.setEndDateTime(newProperty);
+        return null;
       }
     }
     throw new RuntimeException("Event " + eventName + " not found");
@@ -987,7 +992,9 @@ public class EventHandler {
     for (EventModel event : eventCollection.getEventList()) {
       if (event.getEventName().equals(eventName) && checkEventBetweenDates(event,
               startDateTime, endDateTime)) {
+
         event.setLocation(location);
+        return null;
       }
     }
     throw new RuntimeException("Event " + eventName + " not found");
@@ -1008,6 +1015,7 @@ public class EventHandler {
       if (event.getEventName().equals(eventName) && checkEventBetweenDates(event,
               startDateTime, endDateTime)) {
         event.setEventName(newEventName);
+        return null;
       }
     }
     throw new RuntimeException("Event " + eventName + " not found");
@@ -1028,6 +1036,7 @@ public class EventHandler {
       if (event.getEventName().equals(eventName) && checkEventBetweenDates(event,
               startDateTime, endDateTime)) {
         event.setIsPrivate(isPrivate);
+        return null;
       }
     }
     throw new RuntimeException("Event " + eventName + " not found");
@@ -1048,6 +1057,7 @@ public class EventHandler {
       if (event.getEventName().equals(eventName) && checkEventBetweenDates(event, startDateTime,
               endDateTime)) {
         event.setDescription(description);
+        return null;
       }
     }
     throw new RuntimeException("Event " + eventName + " not found");

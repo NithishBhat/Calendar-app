@@ -1,7 +1,7 @@
-package view.componentsGui;
+package view.componentsgui;
 
 import controller.EventController;
-import view.utilsGui.UIUtils;
+import view.utilsgui.UIUtils;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
