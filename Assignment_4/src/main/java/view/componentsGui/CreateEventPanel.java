@@ -18,6 +18,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
+
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -32,67 +33,24 @@ import java.time.LocalDate;
  */
 public class CreateEventPanel extends AbstractCalendarPanel {
 
-  /** Generator for creating formatted command strings. */
+  /**
+   * Generator for creating formatted command strings.
+   */
   private CommandGenerator commandGenerator;
 
-  /** Text field for entering the event name. */
-  private JTextField eventNameField;
 
-  /** Text field for entering the event location. */
-  private JTextField locationField;
 
-  /** Text area for entering the event description. */
-  private JTextArea descriptionArea;
 
-  /** Text field for entering the start date. */
-  private JTextField startDateField;
-
-  /** Text field for entering the start time. */
-  private JTextField startTimeField;
-
-  /** Text field for entering the end date. */
-  private JTextField endDateField;
-
-  /** Text field for entering the end time. */
-  private JTextField endTimeField;
-
-  /** Dropdown for selecting the event's privacy setting. */
-  private JComboBox<String> privacyCombo;
-
-  /** Checkbox for specifying if the event lasts all day. */
-  private JCheckBox allDayCB;
-
-  /** Checkbox for specifying if the event should auto-decline conflicts. */
-  private JCheckBox autoDeclineCB;
-
-  /** Checkbox for specifying if the event is recurring. */
-  private JCheckBox recurringCB;
-
-  /** Array of checkboxes for selecting days of the week for recurrence. */
-  private JCheckBox[] dayCheckboxes;
-
-  /** Radio button for specifying that the event repeats a fixed number of times. */
-  private JRadioButton repeatNTimesRB;
-
-  /** Text field for entering the number of times the event repeats. */
-  private JTextField repeatCountField;
-
-  /** Radio button for specifying that the event repeats until a certain date. */
-  private JRadioButton repeatUntilRB;
-
-  /** Text field for entering the date until which the event repeats. */
-  private JTextField repeatUntilDateField;
-
-  /** The date selected when creating this panel, used to pre-populate date fields. */
   private LocalDate selectedDate;
 
   /**
    * Constructor for the create event panel.
    *
-   * @param controller The event controller that processes commands
+   * @param controller         The event controller that processes commands
    * @param commandPreviewArea The shared text area for displaying command output
-   * @param commandGenerator The generator for creating formatted command strings
-   * @param selectedDate The date initially selected (if any), used to pre-populate date fields
+   * @param commandGenerator   The generator for creating formatted command strings
+   * @param selectedDate       The date initially selected (if any),
+   *                          used to pre-populate date fields
    */
   public CreateEventPanel(EventController controller, JTextArea commandPreviewArea,
                           CommandGenerator commandGenerator, LocalDate selectedDate) {
@@ -109,6 +67,24 @@ public class CreateEventPanel extends AbstractCalendarPanel {
    */
   @Override
   protected void initializeUI() {
+
+    JTextField repeatUntilDateField;
+    JTextField eventNameField;
+    JTextField locationField;
+    JTextArea descriptionArea;
+    JTextField startDateField;
+    JTextField startTimeField;
+    JTextField endDateField;
+    JTextField endTimeField;
+    JCheckBox allDayCB;
+    JCheckBox autoDeclineCB;
+    JCheckBox recurringCB;
+    JCheckBox[] dayCheckboxes;
+    JRadioButton repeatNTimesRB;
+    JTextField repeatCountField;
+    JRadioButton repeatUntilRB;
+    JComboBox<String> privacyCombo;
+
     setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
     setBorder(new EmptyBorder(5, 5, 5, 5));
 
@@ -146,7 +122,8 @@ public class CreateEventPanel extends AbstractCalendarPanel {
     startPanel.add(startLabel, BorderLayout.WEST);
 
     JPanel startFieldsPanel = new JPanel(new BorderLayout(5, 0));
-    startDateField = (selectedDate==null?new JTextField(LocalDate.now().toString()): new JTextField(selectedDate.toString()));
+    startDateField = (selectedDate == null ? new JTextField(LocalDate.now().
+            toString()) : new JTextField(selectedDate.toString()));
     applySize(startDateField, new Dimension(110, 25));
     addFormField("StartDate", startDateField);
 
@@ -166,7 +143,8 @@ public class CreateEventPanel extends AbstractCalendarPanel {
     endPanel.add(endLabel, BorderLayout.WEST);
 
     JPanel endFieldsPanel = new JPanel(new BorderLayout(5, 0));
-    endDateField = (selectedDate==null?new JTextField(LocalDate.now().toString()): new JTextField(selectedDate.toString()));
+    endDateField = (selectedDate == null ? new JTextField(LocalDate.now().toString())
+            : new JTextField(selectedDate.toString()));
     applySize(endDateField, new Dimension(110, 25));
     addFormField("EndDate", endDateField);
 
@@ -190,7 +168,7 @@ public class CreateEventPanel extends AbstractCalendarPanel {
     // Privacy
     JPanel privacyPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
     privacyPanel.add(new JLabel("Privacy:"));
-    privacyCombo = new JComboBox<>(new String[] {"Public", "Private"});
+    privacyCombo = new JComboBox<>(new String[]{"Public", "Private"});
     applySize(privacyCombo, new Dimension(90, 25));
     privacyPanel.add(privacyCombo);
     addFormField("Privacy", privacyCombo);
@@ -266,7 +244,8 @@ public class CreateEventPanel extends AbstractCalendarPanel {
     addFormField("RepeatUntilRB", repeatUntilRB);
     repeatUntilPanel.add(repeatUntilRB);
 
-    repeatUntilDateField = new JTextField(LocalDate.now().plusMonths(1).toString(), 10);
+    repeatUntilDateField = new JTextField(LocalDate.now()
+            .plusMonths(1).toString(), 10);
     applySize(repeatUntilDateField, new Dimension(110, 25));
     addFormField("RepeatUntilDate", repeatUntilDateField);
     repeatUntilPanel.add(repeatUntilDateField);

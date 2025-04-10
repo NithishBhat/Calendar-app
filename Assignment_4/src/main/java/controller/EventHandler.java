@@ -268,6 +268,7 @@ public class EventHandler {
       notifyUserMessage(errorMsg);
     }
   }
+
   /**
    * Retrieves the event collection managed by the controller.
    *
@@ -639,6 +640,7 @@ public class EventHandler {
       notifyUserMessage(errorMsg);
     }
   }
+
   /**
    * Processes the editing of a property for all events with the specified name.
    * Format: edit events {@code <property>} {@code <eventName>} {@code <NewPropertyValue>}.
@@ -751,7 +753,7 @@ public class EventHandler {
     System.out.println(eventCollection.printAssortments(printList));
     for (CalendarUIListener listener : uiListeners) {
       listener.onCommandOutput("Printing events on " + startDate + " to " + endDate
-              + "...\n"+eventCollection.printAssortments(printList));
+              + "...\n" + eventCollection.printAssortments(printList));
     }
   }
 

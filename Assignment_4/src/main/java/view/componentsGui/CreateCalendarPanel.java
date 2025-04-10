@@ -24,11 +24,7 @@ public class CreateCalendarPanel extends AbstractCalendarPanel {
   /** Generator for creating formatted command strings. */
   private CommandGenerator commandGenerator;
 
-  /** Text field for entering the calendar name. */
-  private JTextField nameField;
 
-  /** Dropdown for selecting the calendar's timezone. */
-  private JComboBox<String> timezoneCombo;
 
   /**
    * Constructor for the create calendar panel.
@@ -50,6 +46,8 @@ public class CreateCalendarPanel extends AbstractCalendarPanel {
    */
   @Override
   protected void initializeUI() {
+    JTextField nameField;
+    JComboBox<String> timezoneCombo;
     // Calendar Details Section
     JPanel detailsPanel = createSectionPanel("Calendar Details", 2, 1);
 

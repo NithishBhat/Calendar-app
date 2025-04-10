@@ -129,23 +129,33 @@ public class CalendarUI implements CalendarUIListener {
     JTabbedPane tabbedPane = new JTabbedPane();
 
     // Add the tab panels using our new component classes
-    monthViewPanel = new MonthViewPanel(controller, commandPreviewArea, commandGenerator, tabbedPane);
+    monthViewPanel = new MonthViewPanel(controller, commandPreviewArea,
+            commandGenerator, tabbedPane);
     tabbedPane.addTab("Month View", UIUtils.wrapPanel(monthViewPanel));
 
-    tabbedPane.addTab("Create Calendar", UIUtils.wrapPanel(new CreateCalendarPanel(controller, commandPreviewArea, commandGenerator)));
-    tabbedPane.addTab("Edit Calendar", UIUtils.wrapPanel(new EditCalendarPanel(controller, commandPreviewArea, commandGenerator)));
+    tabbedPane.addTab("Create Calendar", UIUtils.wrapPanel(new CreateCalendarPanel(controller,
+            commandPreviewArea, commandGenerator)));
+    tabbedPane.addTab("Edit Calendar", UIUtils.wrapPanel(new EditCalendarPanel(controller,
+            commandPreviewArea, commandGenerator)));
 
-    tabbedPane.addTab("Create Event", UIUtils.wrapPanel(new CreateEventPanel(controller, commandPreviewArea, commandGenerator, null)));
+    tabbedPane.addTab("Create Event", UIUtils.wrapPanel(new CreateEventPanel(controller,
+            commandPreviewArea, commandGenerator, null)));
 
     // Create EditEventPanel instance and store reference to its event name combo box
-    EditEventPanel editEventPanel = new EditEventPanel(controller, commandPreviewArea, commandGenerator);
+    EditEventPanel editEventPanel = new EditEventPanel(controller, commandPreviewArea,
+            commandGenerator);
     editEventNameCombo = editEventPanel.getEventNameCombo();
     tabbedPane.addTab("Edit Event", UIUtils.wrapPanel(editEventPanel));
 
-    tabbedPane.addTab("Print Events", UIUtils.wrapPanel(new PrintEventsPanel(controller, commandPreviewArea, commandGenerator)));
-    tabbedPane.addTab("Export Calendar", UIUtils.wrapPanel(new ExportCalendarPanel(controller, commandPreviewArea, commandGenerator)));
-    tabbedPane.addTab("Import Calendar", UIUtils.wrapPanel(new ImportCalendarPanel(controller, commandPreviewArea, commandGenerator)));
-    tabbedPane.addTab("Show Status", UIUtils.wrapPanel(new ShowStatusPanel(controller, commandPreviewArea, commandGenerator)));
+    tabbedPane.addTab("Print Events", UIUtils.wrapPanel(new PrintEventsPanel(controller,
+            commandPreviewArea, commandGenerator)));
+    tabbedPane.addTab("Export Calendar", UIUtils.wrapPanel(new ExportCalendarPanel(controller,
+            commandPreviewArea, commandGenerator)));
+    tabbedPane.addTab("Import Calendar", UIUtils.wrapPanel(new ImportCalendarPanel(controller,
+            commandPreviewArea, commandGenerator)));
+    tabbedPane.addTab("Show Status", UIUtils.wrapPanel(new ShowStatusPanel(controller,
+            commandPreviewArea, commandGenerator)));
+
 
     // Calendar selector panel
     JPanel calendarSelectorPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
@@ -286,7 +296,9 @@ public class CalendarUI implements CalendarUIListener {
    * Identifies and marks recurring events.
    */
   private void updateEventNameComboBox() {
-    if (editEventNameCombo == null) return;
+    if (editEventNameCombo == null) {
+      return;
+    }
 
     // Get current calendar
     if (calendarSelector.getSelectedItem() != null) {
@@ -298,7 +310,8 @@ public class CalendarUI implements CalendarUIListener {
 
         // Get events from this calendar
         EventCollectionModel eventCollection =
-                controller.getEventHandler().getCalenderCollection().getEventCollection(currentCalendarName);
+                controller.getEventHandler().getCalenderCollection()
+                        .getEventCollection(currentCalendarName);
 
         // Get all events
         List<EventModel> events = eventCollection.getEventList();
